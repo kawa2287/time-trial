@@ -11,11 +11,11 @@
 4 verbose stack     at checkBinReferences_ (/home/ubuntu/.nvm/versions/node/v6.11.2/lib/node_modules/npm/node_modules/read-package-json/read-json.js:320:45)
 4 verbose stack     at final (/home/ubuntu/.nvm/versions/node/v6.11.2/lib/node_modules/npm/node_modules/read-package-json/read-json.js:354:3)
 4 verbose stack     at then (/home/ubuntu/.nvm/versions/node/v6.11.2/lib/node_modules/npm/node_modules/read-package-json/read-json.js:124:5)
-4 verbose stack     at /home/ubuntu/.nvm/versions/node/v6.11.2/lib/node_modules/npm/node_modules/read-package-json/read-json.js:243:12
+4 verbose stack     at /home/ubuntu/.nvm/versions/node/v6.11.2/lib/node_modules/npm/node_modules/read-package-json/read-json.js:311:12
 4 verbose stack     at /home/ubuntu/.nvm/versions/node/v6.11.2/lib/node_modules/npm/node_modules/graceful-fs/graceful-fs.js:78:16
 4 verbose stack     at tryToString (fs.js:456:3)
 4 verbose stack     at FSReqWrap.readFileAfterClose [as oncomplete] (fs.js:443:12)
-5 verbose cwd /home/ubuntu/workspace
+5 verbose cwd /home/ubuntu/workspace/src/static/img
 6 error Linux 4.9.80-c9
 7 error argv "/home/ubuntu/.nvm/versions/node/v6.11.2/bin/node" "/home/ubuntu/.nvm/versions/node/v6.11.2/bin/npm" "start"
 8 error node v6.11.2
