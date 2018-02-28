@@ -1,11 +1,11 @@
 {
   "name": "workspace",
   "version": "1.0.0",
-  "description": ",-----.,--.                  ,--. ,---.   ,--.,------.  ,------.     '  .--./|  | ,---. ,--.,--. ,-|  || o   \\  |  ||  .-.  \\ |  .---'     |  |    |  || .-. ||  ||  |' .-. |`..'  |  |  ||  |  \\  :|  `--,      '  '--'\\|  |' '-' ''  ''  '\\ `-' | .'  /   |  ||  '--'  /|  `---.      `-----'`--' `---'  `----'  `---'  `--'    `--'`-------' `------'     -----------------------------------------------------------------",
+  "description": "Trying to learn some ReactJS",
   "main": "index.js",
   "scripts": {
     "start": "cross-env NODE_ENV=production node_modules/.bin/babel-node --presets react,es2015 src/server.js",
-    "qwop": "cross-env NODE_ENV=production node_modules/.bin/webpack -p"
+    "build": "cross-env NODE_ENV=production node_modules/.bin/webpack -p"
   },
   "author": "",
   "license": "ISC",
