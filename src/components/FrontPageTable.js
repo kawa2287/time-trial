@@ -1,23 +1,23 @@
 
 'use strict';
 
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 
-export default class Example extends Component {
+export default class Table extends Component {
   constructor(props){
     super(props);
-    this.state = {size: 3}
+    this.state = {size: 3};
   }
   render(){
     let rows = [];
     for (var i = 0; i < this.state.size; i++){
-      let rowID = `row${i}`
-      let cell = []
+      let rowID = `row${i}`;
+      let cell = [];
       for (var idx = 0; idx < this.state.size; idx++){
-        let cellID = `cell${i}-${idx}`
-        cell.push(<td key={cellID} id={cellID}></td>)
+        let cellID = `cell${i}-${idx}`;
+        cell.push(<td key={cellID} id={cellID}></td>);
       }
-      rows.push(<tr key={i} id={rowID}>{cell}</tr>)
+      rows.push(<tr key={i} id={rowID}>{cell}</tr>);
     }
     return(
       <div className="container">
@@ -31,6 +31,6 @@ export default class Example extends Component {
           </div>
         </div>
       </div>
-    )
+    );
   }
 }
