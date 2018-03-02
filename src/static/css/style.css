@@ -30,6 +30,14 @@ header .logo {
   width: 100%;
 }
 
+.home .style1 {
+  text-decoration: underline;
+}
+
+.home .style2 {
+  color: #0ff6bd;
+}
+
 footer {
   margin: 4em auto;
   padding: 2em;
@@ -65,7 +73,27 @@ footer p {
   clear: both;
   padding: 2em;
   text-align: center;
-  left: 50%;
+
+}
+
+.home .country-chart {
+  clear: both;
+  padding: 0.5em;
+  display: inline-table;
+  max-width: 800px;
+  position: relative;
+  width: 100%;
+  background-color: #e1f6fe;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
+}
+
+.home .country-chart .cell {
+  text-align: center;
+}
+
+.home .country-chart .cellHeader {
+  text-align: center;
 }
 
 .home .athletes-selector .athlete-preview {
@@ -77,6 +105,8 @@ footer p {
   padding: 0;
   position: relative;
   width: 100%;
+  vertical-align: middle;
+
 }
 
 .home .athletes-selector .athlete-preview img {
@@ -87,7 +117,7 @@ footer p {
 .home .athletes-selector .athlete-preview .name {
   color: #030303;
   display: inline-block;
-  font-size: 1.6em;
+  font-size: 1.5em;
   overflow: hidden;
   padding: .2em;
   text-align: center;
@@ -95,27 +125,6 @@ footer p {
   text-overflow: ellipsis;
   white-space: nowrap;
   width: 100%;
-}
-
-.home .athletes-selector .athlete-preview .medals-count {
-  background: #fff;
-  border-radius: 2px;
-  display: inline-block;
-  font-weight: bold;
-  margin: .2em;
-  padding: .2em .4em;
-  position: absolute;
-  right: 0;
-  text-align: center;
-  top: 0;
-  vertical-align: middle;
-}
-
-.home .flag-center {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    left:50%
 }
 
 nav.athletes-menu {
@@ -174,9 +183,10 @@ nav.athletes-menu a.active {
   width: auto;
 }
 
-.athlete .flag .icon {
+.home .country-chart .icon {
   display: inline-block;
   width: auto;
+  margin: 0 2px 0 2px;
 }
 
 .athlete .description,

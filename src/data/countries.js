@@ -1288,7 +1288,6 @@ const countries = [
       "code": "263"
     }
   }
-  
 ];
 
 export default countries;
