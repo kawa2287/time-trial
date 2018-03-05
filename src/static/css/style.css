@@ -30,6 +30,27 @@ header .logo {
   width: 100%;
 }
 
+
+body {
+  padding: 2em;
+}
+
+.wrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 400px;
+}
+input {
+  border: 1px solid black; 
+  margin: 2em;
+}
+
+.string {
+  text-transform: capitalize;
+}
+
+
 .home .style1 {
   text-decoration: underline;
 }

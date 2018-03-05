@@ -3,7 +3,7 @@
 
 import React, { Component } from 'react';
 import Flag from './Flag';
-import countries from '../data/countries';
+import countryData from './Country';
 
 export default class Table extends Component {
 
@@ -12,24 +12,6 @@ export default class Table extends Component {
     function randomIntFromInterval(min,max){
       return Math.floor(Math.random()*(max-min+1)+min);
     }
-
-    var countryData = [];
-
-    function CountryInfo(name, iso2, flagPath) {
-      this.name = name;
-      this.iso2 = iso2;
-      this.flagPath = flagPath;
-  }
-
-  for (var key in countries[0]){
-      if (countries[0].hasOwnProperty(key)) {
-        var x = new CountryInfo;
-        x.name = countries[0][key].name;
-        x.iso2 = key;
-        x.flagPath = "/img/flags/"+key+".png";
-        countryData.push(x);
-        }
-    };
 
     let rows = [];
     var headerCells = [];
@@ -53,7 +35,7 @@ export default class Table extends Component {
       
       rows.push(<tr key={i} id={rowID}>{cell}</tr>);
     }
-    
+
     return(
       <table className="country-chart" id="simple-board">
          <tbody>

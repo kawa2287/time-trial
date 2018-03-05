@@ -6,6 +6,7 @@ import athletes from '../data/athletes';
 import Flag from './Flag';
 import countries from '../data/countries';
 import Table from	'./FrontPageTable';
+import PopUp from './AddTeamPopUp';
 
 
 export default class IndexPage extends React.Component {
@@ -23,6 +24,8 @@ export default class IndexPage extends React.Component {
         <div className="athletes-selector">
         	<Table nRows={nPlayers}></Table>
         </div>
+
+        <PopUp data={countries}></PopUp>
         
       </div>
     );

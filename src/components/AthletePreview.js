@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Link } from 'react-router';
+import PopUP from './AddTeamPopUp';
 
 export default class AthletePreview extends React.Component {
   render() {

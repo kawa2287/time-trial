@@ -19,7 +19,8 @@
     "express": "^4.14.1",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
-    "react-router": "^2.6.1"
+    "react-router": "^2.6.1",
+    "react-skylight": "^0.5.0"
   },
   "devDependencies": {
     "babel-loader": "^6.2.10",
