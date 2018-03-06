@@ -39,11 +39,46 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  width: 400px;
+  width: 100%;
 }
+
+.wrap .input-line {
+  width: 100%;
+}
+
+.wrap .name-display {
+  display: block;
+  margin: auto;
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+  text-shadow: 2px 2px rgba(0,0,0,0.16), 2px 3px rgba(0,0,0,0.12);
+}
+
+.wrap .country-select-image {
+  display: block;
+  margin-top: 60px;
+  margin-bottom: 10px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.wrap .country-select-image .icon {
+  border: 0px solid black;
+  box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
+}
+
+.wrap .input-line .string {
+  font-size: medium;
+  display:inline-block;
+  width: 120px;
+}
+
 input {
-  border: 1px solid black; 
-  margin: 2em;
+  margin: 1em;
+  font-size: small;
+  text-align: center;
+  width:200px;
 }
 
 .string {
