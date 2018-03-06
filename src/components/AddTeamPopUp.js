@@ -1,11 +1,14 @@
 import React from 'react';
 import SkyLight from 'react-skylight';
 import TeamInputForm from './TeamInputForm';
-import SubmitButton from './SubmitButton';
 
 class PopUp extends React.Component {
   constructor(props){
     super(props);
+  }
+  
+  addTeam(){
+    console.log("team added");
   }
 
   render() {
@@ -19,9 +22,6 @@ class PopUp extends React.Component {
       marginLeft: '-35%',
     };
 
-
-
-
     return (
       <div className="athlete-preview">
 
@@ -31,10 +31,10 @@ class PopUp extends React.Component {
 
         <SkyLight dialogStyles={myBigGreenDialog} hideOnOverlayClicked ref={ref => this.customDialog = ref} >
           <TeamInputForm/>
-          <SubmitButton text="Submit"/>
+          <button onClick={this.addTeam}>Submit</button>
         </SkyLight>
       </div>
-    )
+    );
   }
 }
 

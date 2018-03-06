@@ -9,9 +9,15 @@ import Table from	'./FrontPageTable';
 import PopUp from './AddTeamPopUp';
 
 
-export default class IndexPage extends React.Component {
-  render() {
 
+
+export default class IndexPage extends React.Component {
+  
+  clickDamnit(){
+    console.log("clicked");
+  }
+  
+  render() {
   	var nPlayers = 8;
 
     return (
@@ -24,7 +30,7 @@ export default class IndexPage extends React.Component {
         <div className="athletes-selector">
         	<Table nRows={nPlayers}></Table>
         </div>
-
+        
         <PopUp data={countries}></PopUp>
         
       </div>
