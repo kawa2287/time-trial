@@ -4,15 +4,20 @@ import React from 'react';
 import countryData from './Country';
 import Flag from './Flag';
 import CountryKeyVal from './CountryKeyVal';
-
-//let name="{name from input}";
-//let country= "{country from input}";
+import SubmitButton from './SubmitButton';
 
 export default class TeamInputForm extends React.Component {
   constructor(){
     super();
     this.state={name: '', country: 'Select Country'};
   }
+  
+  addTeam(){
+    console.log(this.props.players["Mike"]);
+    this.props.players[this.state.name] = this.state.country;
+    console.log(this.props.players["Matt"]);
+  }
+  
   render() {
     
     var countryNames = [];
@@ -33,11 +38,12 @@ export default class TeamInputForm extends React.Component {
           <datalist id="countryList">{countryNames.map((name, i) => <option data-id={i} value={name}/>)}</datalist>
         </div>
         <div className="country-select-image">
-          <Flag icon={CountryKeyVal[this.state.country].flagPathLg} />
+          <Flag icon={CountryKeyVal[this.state.country].flagPathXL} />
         </div>
         <div className="name-display">
           {this.state.name}
         </div>
+        <SubmitButton onClick={this.addTeam.bind(this)}/>
       </div>
     );
   }

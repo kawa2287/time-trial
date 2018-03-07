@@ -1202,11 +1202,6 @@ const countries = [
       "iso2": "AE",
       "code": "971"
     },
-    "GB": {
-      "name": "United Kingdom",
-      "iso2": "GB",
-      "code": "1 473"
-    },
     "UK": {
       "name": "United Kingdom",
       "iso2": "UK",

@@ -1,6 +1,6 @@
 "use strict";
 
-const athletes = [
+const tasks = [
   {
     'id': 'add-team',
     'name': 'Add Team',
@@ -18,4 +18,4 @@ const athletes = [
   }
 ];
 
-export default athletes;
+export default tasks;

@@ -1,20 +1,21 @@
 'use strict';
 
 import React from 'react';
-import AthletePreview from './AthletePreview';
-import athletes from '../data/athletes';
-import Flag from './Flag';
-import countries from '../data/countries';
 import Table from	'./FrontPageTable';
-import PopUp from './AddTeamPopUp';
-
-
-
+import AddTeamPopUp from './AddTeamPopUp';
 
 export default class IndexPage extends React.Component {
+  constructor(props){
+    super(props);
+    this.props.players = {"Name": "Country"};
+  }
   
-  clickDamnit(){
-    console.log("clicked");
+  
+  
+  checkPlayers(){
+    for (var k in this.props.players){
+      console.log(this.props.players[k]);
+    }
   }
   
   render() {
@@ -22,16 +23,16 @@ export default class IndexPage extends React.Component {
 
     return (
       <div className="home">
-
-        <div className="athletes-selector">
-          {athletes.map(buttonData => <AthletePreview key={buttonData.id} {...buttonData} />)}
-        </div>
-
-        <div className="athletes-selector">
-        	<Table nRows={nPlayers}></Table>
+      
+        <div className="buttons-selector">
+          <AddTeamPopUp players={this.props.players}/>
         </div>
         
-        <PopUp data={countries}></PopUp>
+        <div className="buttons-selector">
+          <Table nRows={nPlayers}></Table>
+        </div>
+        
+        <button onClick={this.checkPlayers.bind(this)}>Check PLayers</button>
         
       </div>
     );

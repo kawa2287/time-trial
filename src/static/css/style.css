@@ -125,7 +125,7 @@ footer p {
   font-weight: bold;
 }
 
-.home .athletes-selector {
+.home .buttons-selector {
   clear: both;
   padding: 2em;
   text-align: center;
@@ -152,7 +152,7 @@ footer p {
   text-align: center;
 }
 
-.home .athletes-selector .athlete-preview {
+.home .buttons-selector .task-preview {
   border: 1px solid #ccc;
   box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
   display: inline-block;
@@ -165,12 +165,12 @@ footer p {
 
 }
 
-.home .athletes-selector .athlete-preview img {
+.home .buttons-selector .task-preview img {
   margin: 0;
   width: 100%;
 }
 
-.home .athletes-selector .athlete-preview .name {
+.home .buttons-selector .task-preview .name {
   color: #030303;
   display: inline-block;
   font-size: 1.5em;

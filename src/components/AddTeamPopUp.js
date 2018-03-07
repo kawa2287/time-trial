@@ -2,17 +2,13 @@ import React from 'react';
 import SkyLight from 'react-skylight';
 import TeamInputForm from './TeamInputForm';
 
-class PopUp extends React.Component {
+class AddTeamPopUp extends React.Component {
   constructor(props){
     super(props);
   }
-  
-  addTeam(){
-    console.log("team added");
-  }
 
   render() {
-
+    
     var myBigGreenDialog = {
       backgroundColor: '#00897B',
       color: '#ffffff',
@@ -23,21 +19,18 @@ class PopUp extends React.Component {
     };
 
     return (
-      <div className="athlete-preview">
-
-        <section>
-          <img src="./img/buttons/addUser.png" onClick={() => this.customDialog.show()}></img>
-        </section>
+      <div className="task-preview">
+        <img src="./img/buttons/addUser.png" onClick={() => this.customDialog.show()}></img>
+        <h2 className="name">Add Team</h2>
 
         <SkyLight dialogStyles={myBigGreenDialog} hideOnOverlayClicked ref={ref => this.customDialog = ref} >
-          <TeamInputForm/>
-          <button onClick={this.addTeam}>Submit</button>
+          <TeamInputForm players={this.props.players}/>
         </SkyLight>
       </div>
     );
   }
 }
 
-PopUp.displayName = 'ExampleCustom';
+AddTeamPopUp.displayName = 'Add Team';
 
-export default PopUp;
+export default AddTeamPopUp;
