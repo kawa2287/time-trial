@@ -9,13 +9,23 @@ import SubmitButton from './SubmitButton';
 export default class TeamInputForm extends React.Component {
   constructor(){
     super();
-    this.state={name: '', country: 'Select Country'};
+    this.state={
+      name: '', 
+      country: 'Select Country'
+    };
   }
   
   addTeam(){
-    console.log(this.props.players["Mike"]);
-    this.props.players[this.state.name] = this.state.country;
-    console.log(this.props.players["Matt"]);
+    this.props.players[this.state.name] = {
+        name : this.state.name,
+        country : this.state.country,
+        seed : 0,
+        timeTrial : 0,
+        wins : 0,
+        losses : 0,
+        totalTime : 0,
+        avgTime : 0
+    }
   }
   
   render() {

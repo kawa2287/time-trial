@@ -6,12 +6,25 @@ import Flag from './Flag';
 import countryData from './Country';
 
 export default class Table extends Component {
+  constructor(){
+    super();
+    this.state = {nRows : 0};
+  }
+
+  updateRows(){
+    this.props.clickHandle();
+    this.setState({
+      nRows : this.props.nRows
+    })
+  }
+
 
   render(){
 
     function randomIntFromInterval(min,max){
       return Math.floor(Math.random()*(max-min+1)+min);
     }
+
 
     let rows = [];
     var headerCells = [];
@@ -21,7 +34,7 @@ export default class Table extends Component {
 
     rows.push(<tr key="header" id="header">{headerCells}</tr>);
 
-    for (var i = 0; i < this.props.nRows; i++){
+    for (var i = 0; i < this.state.nRows; i++){
       let rowID = `row${i}`;
       let cell = [];
 
@@ -29,7 +42,7 @@ export default class Table extends Component {
       var time = randomIntFromInterval(200,500)/10;
       
       let cellID = "cell " + {i};
-      cell.push(<td className="cell" key={cellID + " -1"} id={cellID + " -1"}><Flag icon={countryData[n].flagPath}/></td>);
+      cell.push(<td className="cell" key={cellID + " -1"} id={cellID + " -1"}><Flag icon={countryData[n].flagPathMD}/></td>);
       cell.push(<td className="cell" key={cellID + " -2"} id={cellID + " -2"}>{countryData[n].name}</td>);
       cell.push(<td className="cell" key={cellID + " -3"} id={cellID + " -3"}>{time}  sec</td>);
       
@@ -37,11 +50,16 @@ export default class Table extends Component {
     }
 
     return(
-      <table className="country-chart" id="simple-board">
-         <tbody>
-           {rows}
-         </tbody>
-       </table>
+        <div>
+            <table className="country-chart" id="simple-board">
+                <tbody>
+                    {rows}
+                </tbody>
+            </table>
+            <div>
+                <button onClick={this.updateRows.bind(this)}>Check Players</button>
+            </div>
+        </div>
     );
   }
 }

@@ -37,11 +37,6 @@ const countries = [
       "iso2": "AI",
       "code": "1 264"
     },
-    "AQ": {
-      "name": "Antarctica",
-      "iso2": "AQ",
-      "code": "672"
-    },
     "AG": {
       "name": "Antigua And Barbuda",
       "iso2": "AG",
@@ -61,11 +56,6 @@ const countries = [
       "name": "Aruba",
       "iso2": "AW",
       "code": "297"
-    },
-    "AC": {
-      "name": "Ascension Island",
-      "iso2": "AC",
-      "code": "247"
     },
     "AU": {
       "name": "Australia",
@@ -133,12 +123,12 @@ const countries = [
       "code": "975"
     },
     "BO": {
-      "name": "Bolivia, Plurinational State Of",
+      "name": "Bolivia",
       "iso2": "BO",
       "code": "591"
     },
     "BQ": {
-      "name": "Bonaire, Saint Eustatius And Saba",
+      "name": "Bonaire",
       "iso2": "BQ",
       "code": "599"
     },
@@ -151,11 +141,6 @@ const countries = [
       "name": "Botswana",
       "iso2": "BW",
       "code": "267"
-    },
-    "BV": {
-      "name": "Bouvet Island",
-      "iso2": "BV",
-      "code": ""
     },
     "BR": {
       "name": "Brazil",
@@ -202,6 +187,11 @@ const countries = [
       "iso2": "CA",
       "code": "1"
     },
+    "CT": {
+      "name": "Scotland",
+      "iso2": "CT",
+      "code": "1"
+    },
     "IC": {
       "name": "Canary Islands",
       "iso2": "IC",
@@ -223,7 +213,7 @@ const countries = [
       "code": "236"
     },
     "EA": {
-      "name": "Ceuta, Mulilla",
+      "name": "Ceuta",
       "iso2": "EA",
       "code": ""
     },
@@ -247,13 +237,8 @@ const countries = [
       "iso2": "CX",
       "code": "61"
     },
-    "CP": {
-      "name": "Clipperton Island",
-      "iso2": "CP",
-      "code": ""
-    },
     "CC": {
-      "name": "Cocos (Keeling) Islands",
+      "name": "Cocos Islands",
       "iso2": "CC",
       "code": "61"
     },
@@ -297,11 +282,6 @@ const countries = [
       "iso2": "CW",
       "code": "599"
     },
-    "CY": {
-      "name": "Cyprus",
-      "iso2": "CY",
-      "code": "357"
-    },
     "CZ": {
       "name": "Czech Republic",
       "iso2": "CZ",
@@ -316,11 +296,6 @@ const countries = [
       "name": "Denmark",
       "iso2": "DK",
       "code": "45"
-    },
-    "DG": {
-      "name": "Diego Garcia",
-      "iso2": "DG",
-      "code": ""
     },
     "DJ": {
       "name": "Djibouti",
@@ -387,11 +362,6 @@ const countries = [
       "iso2": "FK",
       "code": "500"
     },
-    "FO": {
-      "name": "Faroe Islands",
-      "iso2": "FO",
-      "code": "298"
-    },
     "FJ": {
       "name": "Fiji",
       "iso2": "FJ",
@@ -407,25 +377,15 @@ const countries = [
       "iso2": "FR",
       "code": "33"
     },
-    "FX": {
-      "name": "France, Metropolitan",
-      "iso2": "FX",
-      "code": "241"
-    },
-    "GF": {
-      "name": "French Guiana",
-      "iso2": "GF",
-      "code": "44"
+    "EN": {
+      "name": "England",
+      "iso2": "EN",
+      "code": ""
     },
     "PF": {
       "name": "French Polynesia",
       "iso2": "PF",
       "code": "689"
-    },
-    "TF": {
-      "name": "French Southern Territories",
-      "iso2": "TF",
-      "code": ""
     },
     "GA": {
       "name": "Gabon",
@@ -472,11 +432,6 @@ const countries = [
       "iso2": "GD",
       "code": "995"
     },
-    "GP": {
-      "name": "Guadeloupe",
-      "iso2": "GP",
-      "code": "590"
-    },
     "GU": {
       "name": "Guam",
       "iso2": "GU",
@@ -498,24 +453,14 @@ const countries = [
       "code": "224"
     },
     "GW": {
-      "name": "Guinea-bissau",
+      "name": "Guinea-Bissau",
       "iso2": "GW",
       "code": "245"
-    },
-    "GY": {
-      "name": "Guyana",
-      "iso2": "GY",
-      "code": "592"
     },
     "HT": {
       "name": "Haiti",
       "iso2": "HT",
       "code": "509"
-    },
-    "HM": {
-      "name": "Heard Island And McDonald Islands",
-      "iso2": "HM",
-      "code": ""
     },
     "HN": {
       "name": "Honduras",
@@ -548,7 +493,7 @@ const countries = [
       "code": "62"
     },
     "IR": {
-      "name": "Iran, Islamic Republic Of",
+      "name": "Iran",
       "iso2": "IR",
       "code": "98"
     },
@@ -613,12 +558,12 @@ const countries = [
       "code": "686"
     },
     "KP": {
-      "name": "Korea, Democratic People's Republic Of",
+      "name": "South Korea",
       "iso2": "KP",
       "code": "850"
     },
     "KR": {
-      "name": "Korea, Republic Of",
+      "name": "North Korea",
       "iso2": "KR",
       "code": "82"
     },
@@ -633,7 +578,7 @@ const countries = [
       "code": "996"
     },
     "LA": {
-      "name": "Lao People's Democratic Republic",
+      "name": "Laos",
       "iso2": "LA",
       "code": "856"
     },
@@ -683,7 +628,7 @@ const countries = [
       "code": "853"
     },
     "MK": {
-      "name": "Macedonia, The Former Yugoslav Republic Of",
+      "name": "Macedonia",
       "iso2": "MK",
       "code": "389"
     },
@@ -737,18 +682,13 @@ const countries = [
       "iso2": "MU",
       "code": "230"
     },
-    "YT": {
-      "name": "Mayotte",
-      "iso2": "YT",
-      "code": "262"
-    },
     "MX": {
       "name": "Mexico",
       "iso2": "MX",
       "code": "52"
     },
     "FM": {
-      "name": "Micronesia, Federated States Of",
+      "name": "Micronesia",
       "iso2": "FM",
       "code": "691"
     },
@@ -812,11 +752,6 @@ const countries = [
       "iso2": "NL",
       "code": "31"
     },
-    "NC": {
-      "name": "New Caledonia",
-      "iso2": "NC",
-      "code": "687"
-    },
     "NZ": {
       "name": "New Zealand",
       "iso2": "NZ",
@@ -873,7 +808,7 @@ const countries = [
       "code": "680"
     },
     "PS": {
-      "name": "Palestinian Territory, Occupied",
+      "name": "Palestine",
       "iso2": "PS",
       "code": "970"
     },
@@ -932,18 +867,13 @@ const countries = [
       "iso2": "CG",
       "code": "242"
     },
-    "RE": {
-      "name": "Reunion",
-      "iso2": "RE",
-      "code": "262"
-    },
     "RO": {
       "name": "Romania",
       "iso2": "RO",
       "code": "40"
     },
     "RU": {
-      "name": "Russian Federation",
+      "name": "Russia",
       "iso2": "RU",
       "code": "7"
     },
@@ -951,16 +881,6 @@ const countries = [
       "name": "Rwanda",
       "iso2": "RW",
       "code": "250"
-    },
-    "BL": {
-      "name": "Saint Barthélemy",
-      "iso2": "BL",
-      "code": "590"
-    },
-    "SH": {
-      "name": "Saint Helena, Ascension And Tristan Da Cunha",
-      "iso2": "SH",
-      "code": "290"
     },
     "KN": {
       "name": "Saint Kitts And Nevis",
@@ -971,16 +891,6 @@ const countries = [
       "name": "Saint Lucia",
       "iso2": "LC",
       "code": "1 758"
-    },
-    "MF": {
-      "name": "Saint Martin",
-      "iso2": "MF",
-      "code": "590"
-    },
-    "PM": {
-      "name": "Saint Pierre And Miquelon",
-      "iso2": "PM",
-      "code": "508"
     },
     "VC": {
       "name": "Saint Vincent And The Grenadines",
@@ -1062,11 +972,6 @@ const countries = [
       "iso2": "ZA",
       "code": "27"
     },
-    "GS": {
-      "name": "South Georgia And The South Sandwich Islands",
-      "iso2": "GS",
-      "code": ""
-    },
     "ES": {
       "name": "Spain",
       "iso2": "ES",
@@ -1087,11 +992,6 @@ const countries = [
       "iso2": "SR",
       "code": "597"
     },
-    "SJ": {
-      "name": "Svalbard And Jan Mayen",
-      "iso2": "SJ",
-      "code": "47"
-    },
     "SZ": {
       "name": "Swaziland",
       "iso2": "SZ",
@@ -1108,12 +1008,12 @@ const countries = [
       "code": "41"
     },
     "SY": {
-      "name": "Syrian Arab Republic",
+      "name": "Syria",
       "iso2": "SY",
       "code": "963"
     },
     "TW": {
-      "name": "Taiwan, Province Of China",
+      "name": "Taiwan",
       "iso2": "TW",
       "code": "886"
     },
@@ -1152,11 +1052,6 @@ const countries = [
       "iso2": "TT",
       "code": "1 868"
     },
-    "TA": {
-      "name": "Tristan de Cunha",
-      "iso2": "TA",
-      "code": "290"
-    },
     "TN": {
       "name": "Tunisia",
       "iso2": "TN",
@@ -1181,11 +1076,6 @@ const countries = [
       "name": "Tuvalu",
       "iso2": "TV",
       "code": "688"
-    },
-    "SU": {
-      "name": "USSR",
-      "iso2": "SU",
-      "code": ""
     },
     "UG": {
       "name": "Uganda",
@@ -1212,9 +1102,9 @@ const countries = [
       "iso2": "US",
       "code": "1"
     },
-    "UM": {
-      "name": "United States Minor Outlying Islands",
-      "iso2": "UM",
+    "UN": {
+      "name": "United Nations",
+      "iso2": "UN",
       "code": ""
     },
     "UY": {
@@ -1238,12 +1128,12 @@ const countries = [
       "code": "379"
     },
     "VE": {
-      "name": "Venezuela, Bolivarian Republic Of",
+      "name": "Venezuela",
       "iso2": "VE",
       "code": "58"
     },
     "VN": {
-      "name": "Viet Nam",
+      "name": "Vietnam",
       "iso2": "VN",
       "code": "84"
     },
@@ -1257,15 +1147,10 @@ const countries = [
       "iso2": "VI",
       "code": "1 340"
     },
-    "WF": {
-      "name": "Wallis And Futuna",
-      "iso2": "WF",
+    "WA": {
+      "name": "Wales",
+      "iso2": "WA",
       "code": "681"
-    },
-    "EH": {
-      "name": "Western Sahara",
-      "iso2": "EH",
-      "code": "212"
     },
     "YE": {
       "name": "Yemen",

@@ -170,6 +170,14 @@ footer p {
   width: 100%;
 }
 
+.home .buttons-selector .country-chart .cell .icon {
+  border: 0px solid #ccc;
+  box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
+  display: inline-block;
+
+
+}
+
 .home .buttons-selector .task-preview .name {
   color: #030303;
   display: inline-block;
