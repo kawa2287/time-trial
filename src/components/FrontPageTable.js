@@ -6,45 +6,80 @@ import Flag from './Flag';
 import countryData from './Country';
 
 export default class Table extends Component {
-  constructor(){
-    super();
-    this.state = {nRows : 0};
-  }
+  constructor(props){
+    super(props);
 
-  updateRows(){
-    this.props.clickHandle();
-    this.setState({
-      nRows : this.props.nRows
-    })
-  }
+    this.state = {
+      nRows : this.props.teamRows,
+      players : this.props.players
+    };
 
+  }
 
   render(){
 
-    function randomIntFromInterval(min,max){
-      return Math.floor(Math.random()*(max-min+1)+min);
+    function getBestTime(players){
+      var bestTime = null;
+      for (var k in players){
+        if (bestTime === null){
+          bestTime = players[k].timeTrial;
+        } else {
+          if (players[k].timeTrial < bestTime) {
+            bestTime = players[k].timeTrial;
+          }
+        }
+      }
+      return bestTime;
     }
 
+    var bestTime = getBestTime(this.state.players);
+
+    function compare(a, b){
+      let comparison = 0;
+      if (a.timeTrial > b.timeTrial) {
+        comparison = 1;
+      } else if (b.timeTrial < a.timeTrial) {
+        comparison = -1;
+      }
+      return comparison;
+    }
+
+    var playersArray = [];
+
+    for (var n in this.state.players){
+      playersArray.push(this.state.players[n]);
+    }
+
+    playersArray.sort(compare);
+
+    //set players seed and split times
+    for (var n in playersArray){
+      playersArray[n].seed = Number(n) + 1;
+      playersArray[n].splitTime = Math.round((playersArray[n].timeTrial - bestTime)*100)/100;
+    }
+    
 
     let rows = [];
     var headerCells = [];
-    headerCells.push(<td className="cell" key="headerCell 1" id="headerCell 1"><strong>Country</strong></td>);
-    headerCells.push(<td className="cell" key="headerCell 2" id="headerCell 2"><strong>Player</strong></td>);
-    headerCells.push(<td className="cell" key="headerCell 3" id="headerCell 3"><strong>Time Trial</strong></td>);
+    headerCells.push(<td className="cell" key="headerCell 1" id="headerCell 1"><strong>Seed</strong></td>);
+    headerCells.push(<td className="cell" key="headerCell 2" id="headerCell 2"><strong>Country</strong></td>);
+    headerCells.push(<td className="cell" key="headerCell 3" id="headerCell 3"><strong>Player</strong></td>);
+    headerCells.push(<td className="cell" key="headerCell 4" id="headerCell 4"><strong>Time Trial</strong></td>);
+    headerCells.push(<td className="cell" key="headerCell 5" id="headerCell 5"><strong>Split Time</strong></td>);
 
     rows.push(<tr key="header" id="header">{headerCells}</tr>);
 
-    for (var i = 0; i < this.state.nRows; i++){
+    for (var i  in playersArray){
       let rowID = `row${i}`;
       let cell = [];
 
-      var n =randomIntFromInterval(0,countryData.length);
-      var time = randomIntFromInterval(200,500)/10;
       
       let cellID = "cell " + {i};
-      cell.push(<td className="cell" key={cellID + " -1"} id={cellID + " -1"}><Flag icon={countryData[n].flagPathMD}/></td>);
-      cell.push(<td className="cell" key={cellID + " -2"} id={cellID + " -2"}>{countryData[n].name}</td>);
-      cell.push(<td className="cell" key={cellID + " -3"} id={cellID + " -3"}>{time}  sec</td>);
+      cell.push(<td className="cell" key={cellID + " -1"} id={cellID + " -1"}>{playersArray[i].seed}</td>);
+      cell.push(<td className="cell" key={cellID + " -2"} id={cellID + " -1"}><Flag icon={playersArray[i].country.flagPathMD}/></td>);
+      cell.push(<td className="cell" key={cellID + " -3"} id={cellID + " -2"}>{playersArray[i].name}</td>);
+      cell.push(<td className="cell" key={cellID + " -4"} id={cellID + " -3"}>{playersArray[i].timeTrial}  sec</td>);
+      cell.push(<td className="cell" key={cellID + " -5"} id={cellID + " -3"}>+{playersArray[i].splitTime}  sec</td>);
       
       rows.push(<tr key={i} id={rowID}>{cell}</tr>);
     }
@@ -56,9 +91,6 @@ export default class Table extends Component {
                     {rows}
                 </tbody>
             </table>
-            <div>
-                <button onClick={this.updateRows.bind(this)}>Check Players</button>
-            </div>
         </div>
     );
   }

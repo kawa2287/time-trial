@@ -20,12 +20,14 @@ class AddTeamPopUp extends React.Component {
 
     return (
       <div className="task-preview">
-        <img src="./img/buttons/addUser.png" onClick={() => this.customDialog.show()}></img>
-        <h2 className="name">Add Team</h2>
+          <img src="./img/buttons/addUser.png" onClick={() => this.customDialog.show()}></img>
+          <h2 className="name">Add Team</h2>
 
-        <SkyLight dialogStyles={myBigGreenDialog} hideOnOverlayClicked ref={ref => this.customDialog = ref} >
-          <TeamInputForm players={this.props.players}/>
-        </SkyLight>
+          <SkyLight dialogStyles={myBigGreenDialog} hideOnOverlayClicked ref={ref => this.customDialog = ref} >
+              <TeamInputForm 
+              addTeamClick={this.props.addTeamClick}
+              />
+          </SkyLight>
       </div>
     );
   }
