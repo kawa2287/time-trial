@@ -4,6 +4,7 @@ import React from 'react';
 import Table from	'./FrontPageTable';
 import AddTeamPopUp from './AddTeamPopUp';
 import CountryKeyVal from './CountryKeyVal';
+import TimeTrialPopUp from './TimeTrialPopUp';
 
 export default class IndexPage extends React.Component {
   constructor(){
@@ -42,6 +43,8 @@ export default class IndexPage extends React.Component {
 	          <AddTeamPopUp 
 	          addTeamClick={this.addTeam.bind(this)}
 	          />
+	          <TimeTrialPopUp
+	          players={this.state.players}/>
         </div>
         
         <div className="buttons-selector">
