@@ -35,13 +35,13 @@ export default class Table extends Component {
     var bestTime = getBestTime(this.state.players);
 
     function compare(a, b){
-      let comparison = 0;
+      /*let comparison = 0;
       if (a.timeTrial > b.timeTrial) {
         comparison = 1;
       } else if (b.timeTrial < a.timeTrial) {
         comparison = -1;
-      }
-      return comparison;
+      }*/
+      return a.timeTrial - b.timeTrial;
     }
 
     var playersArray = [];
@@ -57,7 +57,6 @@ export default class Table extends Component {
       playersArray[n].seed = Number(n) + 1;
       playersArray[n].splitTime = Math.round((playersArray[n].timeTrial - bestTime)*100)/100;
     }
-    
 
     let rows = [];
     var headerCells = [];

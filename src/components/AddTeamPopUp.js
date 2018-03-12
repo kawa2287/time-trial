@@ -12,10 +12,10 @@ class AddTeamPopUp extends React.Component {
     var myBigGreenDialog = {
       backgroundColor: '#00897B',
       color: '#ffffff',
-      width: '70%',
+      width: '40%',
       height: '400px',
       marginTop: '-300px',
-      marginLeft: '-35%',
+      marginLeft: '-20%',
     };
 
     return (

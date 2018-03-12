@@ -19,9 +19,16 @@ export default class TeamInputForm extends React.Component {
       this.props.addTeamClick(
         this.state.name, 
         this.state.country,
-        Math.floor(Math.random()*(500-200+1)+200)/10
+        Math.floor(Math.random()*(5000-2000+1)+2000)/100
         );
+
+      this.setState({
+        name : "",
+        country : 'Select Country'
+      })
+      document.getElementById("country").value = "";
   }
+
   
   render() {
     
@@ -47,7 +54,7 @@ export default class TeamInputForm extends React.Component {
               <input  
               list="countryList" 
               placeholder="Select Country" 
-              value={this.props.country} 
+              value={this.props.country}
               onChange={(e)=>{this.setState({country: e.target.value})}} 
               type="text" id="country" 
               />
@@ -63,7 +70,10 @@ export default class TeamInputForm extends React.Component {
           <div className="name-display">
               {this.state.name}
           </div>
-          <button onClick={this.onSubmitClick.bind(this)}>Submit Team</button>
+          <div className="button">
+            <button onClick={this.onSubmitClick.bind(this)}>Submit Team</button>
+          </div>
+          
       </div>
     );
   }
