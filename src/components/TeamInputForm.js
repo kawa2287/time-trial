@@ -18,8 +18,7 @@ export default class TeamInputForm extends React.Component {
   onSubmitClick(){
       this.props.addTeamClick(
         this.state.name, 
-        this.state.country,
-        Math.floor(Math.random()*(5000-2000+1)+2000)/100
+        this.state.country
         );
 
       this.setState({

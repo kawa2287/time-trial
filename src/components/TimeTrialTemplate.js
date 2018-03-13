@@ -6,14 +6,22 @@ import Flag from './Flag';
 import CountryKeyVal from './CountryKeyVal';
 import SubmitButton from './SubmitButton';
 
+const formattedSeconds = (sec) =>
+  Math.floor(sec * 10)/10
+
 export default class TimeTrialTemplate extends React.Component {
   constructor(props){
     super(props);
     this.state={
       name: '',
       country:'Select Country',
-      players: this.props.players
+      players: this.props.players,
+      timeElapsed: this.props.timeElapsed
     };
+  }
+
+  handleStopClick() {
+    
   }
   
   render() {
@@ -27,17 +35,15 @@ export default class TimeTrialTemplate extends React.Component {
     
     function extractFlag(){
       if(typeof(this.state.players[this.state.name]) != "undefined"){
-        return this.state.players[this.state.name].country.flagPathXL;
+        return this.state.players[this.state.name].country.flagPathLG;
       } else {
-        return "/img/flagsXL/XX.png";
+        return "/img/flagsLG/XX.png";
       }
     }
     
-
-    
     
     return (
-      <div className ="wrap">
+      <div className ="indyWrap">
           <div className="input-line">
               <label className="string">Select Player {this.props.position}</label>
               <input  
@@ -56,6 +62,12 @@ export default class TimeTrialTemplate extends React.Component {
               icon={typeof(this.state.players[this.state.name]) != "undefined" ? this.state.players[this.state.name].country.flagPathXL :"/img/flagsXL/XX.png"}
               />
           </div>
+          <span className="timeContainer">
+            <div className="stopTime">{formattedSeconds(this.props.timeElapsed)}</div>
+            <div className="stopButton">
+              <button>Stop Time</button>
+            </div>
+          </span>
       </div>
     );
   }

@@ -25,7 +25,11 @@ svg {
 }
 
 img {
-  max-width:100%;display:block
+  max-width:100%;
+  display:block;
+  vertical-align:   middle; 
+
+
 }
 
 html {
@@ -53,6 +57,8 @@ header .logo {
 
 body {
   padding: 2em;
+  font-family: 'HelveticaNeue-UltraLight', 'Helvetica Neue UltraLight',
+               'Helvetica Neueu', Helvetica, Arial, sans-serif;
 }
 
 .wrap {
@@ -73,6 +79,44 @@ body {
   float: left;
 }
 
+.ttWrap .ttQuad .indyWrap{
+  width: 100%;
+  height: 100%
+  box-sizing: border-box;
+}
+
+.ttWrap .ttQuad .indyWrap .input-line{
+  width: 100%;
+}
+
+.ttWrap .ttQuad .indyWrap .country-select-image{
+  display: inline-block;
+  float: left;
+  height: 100%;
+}
+
+.ttWrap .ttQuad .indyWrap .timeContainer{
+  width: 100%;
+  height: 100%;
+}
+
+.ttWrap .ttQuad .indyWrap .timeContainer .stopTime{
+  width: 100%;
+  text-align: center;
+}
+
+.ttWrap .ttQuad .indyWrap .timeContainer .stopButton{
+  width: 100%;
+  text-align: center;
+}
+
+.ttWrap .ttQuad .indyWrap .country-select-image .icon {
+  border: 0px solid black;
+  vertical-align:   middle; 
+  display:  inline-block; 
+  box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
+}
+
 .wrap .input-line {
   width: 100%;
 }
@@ -87,7 +131,7 @@ body {
 }
 
 .wrap .country-select-image {
-  display: block;
+  display: inline-block ;
   margin-top: 60px;
   margin-bottom: 10px;
   margin-left: auto;
@@ -362,3 +406,63 @@ nav.athletes-menu a.active {
 #abar a:hover {
   text-decoration: underline;
 }
+
+.stopwatch { 
+  text-align: center 
+}
+
+.stopwatch-timer {
+  font-size: 20px;
+  font-weight: 100;
+  line-height: 20px;
+  
+  margin: 0;
+  
+  border: solid #cecfd0;
+  border-width: 1px 0;
+}
+
+.stopwatch-laps {
+  padding: 0 0 0 20px;
+  list-style-type: none;
+}
+
+.stopwatch-lap {
+  font-size: 20px;
+  line-height: 60px;
+  padding-right: 20px;
+  text-align: right;
+  border-bottom: 1px solid #d9dae0;
+}
+
+.stopwatch-lap strong {
+  float: left;
+  color: #7f8083;
+  font-weight: 100;
+}
+
+.stopwatch-lap strong::before { content: 'Lap ' }
+
+.btn {
+  font-family: inherit;
+  font-size: 20px;
+  
+  display: inline-block;
+  
+  width: 72px;
+  height: 72px;
+  margin: 24px;
+  padding: 0;
+  
+  cursor: pointer;
+  letter-spacing: 1px;
+  
+  border: 0;
+  border-radius: 50%;
+  outline: none;
+  background: white;
+}
+
+
+.start-btn { color: #4bd761 }
+.stop-btn  { color: #fd3d2a }

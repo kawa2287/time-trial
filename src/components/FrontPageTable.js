@@ -55,7 +55,11 @@ export default class Table extends Component {
     //set players seed and split times
     for (var n in playersArray){
       playersArray[n].seed = Number(n) + 1;
-      playersArray[n].splitTime = Math.round((playersArray[n].timeTrial - bestTime)*100)/100;
+      if (playersArray[n].timeTrial == '-'){
+        playersArray[n].splitTime = '';
+      } else {
+        playersArray[n].splitTime = Math.round((playersArray[n].timeTrial - bestTime)*100)/100;
+      }
     }
 
     let rows = [];

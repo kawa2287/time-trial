@@ -15,13 +15,13 @@ export default class IndexPage extends React.Component {
     };
   }
 
-  	addTeam(name, country, timeTrial){
+  	addTeam(name, country){
 
 	  	this.state.players[name] = {
 		    name : name,
 		    country : CountryKeyVal[country],
 		    seed : 0,
-		    timeTrial : timeTrial,
+		    timeTrial : '-',
 		    wins : 0,
 		    losses : 0,
 		    totalTime : 0,
