@@ -4,7 +4,6 @@ import React from 'react';
 import countryData from './Country';
 import Flag from './Flag';
 import CountryKeyVal from './CountryKeyVal';
-import SubmitButton from './SubmitButton';
 
 export default class TeamInputForm extends React.Component {
   constructor(){

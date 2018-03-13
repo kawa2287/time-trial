@@ -1,13 +1,12 @@
 'use strict';
 
 import React from 'react';
-import countryData from './Country';
 import Flag from './Flag';
-import CountryKeyVal from './CountryKeyVal';
-import SubmitButton from './SubmitButton';
 
 const formattedSeconds = (sec) =>
-  Math.floor(sec * 10)/10
+  Math.floor(sec) + '.' + 
+  (sec < 1 ? Math.round(Math.floor(sec*10)) : Math.round(10*( (Math.floor(sec*10)/10) % (Math.floor(sec)))) ) +
+  Math.floor((sec % 0.1)*100);
 
 export default class TimeTrialTemplate extends React.Component {
   constructor(props){
@@ -16,12 +15,28 @@ export default class TimeTrialTemplate extends React.Component {
       name: '',
       country:'Select Country',
       players: this.props.players,
-      timeElapsed: this.props.timeElapsed
+      timeElapsed: this.props.timeElapsed,
+      stopSwitch: null,
+      stopTime: null,
+      finish: 0
     };
+
   }
 
   handleStopClick() {
     
+    this.setState((state) => {
+      if(state.finish >= 1) return undefined;
+      else return (
+        { finish: 1, 
+        stopTime: this.props.timeElapsed,
+        stopSwitch: 1}
+        );
+    });
+
+    if (this.state.finish <= 1){
+      this.props.finishHandle(this.state.finish);
+    }
   }
   
   render() {
@@ -31,16 +46,6 @@ export default class TimeTrialTemplate extends React.Component {
     for (var x in this.state.players){
       playerNames.push(this.state.players[x].name);
     }
-
-    
-    function extractFlag(){
-      if(typeof(this.state.players[this.state.name]) != "undefined"){
-        return this.state.players[this.state.name].country.flagPathLG;
-      } else {
-        return "/img/flagsLG/XX.png";
-      }
-    }
-    
     
     return (
       <div className ="indyWrap">
@@ -63,9 +68,9 @@ export default class TimeTrialTemplate extends React.Component {
               />
           </div>
           <span className="timeContainer">
-            <div className="stopTime">{formattedSeconds(this.props.timeElapsed)}</div>
+            <div className="stopTime">{this.state.stopSwitch == null ? formattedSeconds(this.props.timeElapsed) : formattedSeconds(this.state.stopTime)}</div>
             <div className="stopButton">
-              <button>Stop Time</button>
+              <button onClick={this.handleStopClick.bind(this)}>Stop Time</button>
             </div>
           </span>
       </div>

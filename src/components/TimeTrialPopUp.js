@@ -1,15 +1,15 @@
 import React from 'react';
 import SkyLight from 'react-skylight';
 import TimeTrialTemplate from './TimeTrialTemplate';
-import Stopwatch from './Stopwatch';
 
 class TimeTrialPopUp extends React.Component {
   constructor(props){
     super(props);
     this.state={
       timeElapsed: 0,
-      lastClearedIncrementer: null
-    }
+      lastClearedIncrementer: null,
+      completions:0
+    };
     this.incrementer = null;
   }
 
@@ -19,6 +19,17 @@ class TimeTrialPopUp extends React.Component {
         timeElapsed: this.state.timeElapsed + .01
       })
     , 10);
+  }
+  
+  handleStopMainTimer(x){
+    this.setState((state) => {
+      if(state.completions >= 3) return clearInterval(this.incrementer);
+      else return (
+        {completions: state.completions + 1}
+      );
+    });
+    console.log(this.state.timeElapsed);
+    console.log(this.state.completions);
   }
 
   render() {
@@ -43,6 +54,7 @@ class TimeTrialPopUp extends React.Component {
                     <TimeTrialTemplate 
                     players={this.props.players} 
                     timeElapsed={this.state.timeElapsed}
+                    finishHandle={this.handleStopMainTimer.bind(this)}
                     position={"A"}
                     />
                 </div>
@@ -50,6 +62,7 @@ class TimeTrialPopUp extends React.Component {
                     <TimeTrialTemplate 
                     players={this.props.players}
                     timeElapsed={this.state.timeElapsed}
+                    finishHandle={this.handleStopMainTimer.bind(this)}
                     position={"B"}
                     />
                 </div>
@@ -57,12 +70,14 @@ class TimeTrialPopUp extends React.Component {
                     <TimeTrialTemplate 
                     players={this.props.players} 
                     timeElapsed={this.state.timeElapsed}
+                    finishHandle={this.handleStopMainTimer.bind(this)}
                     position={"C"}
                     />
                 </div>
                 <div className="ttQuad">
                     <TimeTrialTemplate 
                     players={this.props.players} 
+                    finishHandle={this.handleStopMainTimer.bind(this)}
                     position={"D"}
                     timeElapsed={this.state.timeElapsed}
                     />
