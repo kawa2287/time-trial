@@ -25,18 +25,35 @@ export default class TimeTrialTemplate extends React.Component {
 
   handleStopClick() {
     
-    this.setState((state) => {
-      if(state.finish >= 1) return undefined;
+    this.setState({ stopSwitch : 1, stopTime : this.props.timeElapsed }, function afterClick () {
+      if(this.state.finish == 1) return console.log("ALREADY INPUT");
       else return (
-        { finish: 1, 
-        stopTime: this.props.timeElapsed,
-        stopSwitch: 1}
+        this.props.addTimeTrial(this.state.name, formattedSeconds(this.state.stopTime)),
+        this.setState({finish : 1})
         );
     });
+    
+    /*
+    this.setState((state) => {
+      if(state.finish >= 1) return undefined;
+      else {
+        return ({
+        finish: 1, 
+        stopTime: this.props.timeElapsed,
+        stopSwitch: 1
+        });
+      }
+    });
+    */
+    /*
 
-    if (this.state.finish <= 1){
+    if (this.state.finish == 0){
       this.props.finishHandle(this.state.finish);
+      this.props.addTimeTrial(this.state.name,this.state.stopTime);
+      console.log(this.state.name);
+      console.log(this.state.stopTime);
     }
+    */
   }
   
   render() {

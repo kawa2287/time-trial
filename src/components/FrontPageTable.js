@@ -3,64 +3,47 @@
 
 import React, { Component } from 'react';
 import Flag from './Flag';
-import countryData from './Country';
 
 export default class Table extends Component {
   constructor(props){
     super(props);
-
-    this.state = {
-      nRows : this.props.teamRows,
-      players : this.props.players
-    };
-
+    this.setSplitTimes = this.setSplitTimes.bind(this);
   }
-
-  render(){
-
-    function getBestTime(players){
-      var bestTime = null;
-      for (var k in players){
-        if (bestTime === null){
-          bestTime = players[k].timeTrial;
-        } else {
-          if (players[k].timeTrial < bestTime) {
-            bestTime = players[k].timeTrial;
-          }
-        }
-      }
-      return bestTime;
-    }
-
-    var bestTime = getBestTime(this.state.players);
-
-    function compare(a, b){
-      /*let comparison = 0;
-      if (a.timeTrial > b.timeTrial) {
-        comparison = 1;
-      } else if (b.timeTrial < a.timeTrial) {
-        comparison = -1;
-      }*/
-      return a.timeTrial - b.timeTrial;
-    }
-
-    var playersArray = [];
-
-    for (var n in this.state.players){
-      playersArray.push(this.state.players[n]);
-    }
-
-    playersArray.sort(compare);
-
-    //set players seed and split times
+    
+  setSplitTimes(playersArray){
     for (var n in playersArray){
       playersArray[n].seed = Number(n) + 1;
       if (playersArray[n].timeTrial == '-'){
         playersArray[n].splitTime = '';
       } else {
-        playersArray[n].splitTime = Math.round((playersArray[n].timeTrial - bestTime)*100)/100;
+        playersArray[n].splitTime = Math.round((playersArray[n].timeTrial - this.props.bestTime)*100)/100;
       }
     }
+  }
+
+  render(){
+
+    function compare(a, b){
+      if(a.timeTrial == '-'){
+        return 1;
+      } else if (b.timeTrial =='-'){
+        return -1;
+      } else {
+        return a.timeTrial - b.timeTrial;
+      }
+    }
+
+    var playersArray = [];
+
+    for (var n in this.props.players){
+      playersArray.push(this.props.players[n]);
+    }
+
+    playersArray.sort(compare);
+
+    //set players seed and split times
+    this.setSplitTimes(playersArray);
+
 
     let rows = [];
     var headerCells = [];

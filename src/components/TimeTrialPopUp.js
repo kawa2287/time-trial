@@ -28,8 +28,6 @@ class TimeTrialPopUp extends React.Component {
         {completions: state.completions + 1}
       );
     });
-    console.log(this.state.timeElapsed);
-    console.log(this.state.completions);
   }
 
   render() {
@@ -55,6 +53,7 @@ class TimeTrialPopUp extends React.Component {
                     players={this.props.players} 
                     timeElapsed={this.state.timeElapsed}
                     finishHandle={this.handleStopMainTimer.bind(this)}
+                    addTimeTrial={this.props.addTimeTrial}
                     position={"A"}
                     />
                 </div>
@@ -63,6 +62,7 @@ class TimeTrialPopUp extends React.Component {
                     players={this.props.players}
                     timeElapsed={this.state.timeElapsed}
                     finishHandle={this.handleStopMainTimer.bind(this)}
+                    addTimeTrial={this.props.addTimeTrial}
                     position={"B"}
                     />
                 </div>
@@ -71,6 +71,7 @@ class TimeTrialPopUp extends React.Component {
                     players={this.props.players} 
                     timeElapsed={this.state.timeElapsed}
                     finishHandle={this.handleStopMainTimer.bind(this)}
+                    addTimeTrial={this.props.addTimeTrial}
                     position={"C"}
                     />
                 </div>
@@ -78,6 +79,7 @@ class TimeTrialPopUp extends React.Component {
                     <TimeTrialTemplate 
                     players={this.props.players} 
                     finishHandle={this.handleStopMainTimer.bind(this)}
+                    addTimeTrial={this.props.addTimeTrial}
                     position={"D"}
                     timeElapsed={this.state.timeElapsed}
                     />

@@ -9,15 +9,16 @@ import TimeTrialPopUp from './TimeTrialPopUp';
 export default class IndexPage extends React.Component {
   constructor(){
     super();
+    this.getBestTime = this.getBestTime.bind(this);
     this.state = {
     	nRows : 0,
-    	players : {}
+    	players : {},
+    	bestTime : null
     };
   }
 
-  	addTeam(name, country){
-
-	  	this.state.players[name] = {
+  addTeam(name, country){
+  	this.state.players[name] = {
 		    name : name,
 		    country : CountryKeyVal[country],
 		    seed : 0,
@@ -28,11 +29,27 @@ export default class IndexPage extends React.Component {
 		    avgTime : 0,
 		    splitTIme : 0
 		};
-
 		this.setState({
 	  		nRows : this.state.nRows + 1
 	  	});
 	}
+	
+	addTimeTrial(name,time){
+		this.state.players[name].timeTrial = time;
+		this.setState({players: this.state.players}, function afterClick(){this.getBestTime(this.state.players)});
+	}
+	
+	getBestTime(playersObj){
+    for (var k in playersObj){
+      if(playersObj[k].timeTrial != '-'){
+        if (this.state.bestTime == null){
+          this.setState({bestTime:playersObj[k].timeTrial});
+        } else if (Number(playersObj[k].timeTrial) < Number(this.state.bestTime)) { 
+          this.setState({bestTime:playersObj[k].timeTrial});
+        }
+      }
+    }
+  }
   
   render() {
 
@@ -44,13 +61,15 @@ export default class IndexPage extends React.Component {
 	          addTeamClick={this.addTeam.bind(this)}
 	          />
 	          <TimeTrialPopUp
-	          players={this.state.players}/>
+	          players={this.state.players}
+	          addTimeTrial={this.addTimeTrial.bind(this)}/>
         </div>
         
         <div className="buttons-selector">
 		      <Table 
 		      teamRows={this.state.nRows}
 		      players={this.state.players}
+		      bestTime={this.state.bestTime}
 		      />
         </div>        
       </div>
