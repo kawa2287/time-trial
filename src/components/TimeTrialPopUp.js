@@ -5,6 +5,7 @@ import TimeTrialTemplate from './TimeTrialTemplate';
 class TimeTrialPopUp extends React.Component {
   constructor(props){
     super(props);
+    
     this.state={
       timeElapsed: 0,
       lastClearedIncrementer: null,
@@ -48,7 +49,8 @@ class TimeTrialPopUp extends React.Component {
 
           <SkyLight dialogStyles={timeTrialDialog} hideOnOverlayClicked ref={ref => this.customDialog = ref} >
             <div className ="ttWrap">
-                <div className="ttQuad">
+              <div className ="timeTrialTop">TOP SECTION</div>
+              <div className ="timeTrialMid">
                     <TimeTrialTemplate 
                     players={this.props.players} 
                     timeElapsed={this.state.timeElapsed}
@@ -56,8 +58,6 @@ class TimeTrialPopUp extends React.Component {
                     addTimeTrial={this.props.addTimeTrial}
                     position={"A"}
                     />
-                </div>
-                <div className="ttQuad">
                     <TimeTrialTemplate 
                     players={this.props.players}
                     timeElapsed={this.state.timeElapsed}
@@ -65,8 +65,6 @@ class TimeTrialPopUp extends React.Component {
                     addTimeTrial={this.props.addTimeTrial}
                     position={"B"}
                     />
-                </div>
-                <div className="ttQuad">
                     <TimeTrialTemplate 
                     players={this.props.players} 
                     timeElapsed={this.state.timeElapsed}
@@ -74,8 +72,6 @@ class TimeTrialPopUp extends React.Component {
                     addTimeTrial={this.props.addTimeTrial}
                     position={"C"}
                     />
-                </div>
-                <div className="ttQuad">
                     <TimeTrialTemplate 
                     players={this.props.players} 
                     finishHandle={this.handleStopMainTimer.bind(this)}
@@ -83,9 +79,12 @@ class TimeTrialPopUp extends React.Component {
                     position={"D"}
                     timeElapsed={this.state.timeElapsed}
                     />
-                </div>
+              </div>
+              <div className="timeTrialTop">
+                <button onClick={this.handleStartClick.bind(this)}>Start Timer</button>
+              </div>
             </div>
-            <button onClick={this.handleStartClick.bind(this)}>Start Timer</button>
+            
           </SkyLight>
       </div>
     );

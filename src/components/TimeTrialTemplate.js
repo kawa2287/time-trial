@@ -11,6 +11,7 @@ const formattedSeconds = (sec) =>
 export default class TimeTrialTemplate extends React.Component {
   constructor(props){
     super(props);
+    
     this.state={
       name: '',
       country:'Select Country',
@@ -20,7 +21,6 @@ export default class TimeTrialTemplate extends React.Component {
       stopTime: null,
       finish: 0
     };
-
   }
 
   handleStopClick() {
@@ -32,28 +32,6 @@ export default class TimeTrialTemplate extends React.Component {
         this.setState({finish : 1})
         );
     });
-    
-    /*
-    this.setState((state) => {
-      if(state.finish >= 1) return undefined;
-      else {
-        return ({
-        finish: 1, 
-        stopTime: this.props.timeElapsed,
-        stopSwitch: 1
-        });
-      }
-    });
-    */
-    /*
-
-    if (this.state.finish == 0){
-      this.props.finishHandle(this.state.finish);
-      this.props.addTimeTrial(this.state.name,this.state.stopTime);
-      console.log(this.state.name);
-      console.log(this.state.stopTime);
-    }
-    */
   }
   
   render() {
@@ -65,9 +43,13 @@ export default class TimeTrialTemplate extends React.Component {
     }
     
     return (
-      <div className ="indyWrap">
-          <div className="input-line">
-              <label className="string">Select Player {this.props.position}</label>
+      <div className ="ttQuad">
+        <div className="q-a-playerIdLeft">
+          X
+        </div>
+        <div className="q-a-playerInfoRight">
+          <div className="q-b-playerSelectTop">
+            <label className="string">Select Player {this.props.position}</label>
               <input  
               list="playerList" 
               placeholder="Select Player" 
@@ -79,17 +61,22 @@ export default class TimeTrialTemplate extends React.Component {
                   {playerNames.map((name, i) => <option data-id={i} value={name}/>)}
               </datalist>
           </div>
-          <div className="country-select-image">
-              <Flag 
-              icon={typeof(this.state.players[this.state.name]) != "undefined" ? this.state.players[this.state.name].country.flagPathXL :"/img/flagsXL/XX.png"}
-              />
-          </div>
-          <span className="timeContainer">
-            <div className="stopTime">{this.state.stopSwitch == null ? formattedSeconds(this.props.timeElapsed) : formattedSeconds(this.state.stopTime)}</div>
-            <div className="stopButton">
-              <button onClick={this.handleStopClick.bind(this)}>Stop Time</button>
+          <div className="q-b-infoBottom">
+            <div className="q-c-playerFlag">
+              <span className="helper">
+                <Flag icon={typeof(this.state.players[this.state.name]) != "undefined" ? this.state.players[this.state.name].country.flagPathXL :"/img/flagsXL/XX.png"}/>
+              </span>
             </div>
-          </span>
+            <div className="q-c-playerTime">
+              <div className="q-d-timeTop">
+                {this.state.stopSwitch == null ? formattedSeconds(this.props.timeElapsed) : formattedSeconds(this.state.stopTime)}
+              </div>
+              <div className="q-d-buttonBottom">
+                <button onClick={this.handleStopClick.bind(this)}>Stop Time</button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

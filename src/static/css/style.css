@@ -27,7 +27,7 @@ svg {
 img {
   max-width:100%;
   display:block;
-  vertical-align:   middle; 
+  vertical-align:  middle; 
 
 
 }
@@ -68,22 +68,79 @@ body {
   width: 100%;
 }
 
-.ttWrap{
-  width: 100%;
-  height: 100%
+.timeTrialTop{
+  width:100%;
+  height:10%;
 }
 
-.ttWrap .ttQuad {
+.timeTrialMid{
+  width:100%;
+  height:80%;
+}
+ 
+.timeTrialBot{
+  width:100%;
+  height:10%;
+}
+
+.q-a-playerIdLeft{
+  width:10%;
+  height:100%;
+  background-color: #404040;
+  float: left;
+}
+.q-a-playerInfoRight{
+  width:90%;
+  height:100%;
+  background-color: #505050;
+  float: left;
+}
+.q-b-playerSelectTop{
+  width:100%;
+  height:20%;
+}
+.q-b-infoBottom{
+  width:100%;
+  height:80%;
+}
+.q-c-playerFlag{
+  float: left;
+  width:70%;
+  height:100%;
+}
+.q-c-playerTime{
+  float: left;
+  width:30%;
+  height:100%;
+}
+.q-d-timeTop{
+  width:100%;
+  height:80%;
+}
+.q-d-buttonBottom{
+  width:100%;
+  height:20%;
+}
+
+.icon {
+  border: 0px solid black;
+  vertical-align:   middle; 
+  box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
+}
+
+.ttWrap{
+  width: 100%;
+  height: 100%;
+  background-color:#202020;
+}
+
+.ttQuad {
   width: 50%;
   height: 50%;
   float: left;
+  background-color: #303030;
 }
 
-.ttWrap .ttQuad .indyWrap{
-  width: 100%;
-  height: 100%
-  box-sizing: border-box;
-}
 
 .ttWrap .ttQuad .indyWrap .input-line{
   width: 100%;
@@ -110,12 +167,7 @@ body {
   text-align: center;
 }
 
-.ttWrap .ttQuad .indyWrap .country-select-image .icon {
-  border: 0px solid black;
-  vertical-align:   middle; 
-  display:  inline-block; 
-  box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
-}
+
 
 .wrap .input-line {
   width: 100%;
@@ -246,10 +298,7 @@ footer p {
 
 }
 
-.home .buttons-selector .task-preview img {
-  margin: 0;
-  width: 100%;
-}
+
 
 .home .buttons-selector .country-chart .cell .icon {
   border: 0px solid #ccc;
@@ -298,13 +347,10 @@ nav.athletes-menu a.active {
   width: 100%;
 }
 
-.athlete header {
-  background: #ccc;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  width: 100%;
-  height: 200px;
+.helper {
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
 }
 
 .athlete .picture-container {
