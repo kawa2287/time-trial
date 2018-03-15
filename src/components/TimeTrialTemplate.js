@@ -24,14 +24,14 @@ export default class TimeTrialTemplate extends React.Component {
   }
 
   handleStopClick() {
-    
-    this.setState({ stopSwitch : 1, stopTime : this.props.timeElapsed }, function afterClick () {
-      if(this.state.finish == 1) return console.log("ALREADY INPUT");
-      else return (
-        this.props.addTimeTrial(this.state.name, formattedSeconds(this.state.stopTime)),
-        this.setState({finish : 1})
-        );
-    });
+    if(this.state.finish != 1) {
+      this.setState({ stopSwitch : 1, stopTime : this.props.timeElapsed, finish:1 }, function afterClick () {
+        this.props.addTimeTrial(this.state.name, formattedSeconds(this.state.stopTime));
+        this.props.finishHandle();
+      });
+    } else {
+      console.log("ALREADY INPUT");
+    }
   }
   
   render() {
@@ -45,11 +45,10 @@ export default class TimeTrialTemplate extends React.Component {
     return (
       <div className ="ttQuad">
         <div className="q-a-playerIdLeft">
-          X
+          <label className="string">{this.props.position}</label>
         </div>
         <div className="q-a-playerInfoRight">
           <div className="q-b-playerSelectTop">
-            <label className="string">Select Player {this.props.position}</label>
               <input  
               list="playerList" 
               placeholder="Select Player" 
@@ -63,9 +62,9 @@ export default class TimeTrialTemplate extends React.Component {
           </div>
           <div className="q-b-infoBottom">
             <div className="q-c-playerFlag">
-              <span className="helper">
+              
                 <Flag icon={typeof(this.state.players[this.state.name]) != "undefined" ? this.state.players[this.state.name].country.flagPathXL :"/img/flagsXL/XX.png"}/>
-              </span>
+              
             </div>
             <div className="q-c-playerTime">
               <div className="q-d-timeTop">

@@ -41,7 +41,7 @@ export default class TeamInputForm extends React.Component {
           <div className="input-line">
               <label className="string">Enter Name</label>
               <input 
-              placeholder="Input Name" 
+              placeholder="Input Name"
               value={this.state.name} 
               type="text" id="name" 
               onChange={(e)=>{this.setState({name: e.target.value})}}

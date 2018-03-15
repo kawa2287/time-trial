@@ -6,8 +6,8 @@
   -webkit-tap-highlight-color:rgba(255,255,255,0);
   -webkit-tap-highlight-color:transparent;
   -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 [contenteditable],input[type]{user-select:text}body,h1,h2,h3,h4,h5,h6,p{margin:0;font-size:1rem;font-weight:400}
@@ -26,21 +26,13 @@ svg {
 
 img {
   max-width:100%;
-  display:block;
   vertical-align:  middle; 
-
-
 }
 
 html {
   color: #030303;
   font: caption;
   padding-bottom: 2em;
-}
-
-a {
-  color: #1f4ba0;
-  text-decoration: underline;
 }
 
 header {
@@ -53,7 +45,6 @@ header .logo {
   max-width: 400px;
   width: 100%;
 }
-
 
 body {
   padding: 2em;
@@ -70,7 +61,12 @@ body {
 
 .timeTrialTop{
   width:100%;
-  height:10%;
+  height: 10%;
+}
+
+.switch-title {
+  margin-bottom: 6px;
+	text-align:center;
 }
 
 .timeTrialMid{
@@ -82,22 +78,38 @@ body {
   width:100%;
   height:10%;
 }
+.timeTrialBot:before {      /* create a full-height inline block pseudo-element */
+    content: ' ';
+    display: inline-block;
+    vertical-align: middle; /* vertical alignment of the inline element */
+    height: 100%;
+}
+
 
 .q-a-playerIdLeft{
   width:10%;
   height:100%;
-  background-color: #404040;
+  background-color: #423B56;
+  border-right: 1px solid black;
   float: left;
+  font-size: x-large;
+}
+.q-a-playerIdLeft:before {      /* create a full-height inline block pseudo-element */
+    content: ' ';
+    display: inline-block;
+    vertical-align: middle; /* vertical alignment of the inline element */
+    height: 100%;
 }
 .q-a-playerInfoRight{
   width:90%;
   height:100%;
-  background-color: #505050;
   float: left;
 }
 .q-b-playerSelectTop{
   width:100%;
   height:20%;
+  background-color: #8478A5;
+  border-bottom: 1px solid black;
 }
 .q-b-infoBottom{
   width:100%;
@@ -108,6 +120,12 @@ body {
   width:70%;
   height:100%;
 }
+.q-c-playerFlag:before {      /* create a full-height inline block pseudo-element */
+    content: ' ';
+    display: inline-block;
+    vertical-align: middle; /* vertical alignment of the inline element */
+    height: 100%;
+}
 .q-c-playerTime{
   float: left;
   width:30%;
@@ -116,6 +134,13 @@ body {
 .q-d-timeTop{
   width:100%;
   height:80%;
+  font-size: x-large;
+}
+.q-d-timeTop:before {      /* create a full-height inline block pseudo-element */
+    content: ' ';
+    display: inline-block;
+    vertical-align: middle; /* vertical alignment of the inline element */
+    height: 100%;
 }
 .q-d-buttonBottom{
   width:100%;
@@ -131,45 +156,17 @@ body {
 .ttWrap{
   width: 100%;
   height: 100%;
-  background-color:#202020;
 }
 
 .ttQuad {
   width: 50%;
   height: 50%;
   float: left;
-  background-color: #303030;
+  background-color: #584E72;
+  border: 1px solid black;
 }
 
-
-.ttWrap .ttQuad .indyWrap .input-line{
-  width: 100%;
-}
-
-.ttWrap .ttQuad .indyWrap .country-select-image{
-  display: inline-block;
-  float: left;
-  height: 100%;
-}
-
-.ttWrap .ttQuad .indyWrap .timeContainer{
-  width: 100%;
-  height: 100%;
-}
-
-.ttWrap .ttQuad .indyWrap .timeContainer .stopTime{
-  width: 100%;
-  text-align: center;
-}
-
-.ttWrap .ttQuad .indyWrap .timeContainer .stopButton{
-  width: 100%;
-  text-align: center;
-}
-
-
-
-.wrap .input-line {
+.input-line {
   width: 100%;
 }
 
@@ -211,20 +208,10 @@ input {
   margin: 1em;
   font-size: small;
   text-align: center;
-  width:200px;
 }
 
 .string {
   text-transform: capitalize;
-}
-
-
-.home .style1 {
-  text-decoration: underline;
-}
-
-.home .style2 {
-  color: #0ff6bd;
 }
 
 footer {
@@ -240,29 +227,10 @@ footer p {
   margin: 0 0 1em 0;
 }
 
-.not-found {
-  margin: 0 auto;
-  max-width: 800px;
-  padding: 2em;
-  text-align: center;
-  width: 100%;
-}
-
-.not-found h1 {
-  font-size: 3em;
-  font-weight: bold;
-}
-
-.not-found h2 {
-  font-size: 2em;
-  font-weight: bold;
-}
-
 .home .buttons-selector {
   clear: both;
   padding: 2em;
   text-align: center;
-
 }
 
 .home .country-chart {
@@ -295,17 +263,12 @@ footer p {
   position: relative;
   width: 100%;
   vertical-align: middle;
-
 }
-
-
 
 .home .buttons-selector .country-chart .cell .icon {
   border: 0px solid #ccc;
   box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
   display: inline-block;
-
-
 }
 
 .home .buttons-selector .task-preview .name {
@@ -321,194 +284,10 @@ footer p {
   width: 100%;
 }
 
-nav.athletes-menu {
-  margin: 0 auto;
-  max-width: 800px;
-  padding: 2em;
-  text-align: center;
-  width: 100%;
-}
-
-nav.athletes-menu a {
-  font-size: 1.6em;
-  margin: 0 1em 1em 0;
-}
-
-nav.athletes-menu a.active {
-  color: #030303;
-  text-decoration: none;
-}
-
-.athlete {
-  border: 1px solid #ccc;
-  box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
-  margin: 0 auto;
-  max-width: 800px;
-  width: 100%;
-}
-
 .helper {
     display: inline-block;
     height: 100%;
     vertical-align: middle;
+    font-size: 0;
 }
 
-.athlete .picture-container {
-  margin: -160px 0 0 0;
-  padding: 0 1em 0 1em;
-}
-
-.athlete .picture-container img {
-  border-radius: 4px;
-  border: 8px solid #fff;
-  box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
-  display: inline;
-  margin: 0 0 0 1em;
-  width: 200px;
-}
-
-.athlete .picture-container h2 {
-  display: inline;
-  font-size: 3em;
-  padding: 0 0 0 .5em;
-  width: auto;
-}
-
-.home .country-chart .icon {
-  display: inline-block;
-  width: auto;
-  margin: 0 2px 0 2px;
-}
-
-.athlete .description,
-.athlete .medals {
-  font-size: 1.6em;
-  padding: 1em;
-}
-
-.athlete .medals p {
-  font-size: 1em;
-}
-
-.athlete .medals li {
-  list-style: none;
-}
-
-.athlete .medals .symbol {
-  border-radius: 50%;
-  display: inline-block;
-  font-size: .8em;
-  height: 1.6em;
-  justify-content: center;
-  margin: 5px;
-  text-align: center;
-  width: 1.6em;
-}
-
-.athlete .medals .symbol.symbol-G {
-  color: #daa520;
-  background-color: #fff6de;
-  border: 2px solid #daa520;
-}
-
-.athlete .medals .symbol.symbol-S {
-  color: #383738;
-  background-color: #b9b5b5;
-  border: 2px solid #383738;
-}
-
-.athlete .medals .symbol.symbol-B {
-  color: #6b1919;
-  background-color: #ea96a1;
-  border: 2px solid #6E1924;
-}
-
-.navigateBack {
-  font-size: 1.6em;
-  padding: 2em;
-  text-align: center;
-  text-decoration: none;
-}
-
-#abar {
-  bottom: 0;
-  left: 0;
-  position: fixed;
-  width: 100%;
-}
-
-#abar a {
-  background: #ffa500;
-  color: #000;
-  display: block;
-  font-weight: bold;
-  margin: 0;
-  padding: 1em;
-  text-align: center;
-  text-decoration: none;
-  width: 100%;
-}
-
-#abar a:hover {
-  text-decoration: underline;
-}
-
-.stopwatch { 
-  text-align: center 
-}
-
-.stopwatch-timer {
-  font-size: 20px;
-  font-weight: 100;
-  line-height: 20px;
-  
-  margin: 0;
-  
-  border: solid #cecfd0;
-  border-width: 1px 0;
-}
-
-.stopwatch-laps {
-  padding: 0 0 0 20px;
-  list-style-type: none;
-}
-
-.stopwatch-lap {
-  font-size: 20px;
-  line-height: 60px;
-  padding-right: 20px;
-  text-align: right;
-  border-bottom: 1px solid #d9dae0;
-}
-
-.stopwatch-lap strong {
-  float: left;
-  color: #7f8083;
-  font-weight: 100;
-}
-
-.stopwatch-lap strong::before { content: 'Lap ' }
-
-.btn {
-  font-family: inherit;
-  font-size: 20px;
-  
-  display: inline-block;
-  
-  width: 72px;
-  height: 72px;
-  margin: 24px;
-  padding: 0;
-  
-  cursor: pointer;
-  letter-spacing: 1px;
-  
-  border: 0;
-  border-radius: 50%;
-  outline: none;
-  background: white;
-}
-
-
-.start-btn { color: #4bd761 }
-.stop-btn  { color: #fd3d2a }
