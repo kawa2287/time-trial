@@ -28,6 +28,7 @@ export default class TimeTrialTemplate extends React.Component {
       this.setState({ stopSwitch : 1, stopTime : this.props.timeElapsed, finish:1 }, function afterClick () {
         this.props.addTimeTrial(this.state.name, formattedSeconds(this.state.stopTime));
         this.props.finishHandle();
+        console.log('finish = ' + this.state.finish);
       });
     } else {
       console.log("ALREADY INPUT");
@@ -39,11 +40,14 @@ export default class TimeTrialTemplate extends React.Component {
     var playerNames = [];
 
     for (var x in this.state.players){
-      playerNames.push(this.state.players[x].name);
+      playerNames.push({
+        name : this.state.players[x].name,
+        timeTrial : this.state.players[x].timeTrial
+        });
     }
     
     return (
-      <div className ="ttQuad">
+      <div className ="ttQuad" background-color={this.state.finish == 0 ? '#584E72' : '#FFD700'}>
         <div className="q-a-playerIdLeft">
           <label className="string">{this.props.position}</label>
         </div>
@@ -57,7 +61,7 @@ export default class TimeTrialTemplate extends React.Component {
               type="text" id="name" 
               />
               <datalist id="playerList">
-                  {playerNames.map((name, i) => <option data-id={i} value={name}/>)}
+                  {playerNames.map((element, i) => <option data-id={i} value={element.name} label={element.timeTrial}/>)}
               </datalist>
           </div>
           <div className="q-b-infoBottom">

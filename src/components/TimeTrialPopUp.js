@@ -10,7 +10,8 @@ class TimeTrialPopUp extends React.Component {
       timeElapsed: 0,
       lastClearedIncrementer: null,
       completions:0,
-      nTeams:3
+      nTeams:0,
+      timeSwitch:0
     };
     this.incrementer = null;
   }
@@ -24,12 +25,21 @@ class TimeTrialPopUp extends React.Component {
   }
   
   handleStopMainTimer(){
-    
-    this.setState((state) => {
-      if(state.completions >= 3) return clearInterval(this.incrementer);
-      else return (
-        {completions: state.completions + 1}
-      );
+    if (this.state.completions >= Number(this.state.nTeams) - 1){
+      clearInterval(this.incrementer);
+      this.setState({timeSwitch:1});
+    } else {
+      this.setState({completions: this.state.completions + 1});
+    }
+  }
+  
+  handleReset(){
+    this.customDialog.hide();
+    this.setState({
+      nTeams:0,
+      timeElapsed:0,
+      timeSwitch:0,
+      completions:0
     });
   }
 
@@ -52,7 +62,7 @@ class TimeTrialPopUp extends React.Component {
                     timeElapsed={this.state.timeElapsed}
                     finishHandle={this.handleStopMainTimer.bind(this)}
                     addTimeTrial={this.props.addTimeTrial}
-                    position={i}
+                    position={Number(i) + 1}
                     key={i}
       /> );
     }
@@ -69,33 +79,50 @@ class TimeTrialPopUp extends React.Component {
                 <p className="switch-title">Select Number of Time Trials</p>
   
           			<label for="switch_1">
-                  <input type="radio" id="switch_1" name="nPlayerSelection"/>
+                  <input 
+                  type="radio" 
+                  id="switch_1" 
+                  name="nPlayerSelection"
+                  onChange={(e)=>{this.setState({nTeams:1})}} />
                   <span>1</span>
                 </label>
                 
           			<label for="switch_1">
-                  <input type="radio" id="switch_2" name="nPlayerSelection" />
+                  <input 
+                  type="radio"
+                  id="switch_2" 
+                  name="nPlayerSelection"
+                  onChange={(e)=>{this.setState({nTeams:2})}} />
                   <span>2</span>
           			</label>
           			
                 <label for="switch_3">
-            			<input type="radio" id="switch_3" name="nPlayerSelection" />
+            			<input 
+            			type="radio" 
+            			id="switch_3" 
+            			name="nPlayerSelection" 
+            			onChange={(e)=>{this.setState({nTeams:3})}} />
                   <span>3</span>
                 </label>
           			
           			<label for="switch_4">
-            			<input type="radio" id="switch_4" name="nPlayerSelection" />
+            			<input 
+            			type="radio" 
+            			id="switch_4" 
+            			name="nPlayerSelection" 
+            			onChange={(e)=>{this.setState({nTeams:4})}} />
                   <span>4</span>
                 </label>
                 
               </div>
               <div className ="timeTrialMid">
-              
                     {templates}
-                    
               </div>
-              <div className="timeTrialTop">
-                <button onClick={this.handleStartClick.bind(this)}>Start Timer</button>
+              <div className="timeTrialBot">
+                <button 
+                onClick={this.state.timeSwitch == 0 ? this.handleStartClick.bind(this) : this.handleReset.bind(this)}>
+                  {this.state.timeSwitch == 0 ? "Start Time" : "Submit Times"}
+                </button>
               </div>
             </div>
             
