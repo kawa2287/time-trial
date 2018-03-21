@@ -9,7 +9,7 @@ class AddTeamPopUp extends React.Component {
 
   render() {
     
-    var myBigGreenDialog = {
+    var addTeamDialog = {
       backgroundColor: '#00897B',
       color: '#ffffff',
       width: '40%',
@@ -22,11 +22,8 @@ class AddTeamPopUp extends React.Component {
       <div className="task-preview">
           <img src="./img/buttons/addUser.png" onClick={() => this.customDialog.show()}></img>
           <h2 className="name">Add Team</h2>
-
-          <SkyLight dialogStyles={myBigGreenDialog} hideOnOverlayClicked ref={ref => this.customDialog = ref} >
-              <TeamInputForm 
-              addTeamClick={this.props.addTeamClick}
-              />
+          <SkyLight dialogStyles={addTeamDialog} hideOnOverlayClicked ref={ref => this.customDialog = ref} >
+              <TeamInputForm addTeamClick={this.props.addTeamClick}/>
           </SkyLight>
       </div>
     );

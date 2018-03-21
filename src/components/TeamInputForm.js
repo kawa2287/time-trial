@@ -1,7 +1,6 @@
 'use strict';
 
 import React from 'react';
-import countryData from './Country';
 import Flag from './Flag';
 import CountryKeyVal from './CountryKeyVal';
 
@@ -23,7 +22,7 @@ export default class TeamInputForm extends React.Component {
       this.setState({
         name : "",
         country : 'Select Country'
-      })
+      });
       document.getElementById("country").value = "";
   }
 
@@ -32,8 +31,8 @@ export default class TeamInputForm extends React.Component {
     
     var countryNames = [];
 
-    for (var x in countryData){
-      countryNames.push(countryData[x].name);
+    for (var x in CountryKeyVal){
+      countryNames.push(CountryKeyVal[x].name);
     }
     
     return (

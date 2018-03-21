@@ -9,6 +9,11 @@ import { match, RouterContext } from 'react-router';
 import routes from './routes';
 import NotFoundPage from './components/NotFoundPage';
 
+// initialize database
+var sqlite3 = require('sqlite3').verbose();
+var db = new sqlite3.Database('./src/db/playerDB.sqlite');
+
+
 // initialize the server and configure support for ejs templates
 const app = new Express();
 const server = new Server(app);
