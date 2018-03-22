@@ -5,6 +5,8 @@ import Table from	'./FrontPageTable';
 import AddTeamPopUp from './AddTeamPopUp';
 import CountryKeyVal from './CountryKeyVal';
 import TimeTrialPopUp from './TimeTrialPopUp';
+import VsTournament from './VsTournament';
+import {BrowserRouter as Router, Route, Link} from 'react-router';
 
 
 
@@ -66,6 +68,13 @@ export default class IndexPage extends React.Component {
 	          <TimeTrialPopUp
 	          players={this.state.players}
 	          addTimeTrial={this.addTimeTrial.bind(this)}/>
+	          
+	          <Link to={{pathname:"/VsTournament", state:{players : this.state.players}}} >
+		          <div className="task-preview">
+					  <img src="./img/buttons/tournament.png"></img>
+					  <h2 className="name">VS Tournament</h2>
+				  </div>
+			  </Link>
         </div>
         
         <div className="buttons-selector">
@@ -74,7 +83,7 @@ export default class IndexPage extends React.Component {
 		      players={this.state.players}
 		      bestTime={this.state.bestTime}
 		      />
-        </div>        
+        </div>     
       </div>
     );
   }

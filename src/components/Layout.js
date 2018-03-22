@@ -12,7 +12,9 @@ export default class Layout extends React.Component {
             <img className="logo" src="/img/headers/bracketTitle.png"/>
           </Link>
         </header>
+        
         <div className="app-content">{this.props.children}</div>
+        
         <footer>
           <p>
             This is a test app for a web based double elimination bracket.
