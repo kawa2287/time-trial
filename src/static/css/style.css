@@ -290,3 +290,58 @@ footer p {
     font-size: 0;
 }
 
+.round {
+    font: 300 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 100%;
+    padding: 0 20px;
+    float: left;
+    width: 33.3333333333%;
+    position: relative;
+    z-index: 2;
+    pointer-events: none;
+}
+    
+.game {
+    background: #FFF;
+    border-radius: 3px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, .05);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    max-height: 80px;
+    pointer-events: auto;
+}
+        
+.team {
+    display: flex;
+    align-items: center;
+    flex: 1 1 40px;
+    cursor: pointer;
+    border-left: 10px solid #DDD;
+    transition: .2s;
+    /* keep this for smoother transitions: */
+    box-shadow: inset 0 40px 0 rgba(255, 255, 255, 0);
+}
+
+.team-seed {
+    font-size: 10px;
+    color: #999;
+    flex: 0 1 30px;
+    text-align: center;
+    transition: .2s;
+}
+.team-name {
+    flex: 1 1 auto;
+    white-space: nowrap;           
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.team-score {
+    font-weight: 600;
+    flex: 0 1 30px;
+}
+

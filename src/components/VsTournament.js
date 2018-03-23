@@ -1,6 +1,9 @@
 'use strict';
 
 import React from 'react';
+import TileTeam from './TileTeam';
+//import Konva from "konva";
+//import { Stage, Layer } from "react-konva";
 
 export default class VsTournament extends React.Component {
 	constructor(){
@@ -18,26 +21,15 @@ export default class VsTournament extends React.Component {
 		return bracketPower;
 	}
 	
-	PropogateSeeds(seed, nTeams){
-		var bracketPower = this.DetermineBracketPower(nTeams);
-		var places = Math.pow(2,bracketPower);
-		var opponent = (places + 1) - seed;
-		if(opponent > nTeams){
-			return seed + " gets a bye";
-		} else {
-			return seed + " vs " + opponent;
-		}
-	}
-	
-	getRootVal (arr){
+	GetRootVal (arr){
 		if (Array.isArray(arr)){
-			return this.getRootVal(arr[0]);
+			return this.GetRootVal(arr[0]);
 		} else {
 			return arr;
 		}
 	}
 	
-	PropogateSeedsArrV2(nTeams, mastArr){
+	PropogateSeedsArr(nTeams, mastArr){
 		var baseArr = [];
 		var nextOrderArr = [];
 		var bracketPower = this.DetermineBracketPower(nTeams);
@@ -50,14 +42,14 @@ export default class VsTournament extends React.Component {
 					nextOrderArr = baseArr;
 				} else {
 					for (var item in baseArr){
-						if(eq - this.getRootVal(baseArr[i-1]) == this.getRootVal(baseArr[item])) {
+						if(eq - this.GetRootVal(baseArr[i-1]) == this.GetRootVal(baseArr[item])) {
 							nextOrderArr.push([baseArr[i-1],baseArr[item]]);
 						}
 					}
 				}
 			}
 			if(order == bracketPower){
-				return this.popMastArr(nextOrderArr, mastArr, nTeams);
+				return this.PopMastArr(nextOrderArr, mastArr, nTeams);
 			} else {
 				baseArr = nextOrderArr;
 				nextOrderArr = [];
@@ -65,42 +57,58 @@ export default class VsTournament extends React.Component {
 		}
 	}
 	
-	popMastArr(arr, mastArr, nTeams){
+	PopMastArr(arr, mastArr, nTeams){
 		mastArr = mastArr || [];
 		for (var item in arr){
 			if(Array.isArray(arr[item])){
-				this.popMastArr(arr[item], mastArr, nTeams);
+				this.PopMastArr(arr[item], mastArr, nTeams);
 			} else {
-				if(arr[item]>nTeams){
-					mastArr.push('BYE');
-				} else {
-					mastArr.push(arr[item]);
-				}
+				mastArr.push(arr[item]);
 			}
 		}
 		return mastArr;
 	}
 	
 	render() {
-		var teams = 13;
+		//this.props.location.state.'GIVEN NAME' to access props thru Link
+		
+		var teams = Object.keys(this.props.location.state.players).length;
 		var mastArr = [];
-
-		console.log(this.PropogateSeedsArrV2(teams,mastArr));
+		var tiles = [];
+		var toggle = 0;
+		
+		//populate seeded array
+		this.PropogateSeedsArr(teams,mastArr);
+		console.log(mastArr);
+		
+		//add props to seeded array
+		for (var item in mastArr) {
+			for (var x in this.props.location.state.players){
+				if(mastArr[item] == this.props.location.state.players[x].seed){
+					tiles.push(<TileTeam
+						seed = {mastArr[item]}
+						name = {this.props.location.state.players[x].name}
+						time = {this.props.location.state.players[x].timeTrial}
+					/>);
+					toggle = 1;
+				} 
+			}
+			if (toggle == 0){
+				tiles.push(<TileTeam
+					seed = {mastArr[item]}
+					name = {'BYE'}
+					time = {'-'}
+				/>);
+			}
+			toggle = 0;
+		}
 
 		return (
-			<div>
-				<p>{this.PropogateSeeds(1,teams)}</p>
-				<p>{this.PropogateSeeds(2,teams)}</p>
-				<hr/>
-				<p>{this.PropogateSeeds(3,teams)}</p>
-				<p>{this.PropogateSeeds(4,teams)}</p>
-				<hr/>
-				<p>{this.PropogateSeeds(5,teams)}</p>
-				<p>{this.PropogateSeeds(6,teams)}</p>
-				<hr/>
-				<p>{this.PropogateSeeds(7,teams)}</p>
-				<p>{this.PropogateSeeds(8,teams)}</p>
-			</div>
+
+					<div>
+						{tiles}
+					</div>
+
 		);
 	}
 }
