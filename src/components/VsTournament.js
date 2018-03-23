@@ -2,8 +2,7 @@
 
 import React from 'react';
 import TileTeam from './TileTeam';
-//import Konva from "konva";
-//import { Stage, Layer } from "react-konva";
+
 
 export default class VsTournament extends React.Component {
 	constructor(){
@@ -89,6 +88,7 @@ export default class VsTournament extends React.Component {
 						seed = {mastArr[item]}
 						name = {this.props.location.state.players[x].name}
 						time = {this.props.location.state.players[x].timeTrial}
+						img = {this.props.location.state.players[x].country.flagPathMD}
 					/>);
 					toggle = 1;
 				} 
@@ -102,13 +102,13 @@ export default class VsTournament extends React.Component {
 			}
 			toggle = 0;
 		}
+		
+		//create dispatcher to push into separate games
 
 		return (
-
-					<div>
-						{tiles}
-					</div>
-
+			<div>
+				{tiles}
+			</div>
 		);
 	}
 }
