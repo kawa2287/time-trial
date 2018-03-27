@@ -25,8 +25,8 @@ class FlagImage extends React.Component {
 
   render() {
   	var imgHt = 31;
-  	var imgX = 30 + this.props.rectX;
-  	var imgY = (this.props.height/2) - (imgHt/2);
+  	var imgX = 5 + this.props.rectX;
+  	var imgY = (this.props.stageHeight/2) - (imgHt/2);
 
   	
     return <Image 
@@ -42,25 +42,30 @@ class FlagImage extends React.Component {
 
 export default class TileTeam extends React.Component {
 	render(){
-		var width = 250;
-		var height = 48;
-		var rectWidth = width * 0.9;
-		var rectHeight = height * 0.9;
-		var rectX = (width - rectWidth)*0.5;
-		var rectY = (height - rectHeight)*0.5;
+		var stageWidth = this.props.width;
+		var stageHeight = this.props.height;
+		var rectWidth = stageWidth;
+		var rectHeight = 48;
+		var rectX = (stageWidth - rectWidth)*0.5;
+		var rectY = (stageHeight - rectHeight)*0.5;
+		var timeTrialClipW = 40;
+		var seedClipW = 40;
+		var tileColor = '#eef3f5';
+		var byeColor = '#8caacf';
+		
 		var fontSize = 12;
 		console.log(rectY);
 		
 		
 		return(
-			<Stage width={width} height={height}>
+			<Stage width={stageWidth} height={stageHeight}>
 				<Layer>				
 					<Rect 
 						x={rectX} 
 						y={rectY}
 						width={rectWidth}
 	        			height={rectHeight}
-	                    fill= '#eef3f5'
+	                    fill= {this.props.name == 'BYE' ? byeColor : tileColor}
 						stroke= 'black'
 						strokeWidth= {0.5}
 						cornerRadius={5}
@@ -69,8 +74,8 @@ export default class TileTeam extends React.Component {
                 <Layer
                 	clipX = {0}
                 	clipY = {0}
-		            clipWidth = {35}
-		            clipHeight = {height}
+		            clipWidth = {seedClipW}
+		            clipHeight = {stageHeight}
             	>	
                     <Rect 
 						x={rectX} 
@@ -83,23 +88,60 @@ export default class TileTeam extends React.Component {
 						cornerRadius={5}
                     />
                 </Layer>
+                <Layer
+                	clipX = {stageWidth - timeTrialClipW }
+                	clipY = {0}
+		            clipWidth = {timeTrialClipW}
+		            clipHeight = {stageHeight}
+            	>	
+                    <Rect 
+						x={rectX} 
+						y={rectY}
+						width={rectWidth}
+	        			height={rectHeight}
+	                    fill= '#5e5e5e'
+						stroke= 'black'
+						strokeWidth= {0.5}
+						cornerRadius={5}
+                    />
+                </Layer>
                 <Layer>
                 	<Text
                 		text = {this.props.seed}
-                		x = {5 + rectX}
-                		y = {(height-fontSize)/2}
+                		x = {seedClipW/2 + rectX - 5}
+                		y = {(stageHeight-fontSize)/2}
                 		fontSize = {fontSize}
                 		fill = 'white'
                 		width = {14}
                 		align = 'center'
                 	/>
+                	<Text
+                		text = {this.props.name}
+                		x = {seedClipW + rectX + 48 + 10}
+                		y = {(stageHeight-fontSize)/2}
+                		fontSize = {fontSize}
+                		fontVariant = 'small-caps'
+                		fill = 'black'
+                		width = {rectWidth-seedClipW-timeTrialClipW}
+                		align = 'left'
+                	/>
+                	<Text
+                		text = {this.props.time}
+                		x = { stageWidth - timeTrialClipW}
+                		y = {(stageHeight-fontSize)/2}
+                		fontSize = {fontSize}
+                		fill = 'white'
+                		width = {timeTrialClipW}
+                		align = 'center'
+                		shadowBlur = {2}
+                	/>
 					<FlagImage 
 						img = {this.props.img}
 						rectHeight = {rectHeight}
 						rectWidth = {rectWidth}
-						rectX = {rectX}
+						rectX = {rectX + seedClipW}
 						rectY = {rectY}
-						height = {height}
+						stageHeight = {stageHeight}
 					/>
 				</Layer>
 			</Stage>

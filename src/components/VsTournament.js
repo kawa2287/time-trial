@@ -2,6 +2,7 @@
 
 import React from 'react';
 import TileTeam from './TileTeam';
+import BezierCurves from './BezierCurves';
 
 
 export default class VsTournament extends React.Component {
@@ -75,10 +76,15 @@ export default class VsTournament extends React.Component {
 		var mastArr = [];
 		var tiles = [];
 		var toggle = 0;
+		var nextRoundArr = [];
+		var nextBezArr = [];
+		var winnersRndArr = [];
+		var baseStageHeight = 60;
+		var baseStageWidth = 300;
+		var overallWidth = baseStageWidth*(this.DetermineBracketPower(teams)+1);
 		
 		//populate seeded array
 		this.PropogateSeedsArr(teams,mastArr);
-		console.log(mastArr);
 		
 		//add props to seeded array
 		for (var item in mastArr) {
@@ -89,6 +95,8 @@ export default class VsTournament extends React.Component {
 						name = {this.props.location.state.players[x].name}
 						time = {this.props.location.state.players[x].timeTrial}
 						img = {this.props.location.state.players[x].country.flagPathMD}
+						height = {baseStageHeight}
+						width = {baseStageWidth}
 					/>);
 					toggle = 1;
 				} 
@@ -98,16 +106,46 @@ export default class VsTournament extends React.Component {
 					seed = {mastArr[item]}
 					name = {'BYE'}
 					time = {'-'}
+					height = {baseStageHeight}
+					width = {baseStageWidth}
 				/>);
 			}
 			toggle = 0;
 		}
 		
+		//temp array creator for testing
+		for (var n = 0; n < this.DetermineBracketPower(teams); n++){
+			for (var k = 0; k < mastArr.length/Math.pow(2,n+1); k++){
+				nextRoundArr.push(<TileTeam
+							seed = ''
+							name = ''
+							time = ''
+							img = ''
+							height = {baseStageHeight*Math.pow(2,n+1)}
+							width = {baseStageWidth}
+						/>);
+				nextBezArr.push(<BezierCurves
+					height = {baseStageHeight*Math.pow(2,n+1)}
+					width = {40}
+					/>);
+			}
+			winnersRndArr.push(<div className = "round-test">{nextBezArr}</div>);
+			winnersRndArr.push(<div className = "round-test">{nextRoundArr}</div>);
+			nextRoundArr=[];
+			nextBezArr=[];
+		}
+		
+		
 		//create dispatcher to push into separate games
 
 		return (
-			<div>
-				{tiles}
+			<div className= "outside-container">
+				<div className = "tourny-lay" style={{"width" : {overallWidth}}}>
+					<div>
+						{tiles}
+					</div>
+					{winnersRndArr}
+				</div>
 			</div>
 		);
 	}

@@ -7,6 +7,8 @@ import CountryKeyVal from './CountryKeyVal';
 import TimeTrialPopUp from './TimeTrialPopUp';
 import VsTournament from './VsTournament';
 import {BrowserRouter as Router, Route, Link} from 'react-router';
+import demoNames from '../data/demoNames';
+import countries from '../data/countries';
 
 
 
@@ -21,16 +23,22 @@ export default class IndexPage extends React.Component {
     	bestTime : null
     };
   }
+  
+   randomIntFromInterval(min,max)
+	{
+	    return Math.floor(Math.random()*(max-min+1)+min);
+	}
 
-  addTeam(name, country){
+  addTeam(name, country, timeTrial){
+  	timeTrial = timeTrial || '-';
   	this.state.players[name] = {
 		    name : name,
 		    country : CountryKeyVal[country],
 		    seed : 0,
-		    timeTrial : '-',
+		    timeTrial : timeTrial,
 		    wins : 0,
 		    losses : 0,
-		    totalTime : 0,
+		    totalTime : timeTrial,
 		    avgTime : 0,
 		    splitTIme : 0
 		};
@@ -54,6 +62,26 @@ export default class IndexPage extends React.Component {
         }
       }
     }
+  }
+  
+  componentDidMount() {
+  		//this section is to populate random number of teams... delete for production use
+	  	//---------------------------------------------------------------------------------
+	  	var nTeams = 12;
+	  	var countryArr = [];
+	  	for (var item in countries[0]){
+	  		countryArr.push(countries[0][item].name);
+	  	}
+	  	
+	  	for (var i = 0 ; i <nTeams; i++){
+	  		this.addTeam(
+	  			demoNames[this.randomIntFromInterval(0,demoNames.length)] + 
+	  			this.randomIntFromInterval(1,999),
+	  			countryArr[this.randomIntFromInterval(0,countryArr.length)],
+	  			Math.round(this.randomIntFromInterval(1000,5000))/100
+	  			);
+	  	}
+	  	// --------------------------------------------------------------------------------
   }
   
   render() {
