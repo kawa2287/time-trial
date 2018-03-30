@@ -2,13 +2,13 @@
 
 import React from 'react';
 import Konva from "konva";
-import { Stage, Layer, Rect, Image, Text } from "react-konva";
+import { Stage, Layer, Group, Rect, Image, Text } from "react-konva";
 
 class FlagImage extends React.Component {
 	constructor(props){
 		super(props);
 		this.state = {
-			image:null
+			image:null,
 		};
 	}
 
@@ -41,6 +41,47 @@ class FlagImage extends React.Component {
 
 
 export default class TileTeam extends React.Component {
+	constructor(props){
+		super(props);
+		this.state = {
+			name : null,
+			seed : null,
+			timeTrial : null,
+			flag: null,
+			filter: Konva.Filters.Enhance
+		};
+	}
+	
+	/*
+	componentDidMount(){
+		this.mainGroup.cache();
+		this.mainGroup.enhance(0.5);
+	}
+	*/
+	
+	handleOnMouseOver (){
+		this.setState(
+			{
+				filter: Konva.Filters.Grayscale
+			},
+			function afterClick(){
+				this.mainGroup.cache();
+			}
+		);
+	}
+	
+	handleOnMouseOut (){
+		this.setState(
+			{
+				filter: Konva.Filters.Enhance
+			},
+			function afterClick(){
+				this.mainGroup.cache();
+				this.mainGroup.enhance(0.5);
+			}
+		);
+	}
+	
 	render(){
 		var stageWidth = this.props.width;
 		var stageHeight = this.props.height;
@@ -51,15 +92,16 @@ export default class TileTeam extends React.Component {
 		var timeTrialClipW = 40;
 		var seedClipW = 40;
 		var tileColor = '#eef3f5';
-		var byeColor = '#8caacf';
-		
+		var byeColor = '#0CC6BD';
+		var seedColor = '#4A0D53';
+		var timeColor = '#E68E38';
 		var fontSize = 12;
-		console.log(rectY);
+		var seedFontSize = 16;
 		
 		
 		return(
-			<Stage width={stageWidth} height={stageHeight}>
-				<Layer>				
+			<Group y={this.props.globalY}>
+				<Group>
 					<Rect 
 						x={rectX} 
 						y={rectY}
@@ -70,8 +112,8 @@ export default class TileTeam extends React.Component {
 						strokeWidth= {0.5}
 						cornerRadius={5}
                     />
-                </Layer>
-                <Layer
+                </Group>
+                <Group
                 	clipX = {0}
                 	clipY = {0}
 		            clipWidth = {seedClipW}
@@ -82,13 +124,13 @@ export default class TileTeam extends React.Component {
 						y={rectY}
 						width={rectWidth}
 	        			height={rectHeight}
-	                    fill= 'red'
+	                    fill= {seedColor}
 						stroke= 'black'
 						strokeWidth= {0.5}
 						cornerRadius={5}
                     />
-                </Layer>
-                <Layer
+                </Group>
+                <Group
                 	clipX = {stageWidth - timeTrialClipW }
                 	clipY = {0}
 		            clipWidth = {timeTrialClipW}
@@ -99,20 +141,22 @@ export default class TileTeam extends React.Component {
 						y={rectY}
 						width={rectWidth}
 	        			height={rectHeight}
-	                    fill= '#5e5e5e'
+	                    fill= {timeColor}
 						stroke= 'black'
 						strokeWidth= {0.5}
 						cornerRadius={5}
                     />
-                </Layer>
-                <Layer>
+                </Group>
+                <Group>
                 	<Text
                 		text = {this.props.seed}
-                		x = {seedClipW/2 + rectX - 5}
-                		y = {(stageHeight-fontSize)/2}
-                		fontSize = {fontSize}
+                		x = {seedClipW/2 + rectX - 9}
+                		y = {(stageHeight-seedFontSize)/2}
+                		fontSize = {seedFontSize}
+                		fontStyle = 'bold'
+                		shadowBlur = {2}
                 		fill = 'white'
-                		width = {14}
+                		width = {18}
                 		align = 'center'
                 	/>
                 	<Text
@@ -143,8 +187,8 @@ export default class TileTeam extends React.Component {
 						rectY = {rectY}
 						stageHeight = {stageHeight}
 					/>
-				</Layer>
-			</Stage>
+				</Group>
+			</Group>
 		);
 	}
 }
