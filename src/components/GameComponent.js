@@ -7,16 +7,18 @@ import TileTeam from './TileTeam';
 
 
 export default class GameComponent extends React.Component {
-	constructor(){
-		super();
-		this.state= {
-			nameA : '',
-			nameB : '',
-			seedA : '',
-			seedB : '',
-			timeTrialA : 0,
-			timeTrialB : 0
+	constructor(props){
+		super(props);
+		this.state = {
+			nameA : this.props.playerA.name,
+			nameB : this.props.playerB.name,
+			seedA : this.props.playerA.seed,
+			seedB : this.props.playerB.seed,
+			timeTrialA : this.props.playerA.timeTrial,
+			timeTrialB : this.props.playerB.timeTrial
 		};
+		
+		console.log('this is the constructor - ' + this.state.nameA);
 	}
 	
 	handleOnclick (){
@@ -32,16 +34,18 @@ export default class GameComponent extends React.Component {
 			nameB : 'CHANGED'
 		});
 	}
-	
-	componentWillMount (){
-        this.setState({
-			nameA : this.props.playerA.name,
-			nameB : this.props.playerB.name,
-			seedA : this.props.playerA.seed,
-			seedB : this.props.playerB.seed,
-			timeTrialA : this.props.playerA.timeTrial,
-			timeTrialB : this.props.playerB.timeTrial
-		});
+
+	componentWillReceiveProps(newProps) {
+		if (newProps.playerA.name !== this.props.playerA.name){
+			console.log('this is the prop value sent - ' + newProps.playerA.name);
+			console.log('this is before the recieved props update - ' + this.state.nameA);
+		    this.setState({
+		    	nameA: newProps.playerA.name
+		    	
+		    },function afterClick() {
+		    	console.log('i received props! - ' + this.state.nameA);
+		    });
+		}
 	}
 
 	render(){

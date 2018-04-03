@@ -1,18 +1,94 @@
 'use strict';
 
 import React from 'react';
-import TileTeam from './TileTeam';
 import BezierCurves from './BezierCurves';
 import GameComponent from './GameComponent';
 import CountryKeyVal from './CountryKeyVal';
 
 
+
 export default class VsTournament extends React.Component {
-	constructor(){
-		super();
+	constructor(props){
+		super(props);
 		this.state= {
 			masterGameObject:{}
 		};
+		
+		var teams = Object.keys(this.props.location.state.players).length;
+		var mastArr = [];
+		var seededArray = [];
+		var toggle = 0;
+		var bracketSpots = Math.pow(2,this.DetermineBracketPower(teams));
+		
+		
+		//populate seeded array
+		this.PropogateSeedsArr(teams,mastArr);
+		
+		//Create Master Game Object
+		var nGamesTotal = bracketSpots*2-1;
+		for(var game = 1; game <= nGamesTotal; game++){
+			this.state.masterGameObject[game] = {
+				gameNumber : game,
+				playerA:{
+					name : '',
+				    country : '',
+				    seed : '',
+				    timeTrial : '',
+				    wins : 0,
+				    losses : 0,
+				    totalTime : 0,
+				    avgTime : 0,
+				    splitTIme : 0
+				},
+				playerB:{
+					name : '',
+				    country : '',
+				    seed : '',
+				    timeTrial : '',
+				    wins : 0,
+				    losses : 0,
+				    totalTime : 0,
+				    avgTime : 0,
+				    splitTIme : 0
+				},
+				bracket : this.DetermineBracket(game,bracketSpots),
+				spotsFilled : 0  //hack
+			};
+		}
+		
+		//Add Props to Seeded Array
+		for (var item in mastArr) {
+			for (var x in this.props.location.state.players){
+				if(mastArr[item] == this.props.location.state.players[x].seed){
+					seededArray.push(this.props.location.state.players[x]);
+					toggle = 1;
+				} 
+			}
+			if (toggle == 0){
+				seededArray.push({
+					name : 'BYE',
+				    country : '',
+				    seed : mastArr[item],
+				    timeTrial : '-',
+				    wins : 0,
+				    losses : 0,
+				    totalTime : 0,
+				    avgTime : 0,
+				    splitTIme : 0
+					});
+			}
+			toggle = 0;
+		}
+		
+		//Populate Start Round in Master Game Object
+		for (var k = 0; k < seededArray.length; k++){
+			if (k % 2 == 0){
+				this.state.masterGameObject[k/2 + 1].playerA = seededArray[k];
+			} else {
+				this.state.masterGameObject[(k+1)/2].playerB = seededArray[k];
+			}
+		}
+		
 	}
 	
 	DetermineBracketPower (nTeams) {
@@ -142,89 +218,39 @@ export default class VsTournament extends React.Component {
 
 	}
 	
+	buttonClick(){
+		
+        
+        this.setState({
+        	masterGameObject : {
+        		...this.state.masterGameObject,
+        		9 : {
+        			...this.state.masterGameObject[9],
+        			playerA : {
+        				...this.state.masterGameObject[9].playerA,
+        				name : 'MATT'
+        			}
+        		}
+        	}
+        }, function afterClick() {
+        	console.log(this.state.masterGameObject);
+        	this.forceUpdate();
+        });
+			
+	}
+	
 
 	render() {
 		//------------------------------------------------------------------
 		//this.props.location.state.'GIVEN NAME' to access props thru Link
 		//------------------------------------------------------------------
-		
 		var teams = Object.keys(this.props.location.state.players).length;
-		var mastArr = [];
-		var seededArray = [];
-		var toggle = 0;
+		var bracketSpots = Math.pow(2,this.DetermineBracketPower(teams));
+		var bracketPower = this.DetermineBracketPower(teams);
 		var baseStageHeight = 120;
 		var baseStageWidth = 300;
 		var overallWidth = baseStageWidth*(this.DetermineBracketPower(teams)+1);
-		var bracketSpots = Math.pow(2,this.DetermineBracketPower(teams));
-		var bracketPower = this.DetermineBracketPower(teams);
-		
-		//populate seeded array
-		this.PropogateSeedsArr(teams,mastArr);
-		
-		//Create Master Game Object
-		var nGamesTotal = bracketSpots*2-1;
-		for(var game = 1; game <= nGamesTotal; game++){
-			this.state.masterGameObject[game] = {
-				gameNumber : game,
-				playerA:{
-					name : '',
-				    country : '',
-				    seed : '',
-				    timeTrial : '',
-				    wins : 0,
-				    losses : 0,
-				    totalTime : 0,
-				    avgTime : 0,
-				    splitTIme : 0
-				},
-				playerB:{
-					name : '',
-				    country : '',
-				    seed : '',
-				    timeTrial : '',
-				    wins : 0,
-				    losses : 0,
-				    totalTime : 0,
-				    avgTime : 0,
-				    splitTIme : 0
-				},
-				bracket : this.DetermineBracket(game,bracketSpots),
-				spotsFilled : 0  //hack
-			};
-		}
-		
-		//Add Props to Seeded Array
-		for (var item in mastArr) {
-			for (var x in this.props.location.state.players){
-				if(mastArr[item] == this.props.location.state.players[x].seed){
-					seededArray.push(this.props.location.state.players[x]);
-					toggle = 1;
-				} 
-			}
-			if (toggle == 0){
-				seededArray.push({
-					name : 'BYE',
-				    country : '',
-				    seed : mastArr[item],
-				    timeTrial : '-',
-				    wins : 0,
-				    losses : 0,
-				    totalTime : 0,
-				    avgTime : 0,
-				    splitTIme : 0
-					});
-			}
-			toggle = 0;
-		}
-		
-		//Populate Start Round in Master Game Object
-		for (var k = 0; k < seededArray.length; k++){
-			if (k % 2 == 0){
-				this.state.masterGameObject[k/2 + 1].playerA = seededArray[k];
-			} else {
-				this.state.masterGameObject[(k+1)/2].playerB = seededArray[k];
-			}
-		}
+		var k = 0;
 		
 		
 		//create tournament skeleton
@@ -236,6 +262,7 @@ export default class VsTournament extends React.Component {
 		//create winnerArr
 		var winnerArr = [];
 		for (k = 0; k < bracketPower; k++){
+			console.log('found');
 			winnerArr.push(this.NgmsInRndWBrkt(bracketSpots,k));
 		}
 		
@@ -244,6 +271,7 @@ export default class VsTournament extends React.Component {
 		var nextRoundArr = [];
 		var nextBezArr = [];
 		var gameCounter = 1;
+		
 		for (k = 0; k < winnerArr.length; k++){
 			for(var i = 0; i < winnerArr[k]; i++){
 				nextRoundArr.push(<GameComponent
@@ -277,8 +305,10 @@ export default class VsTournament extends React.Component {
 		
 		
 		
+		
 		return (
 			<div className= "outside-container">
+				<button onClick={this.buttonClick.bind(this)}>DO SOMETHING</button>
 				<div className = "tourny-lay" style={{"width" : {overallWidth}}}>
 					{winnerBracket}
 				</div>
