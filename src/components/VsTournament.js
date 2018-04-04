@@ -199,28 +199,33 @@ export default class VsTournament extends React.Component {
 	
 	SendWinner(currentGameNum, bracketSpots, winPlayer, losePlayer){
 		var gameForWinner = 0.5*((currentGameNum % 2 ==0 ? currentGameNum : currentGameNum+1)+bracketSpots);
-		let masterGameObject2 = Object.assign({},this.state.masterGameObject);
 		
-		if (masterGameObject2[gameForWinner].spotsFilled == 0){ //hack
-			console.log('first spot should be filled');
-			masterGameObject2[gameForWinner].playerA = winPlayer;
-			masterGameObject2[gameForWinner].spotsFilled = 0;
-			console.log(masterGameObject2);
-			this.setState({masterGameObject : masterGameObject2}, function afterClick(){console.log(this.state.masterGameObject)});
-			
+		if (this.state.masterGameObject[gameForWinner].spotsFilled == 0){ //hack
+			this.setState({
+        	masterGameObject : {
+	        		...this.state.masterGameObject,
+	        		[gameForWinner] : {
+	        			...this.state.masterGameObject[gameForWinner],
+	        			playerA : winPlayer,
+	        			spotsFilled : 1
+	        		}
+	        	}
+	        });
 		} else if(this.state.masterGameObject[gameForWinner].spotsFilled == 1) {
-			console.log('second spot should be filled');
-			//masterGameObject[gameForWinner].playerB = winPlayer;
-			//masterGameObject[gameForWinner].spotsFilled = 2;
+			this.setState({
+        	masterGameObject : {
+	        		...this.state.masterGameObject,
+	        		[gameForWinner] : {
+	        			...this.state.masterGameObject[gameForWinner],
+	        			playerB : winPlayer,
+	        			spotsFilled : 2
+	        		}
+	        	}
+	        });
 		}
-		
-		//this.setState({masterGameObject});
-
 	}
 	
 	buttonClick(){
-		
-        
         this.setState({
         	masterGameObject : {
         		...this.state.masterGameObject,
@@ -234,9 +239,7 @@ export default class VsTournament extends React.Component {
         	}
         }, function afterClick() {
         	console.log(this.state.masterGameObject);
-        	this.forceUpdate();
         });
-			
 	}
 	
 
@@ -262,7 +265,6 @@ export default class VsTournament extends React.Component {
 		//create winnerArr
 		var winnerArr = [];
 		for (k = 0; k < bracketPower; k++){
-			console.log('found');
 			winnerArr.push(this.NgmsInRndWBrkt(bracketSpots,k));
 		}
 		

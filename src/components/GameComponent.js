@@ -15,35 +15,33 @@ export default class GameComponent extends React.Component {
 			seedA : this.props.playerA.seed,
 			seedB : this.props.playerB.seed,
 			timeTrialA : this.props.playerA.timeTrial,
-			timeTrialB : this.props.playerB.timeTrial
+			timeTrialB : this.props.playerB.timeTrial,
+			flagA : this.props.playerA.country.flagPathMD,
+			flagB : this.props.playerB.country.flagPathMD,
 		};
-		
-		console.log('this is the constructor - ' + this.state.nameA);
 	}
 	
 	handleOnclick (){
-		/*
 		this.props.SendWinner(
 			this.props.gameNumber, 
 			this.props.bracketSpots,
 			this.props.playerA, 
-			this.props.playerB);
-		*/
-		this.setState({
-			nameA : 'CHANGED',
-			nameB : 'CHANGED'
-		});
+			this.props.playerB
+		);
 	}
 
 	componentWillReceiveProps(newProps) {
-		if (newProps.playerA.name !== this.props.playerA.name){
-			console.log('this is the prop value sent - ' + newProps.playerA.name);
-			console.log('this is before the recieved props update - ' + this.state.nameA);
+		if ({...newProps} !== {...this.props}){
 		    this.setState({
-		    	nameA: newProps.playerA.name
-		    	
-		    },function afterClick() {
-		    	console.log('i received props! - ' + this.state.nameA);
+		    	...this.props,
+		    	nameA : newProps.playerA.name,
+				nameB : newProps.playerB.name,
+				seedA : newProps.playerA.seed,
+				seedB : newProps.playerB.seed,
+				timeTrialA : newProps.playerA.timeTrial,
+				timeTrialB : newProps.playerB.timeTrial,
+				flagA : newProps.playerA.country.flagPathMD,
+				flagB : newProps.playerB.country.flagPathMD
 		    });
 		}
 	}
@@ -60,7 +58,7 @@ export default class GameComponent extends React.Component {
 						seed = {this.state.seedA}
 						name = {this.state.nameA}
 						time = {this.state.timeTrialA}
-						img = {this.props.playerA.country.flagPathMD}
+						img = {this.state.flagA}
 						height = {stageHeight/2}
 						width = {stageWidth}
 						globalY = {0}
@@ -69,7 +67,7 @@ export default class GameComponent extends React.Component {
 						seed = {this.state.seedB}
 						name = {this.state.nameB}
 						time = {this.state.timeTrialB}
-						img = {this.props.playerB.country.flagPathMD}
+						img = {this.state.flagB}
 						height = {stageHeight/2}
 						width = {stageWidth}
 						globalY = {stageHeight/2}

@@ -2,42 +2,8 @@
 
 import React from 'react';
 import Konva from "konva";
-import { Stage, Layer, Group, Rect, Image, Text } from "react-konva";
-
-class FlagImage extends React.Component {
-	constructor(props){
-		super(props);
-		this.state = {
-			image:null,
-		};
-	}
-
-  componentDidMount() {
-    const image = new window.Image();
-    image.src = this.props.img;
-    image.onload = () => {
-      this.setState({
-        image: image
-      });
-    };
-  }
-  
-
-  render() {
-  	var imgHt = 31;
-  	var imgX = 5 + this.props.rectX;
-  	var imgY = (this.props.stageHeight/2) - (imgHt/2);
-
-  	
-    return <Image 
-    		image={this.state.image} 
-    		x = {imgX}
-    		y = {imgY}
-    		shadowBlur={4}
-    		
-    	/>;
-  }
-}
+import {Group, Rect, Text } from "react-konva";
+import TileFlag from './TileFlag';
 
 
 export default class TileTeam extends React.Component {
@@ -51,13 +17,6 @@ export default class TileTeam extends React.Component {
 			filter: Konva.Filters.Enhance
 		};
 	}
-	
-	/*
-	componentDidMount(){
-		this.mainGroup.cache();
-		this.mainGroup.enhance(0.5);
-	}
-	*/
 	
 	handleOnMouseOver (){
 		this.setState(
@@ -179,7 +138,7 @@ export default class TileTeam extends React.Component {
                 		align = 'center'
                 		shadowBlur = {2}
                 	/>
-					<FlagImage 
+					<TileFlag
 						img = {this.props.img}
 						rectHeight = {rectHeight}
 						rectWidth = {rectWidth}
