@@ -74,13 +74,14 @@ export default class IndexPage extends React.Component {
 	  	}
 	  	
 	  	for (var i = 0 ; i <nTeams; i++){
-	  		this.addTeam(
-	  			demoNames[this.randomIntFromInterval(0,demoNames.length)] + 
-	  			this.randomIntFromInterval(1,999),
-	  			countryArr[this.randomIntFromInterval(0,countryArr.length)],
-	  			Math.round(this.randomIntFromInterval(1000,5000))/100
-	  			);
+	  		var name = demoNames[this.randomIntFromInterval(0,demoNames.length)] + 
+	  			this.randomIntFromInterval(1,999);
+	  			
+	  		this.addTeam(name, countryArr[this.randomIntFromInterval(0,countryArr.length)], 0);
+	  		
+	  		this.addTimeTrial(name, Math.round(this.randomIntFromInterval(1000,5000))/100);
 	  	}
+	  	this.getBestTime(this.state.players);
 	  	// --------------------------------------------------------------------------------
   }
   

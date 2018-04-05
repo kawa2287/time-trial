@@ -18,16 +18,49 @@ export default class GameComponent extends React.Component {
 			timeTrialB : this.props.playerB.timeTrial,
 			flagA : this.props.playerA.country.flagPathMD,
 			flagB : this.props.playerB.country.flagPathMD,
+			hover : false
 		};
 	}
 	
+	
+	//for testing
+	randomIntFromInterval(min,max)
+	{
+	    return Math.floor(Math.random()*(max-min+1)+min);
+	}
+	
 	handleOnclick (){
+		var decider = this.randomIntFromInterval(0,100);
+		
+		var winner = decider > 50 ? this.props.playerA : this.props.playerB;
+		var loser = decider <= 50 ? this.props.playerA : this.props.playerB;
+		
+		if(winner.name == 'BYE'){
+			winner = this.props.playerB;
+		}
+		
 		this.props.SendWinner(
 			this.props.gameNumber, 
 			this.props.bracketSpots,
-			this.props.playerA, 
-			this.props.playerB
+			winner, 
+			loser
 		);
+	}
+	
+	handleOnMouseOver(){
+		this.setState({
+			hover : true
+		}, function afterClick() {
+			console.log("hover on!");
+		});
+	}
+	
+	handleOnMouseOut (){
+		this.setState({
+			hover : false
+		}, function afterClick() {
+			console.log("hover off!");
+		});
 	}
 
 	componentWillReceiveProps(newProps) {
@@ -52,8 +85,14 @@ export default class GameComponent extends React.Component {
 		var gameNumber = this.props.gameNumber;
 		
 		return(
-			<Stage width={stageWidth} height={stageHeight}>
-				<Layer onClick={this.handleOnclick.bind(this)}>
+			<Stage 
+				width={stageWidth} 
+				height={stageHeight}
+				onClick={this.handleOnclick.bind(this)}
+				onmouseover={this.handleOnMouseOver.bind(this)}
+				onmouseout={this.handleOnMouseOut.bind(this)}
+			>
+				<Layer>
 					<TileTeam
 						seed = {this.state.seedA}
 						name = {this.state.nameA}
@@ -62,6 +101,7 @@ export default class GameComponent extends React.Component {
 						height = {stageHeight/2}
 						width = {stageWidth}
 						globalY = {0}
+						hover = {this.state.hover}
 					/>
 					<TileTeam
 						seed = {this.state.seedB}
@@ -71,6 +111,7 @@ export default class GameComponent extends React.Component {
 						height = {stageHeight/2}
 						width = {stageWidth}
 						globalY = {stageHeight/2}
+						hover = {this.state.hover}
 					/>
 				</Layer>
 			</Stage>

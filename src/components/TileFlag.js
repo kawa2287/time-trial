@@ -37,7 +37,7 @@ export default class TileFlag extends React.Component {
 	}
 
     render() {
-  		var imgHt = 31;
+  		var imgHt = 30;
   		var imgX = 5 + this.props.rectX;
   		var imgY = (this.props.stageHeight/2) - (imgHt/2);
   		console.log('rendering...');
@@ -47,7 +47,7 @@ export default class TileFlag extends React.Component {
     		ref={node => this.imageNode = node} 
     		x = {imgX}
     		y = {imgY}
-    		shadowBlur={4}
+    		shadowBlur={3}
     	/>;
     }
 }

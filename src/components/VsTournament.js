@@ -132,7 +132,7 @@ export default class VsTournament extends React.Component {
 				maxGameNumInRnd = nTeams/(2*Math.pow(2,i));
 				if(currentGameNum <= nTeams- maxGameNumInRnd){
 					return i;
-				}
+				} 
 			}
 		}
 	}
@@ -198,6 +198,7 @@ export default class VsTournament extends React.Component {
 	}
 	
 	SendWinner(currentGameNum, bracketSpots, winPlayer, losePlayer){
+		//winner bracket path
 		var gameForWinner = 0.5*((currentGameNum % 2 ==0 ? currentGameNum : currentGameNum+1)+bracketSpots);
 		
 		if (this.state.masterGameObject[gameForWinner].spotsFilled == 0){ //hack
@@ -259,7 +260,7 @@ export default class VsTournament extends React.Component {
 		//create tournament skeleton
 		//create loserArr
 		var LoserArr = [];
-		for (k = 2*(bracketPower-1); k > 0; k--){
+		for (k = 1; k <= 2*(bracketPower-1); k++){
 			LoserArr.push(this.NgmsInRndLBrkt(bracketSpots,k));
 		}
 		//create winnerArr
@@ -290,21 +291,64 @@ export default class VsTournament extends React.Component {
 					SendWinner = {this.SendWinner.bind(this)}
 					bracketSpots = {bracketSpots}
 					/>);
-				/*
+				
 				nextBezArr.push(<BezierCurves
-					height = {baseStageHeight*Math.pow(2,k+1)}
+					height = {baseStageHeight*Math.pow(2,this.DetermineRoundNumber(
+						this.state.masterGameObject[gameCounter].gameNumber,
+						bracketSpots,
+						this.state.masterGameObject[gameCounter].bracket))
+					}
 					width = {40}
+					bracket = {this.state.masterGameObject[gameCounter].bracket}
 					/>);
-				*/
+				
 				gameCounter = gameCounter + 1;
 			}
-			//winnerBracket.push(<div className = "round-test">{nextBezArr}</div>);
 			winnerBracket.push(<div>{nextRoundArr}</div>);
+			winnerBracket.push(<div>{nextBezArr}</div>);
 			nextRoundArr=[];
-			//nextBezArr=[];
+			nextBezArr=[];
 		}
 		
+		//create Special Bracket for Winners
+		gameCounter = gameCounter + 1;
+
 		
+		//create Games in Losers Bracket
+		var loserBracket = [];
+		
+		for (k = 0; k < LoserArr.length; k++){
+			for( i = 0; i < LoserArr[k]; i++){
+				var round = this.DetermineRoundNumber(
+						this.state.masterGameObject[gameCounter].gameNumber,
+						bracketSpots,
+						this.state.masterGameObject[gameCounter].bracket);
+						
+				nextRoundArr.push(<GameComponent
+					playerA = {this.state.masterGameObject[gameCounter].playerA}
+					playerB = {this.state.masterGameObject[gameCounter].playerB}
+					height = {baseStageHeight * Math.pow(2,round % 2 == 0 ? round/2 : (round +1) /2)}
+					width = {baseStageWidth}
+					gameNumber = {this.state.masterGameObject[gameCounter].gameNumber}
+					bracket = {this.state.masterGameObject[gameCounter].bracket}
+					SendWinner = {this.SendWinner.bind(this)}
+					bracketSpots = {bracketSpots}
+					/>);
+				
+				nextBezArr.push(<BezierCurves
+					height = {baseStageHeight* Math.pow(2,round % 2 == 0 ? round/2 : (round +1) /2)}
+					width = {40}
+					bracket = {this.state.masterGameObject[gameCounter].bracket}
+					/>); 
+				
+				gameCounter = gameCounter + 1;
+			}
+			loserBracket.push(<div>{nextRoundArr}</div>);
+			nextRoundArr=[];
+			nextBezArr=[];
+		}
+		
+		loserBracket.reverse();
 		
 		
 		
@@ -312,6 +356,7 @@ export default class VsTournament extends React.Component {
 			<div className= "outside-container">
 				<button onClick={this.buttonClick.bind(this)}>DO SOMETHING</button>
 				<div className = "tourny-lay" style={{"width" : {overallWidth}}}>
+					{loserBracket}
 					{winnerBracket}
 				</div>
 			</div>

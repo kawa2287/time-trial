@@ -5,6 +5,11 @@ import Konva from "konva";
 import {Group, Rect, Text } from "react-konva";
 import TileFlag from './TileFlag';
 
+var tileColor = '#eef3f5';
+var byeColor = '#0CC6BD';
+var hoverColor = '#FCBFB8';
+var seedColor = '#4A0D53';
+var timeColor = '#E68E38';
 
 export default class TileTeam extends React.Component {
 	constructor(props){
@@ -16,6 +21,16 @@ export default class TileTeam extends React.Component {
 			flag: null,
 			filter: Konva.Filters.Enhance
 		};
+	}
+	
+	BackgroundColor(name, hover){
+		if (name === 'BYE'){
+			return byeColor;
+		} else if (hover === true) {
+			return hoverColor;
+		} else {
+			return tileColor;
+		}
 	}
 	
 	handleOnMouseOver (){
@@ -50,10 +65,6 @@ export default class TileTeam extends React.Component {
 		var rectY = (stageHeight - rectHeight)*0.5;
 		var timeTrialClipW = 40;
 		var seedClipW = 40;
-		var tileColor = '#eef3f5';
-		var byeColor = '#0CC6BD';
-		var seedColor = '#4A0D53';
-		var timeColor = '#E68E38';
 		var fontSize = 12;
 		var seedFontSize = 16;
 		
@@ -66,7 +77,7 @@ export default class TileTeam extends React.Component {
 						y={rectY}
 						width={rectWidth}
 	        			height={rectHeight}
-	                    fill= {this.props.name == 'BYE' ? byeColor : tileColor}
+	                    fill= {this.BackgroundColor(this.props.name,this.props.hover)}
 						stroke= 'black'
 						strokeWidth= {0.5}
 						cornerRadius={5}

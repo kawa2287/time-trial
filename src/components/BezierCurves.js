@@ -5,22 +5,55 @@ import Konva from "konva";
 import { Stage, Layer, Line } from "react-konva";
 
 
+
+
 export default class BezierCurves extends React.Component {
+	
+	victoryLine (victory){
+		if(victory === true) {
+			return 4;
+		}
+	}
 
 	render(){
 		var stageWidth = this.props.width;
 		var stageHeight = this.props.height;
-		var sx = 0;
-		var sy = stageHeight/4;
-		var x1 = stageWidth;
-		var y1 = stageHeight/4;
-		var x2 = 0;
-		var y2 = stageHeight/2;
-		var x3 = stageWidth;
-		var y3 = stageHeight/2;
+		var sx;
+		var sy;
+		var x1;
+		var y1;
+		var x2;
+		var y2;
+		var x3;
+		var y3;
+		var syB;
+		var y1B;
 		
-		var syB = stageHeight*3/4;
-		var y1B = stageHeight*3/4;
+		if (this.props.bracket == 'loserBracket'){
+			sx = stageWidth;
+			sy = stageHeight*1/4;
+			x1 = 0;
+			y1 = stageHeight*1/4;
+			x2 = stageWidth;
+			y2 = stageHeight/2;
+			x3 = 0;
+			y3 = stageHeight/2;
+			
+			syB = stageHeight*3/4;
+			y1B = stageHeight*3/4;
+		} else {
+			sx = 0;
+			sy = stageHeight/4;
+			x1 = stageWidth;
+			y1 = stageHeight/4;
+			x2 = 0;
+			y2 = stageHeight/2;
+			x3 = stageWidth;
+			y3 = stageHeight/2;
+			
+			syB = stageHeight*3/4;
+			y1B = stageHeight*3/4;
+		}
 
 		return(
 			<Stage width={stageWidth} height={stageHeight}>
