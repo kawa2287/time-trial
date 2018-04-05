@@ -344,6 +344,7 @@ export default class VsTournament extends React.Component {
 				gameCounter = gameCounter + 1;
 			}
 			loserBracket.push(<div>{nextRoundArr}</div>);
+			loserBracket.push(<div>{nextBezArr}</div>);
 			nextRoundArr=[];
 			nextBezArr=[];
 		}
