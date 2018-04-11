@@ -41,6 +41,20 @@ export default class BezierCurves extends React.Component {
 			
 			syB = stageHeight*3/4;
 			y1B = stageHeight*3/4;
+
+		} else if (this.props.bracket == 'loserBracket2'){
+			sx = stageWidth;
+			sy = stageHeight*1/4;
+			x1 = 0;
+			y1 = stageHeight*1/4;
+			x2 = stageWidth;
+			y2 = stageHeight*1/4;
+			x3 = 0;
+			y3 = stageHeight*1/4;
+			
+			syB = stageHeight*3/4;
+			y1B = stageHeight*3/4;
+
 		} else {
 			sx = 0;
 			sy = stageHeight/4;
@@ -59,25 +73,25 @@ export default class BezierCurves extends React.Component {
 			<Stage width={stageWidth} height={stageHeight}>
 				<Layer>
 					<Line
-		         sceneFunc={function (ctx) {
-		             ctx.beginPath();
-		             ctx.moveTo(sx, sy);
-		             ctx.bezierCurveTo(x1,y1,x2,y2,x3,y3);
-		             ctx.setAttr('strokeStyle', 'black');
-		             ctx.setAttr('lineWidth', 1);
-		             ctx.stroke();
-		         }}
-		     />
-				<Line
-		         sceneFunc={function (ctx) {
-		             ctx.beginPath();
-		             ctx.moveTo(sx, syB);
-		             ctx.bezierCurveTo(x1,y1B,x2,y2,x3,y3);
-		             ctx.setAttr('strokeStyle', 'black');
-		             ctx.setAttr('lineWidth', 1);
-		             ctx.stroke();
-		         }}
-		     />
+		         		sceneFunc={function (ctx) {
+				             ctx.beginPath();
+				             ctx.moveTo(sx, sy);
+				             ctx.bezierCurveTo(x1,y1,x2,y2,x3,y3);
+				             ctx.setAttr('strokeStyle', 'black');
+				             ctx.setAttr('lineWidth', 1);
+				             ctx.stroke();
+		         		}}
+		     		/>
+					<Line
+				         sceneFunc={function (ctx) {
+				             ctx.beginPath();
+				             ctx.moveTo(sx, syB);
+				             ctx.bezierCurveTo(x1,y1B,x2,y2,x3,y3);
+				             ctx.setAttr('strokeStyle', 'black');
+				             ctx.setAttr('lineWidth', 1);
+				             ctx.stroke();
+				         }}
+			     	/>
 				</Layer>
 			</Stage>
 		);

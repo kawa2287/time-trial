@@ -39,11 +39,12 @@ export default class GameComponent extends React.Component {
 			winner = this.props.playerB;
 		}
 		
-		this.props.SendWinner(
+		this.props.WinnerLoserHandler(
 			this.props.gameNumber, 
 			this.props.bracketSpots,
 			winner, 
-			loser
+			loser,
+			this.props.bracket
 		);
 	}
 	
@@ -83,6 +84,9 @@ export default class GameComponent extends React.Component {
 		var stageWidth = this.props.width;
 		var stageHeight = this.props.height;
 		var gameNumber = this.props.gameNumber;
+
+		var tiles = [];
+		
 		
 		return(
 			<Stage 

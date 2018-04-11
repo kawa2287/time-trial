@@ -196,34 +196,158 @@ export default class VsTournament extends React.Component {
 			return 'specialBracket';
 		}
 	}
+
+	WinnerLoserHandler (currentGameNum, bracketSpots, winPlayer, losePlayer, currentBracket){
+		var roundNumber = this.DetermineRoundNumber(currentGameNum, bracketSpots, currentBracket);
+		//Handle based on bracket Location
+		if (currentBracket == "startBracket"){
+			this.SendWinnerWinBracket(currentGameNum, roundNumber, winPlayer, bracketSpots);
+			this.SendLoserStartBracket(currentGameNum, losePlayer, bracketSpots);
+		} else if (currentBracket == "winnerBracket"){
+			this.SendWinnerWinBracket(currentGameNum, roundNumber, winPlayer, bracketSpots);
+			this.SendLoserWinBracket(currentGameNum, roundNumber,losePlayer, bracketSpots);
+		} else {
+			this.SendWinnerLoseBracket(currentGameNum, roundNumber, winPlayer, bracketSpots);
+		}
+	}
 	
-	SendWinner(currentGameNum, bracketSpots, winPlayer, losePlayer){
+	SendWinnerWinBracket(currentGameNum, roundNumber, winPlayer, bracketSpots){
 		//winner bracket path
-		var gameForWinner = 0.5*((currentGameNum % 2 ==0 ? currentGameNum : currentGameNum+1)+bracketSpots);
-		
-		if (this.state.masterGameObject[gameForWinner].spotsFilled == 0){ //hack
+		var destGame = 0.5*((currentGameNum % 2 ==0 ? currentGameNum : currentGameNum+1)+bracketSpots);
+		var topGame = (destGame * 2 - bracketSpots) - 1;
+		var botGame = (destGame * 2 - bracketSpots);
+
+
+		if (currentGameNum == topGame){
 			this.setState({
         	masterGameObject : {
 	        		...this.state.masterGameObject,
-	        		[gameForWinner] : {
-	        			...this.state.masterGameObject[gameForWinner],
-	        			playerA : winPlayer,
-	        			spotsFilled : 1
+	        		[destGame] : {
+	        			...this.state.masterGameObject[destGame],
+	        			playerA : winPlayer
 	        		}
 	        	}
 	        });
-		} else if(this.state.masterGameObject[gameForWinner].spotsFilled == 1) {
+		} else if(currentGameNum == botGame) {
 			this.setState({
         	masterGameObject : {
 	        		...this.state.masterGameObject,
-	        		[gameForWinner] : {
-	        			...this.state.masterGameObject[gameForWinner],
-	        			playerB : winPlayer,
-	        			spotsFilled : 2
+	        		[destGame] : {
+	        			...this.state.masterGameObject[destGame],
+	        			playerB : winPlayer
 	        		}
 	        	}
 	        });
 		}
+	}
+
+	SendWinnerLoseBracket(currentGameNum, roundNumber,winPlayer, bracketSpots){
+		var destGame;
+		if (roundNumber % 2 == 0) {
+			destGame = (currentGameNum % 2 == 0 ? currentGameNum : currentGameNum + 1)*0.5 + bracketSpots - this.NgmsInRndLBrkt(bracketSpots,roundNumber)/2;
+		} else {
+			destGame = currentGameNum + this.NgmsInRndLBrkt(bracketSpots,roundNumber);
+		};
+		console.log(destGame);
+
+		var topGame;
+		var botGame;
+		var destGameRnd = this.DetermineRoundNumber(destGame,bracketSpots,"loserBracket");
+
+		if (destGameRnd % 2 == 0){
+			topGame = destGame - this.NgmsInRndLBrkt(bracketSpots,destGameRnd);
+			botGame = destGame + this.NgmsInRndLBrkt(bracketSpots,destGameRnd) - bracketSpots;
+		} else {
+			topGame = 2 * (destGame - bracketSpots + this.NgmsInRndLBrkt(bracketSpots,destGameRnd)) - 1;
+			botGame = 2 * (destGame - bracketSpots + this.NgmsInRndLBrkt(bracketSpots,destGameRnd));
+		}
+
+		if (currentGameNum == topGame){
+			this.setState({
+        	masterGameObject : {
+	        		...this.state.masterGameObject,
+	        		[destGame] : {
+	        			...this.state.masterGameObject[destGame],
+	        			playerA : winPlayer
+	        		}
+	        	}
+	        });
+		} else if(currentGameNum == botGame) {
+			this.setState({
+        	masterGameObject : {
+	        		...this.state.masterGameObject,
+	        		[destGame] : {
+	        			...this.state.masterGameObject[destGame],
+	        			playerB : winPlayer
+	        		}
+	        	}
+	        });
+		}
+	}
+
+	SendLoserWinBracket(currentGameNum, roundNumber,losePlayer, bracketSpots){
+		var destGame = currentGameNum + bracketSpots - this.NgmsInRndWBrkt(bracketSpots, roundNumber);
+		var destGameRnd = this.DetermineRoundNumber(destGame,bracketSpots,"loserBracket");
+		var topGame;
+		var botGame;
+
+		if (destGameRnd % 2 == 0){
+			topGame = destGame - this.NgmsInRndLBrkt(bracketSpots,destGameRnd);
+			botGame = destGame + this.NgmsInRndLBrkt(bracketSpots,destGameRnd) - bracketSpots;
+		} else {
+			topGame = 2 * (destGame - bracketSpots + this.NgmsInRndLBrkt(bracketSpots,destGameRnd)) - 1;
+			botGame = 2 * (destGame - bracketSpots + this.NgmsInRndLBrkt(bracketSpots,destGameRnd));
+		}
+
+		if (currentGameNum == topGame){
+			this.setState({
+        	masterGameObject : {
+	        		...this.state.masterGameObject,
+	        		[destGame] : {
+	        			...this.state.masterGameObject[destGame],
+	        			playerA : losePlayer
+	        		}
+	        	}
+	        });
+		} else if(currentGameNum == botGame) {
+			this.setState({
+        	masterGameObject : {
+	        		...this.state.masterGameObject,
+	        		[destGame] : {
+	        			...this.state.masterGameObject[destGame],
+	        			playerB : losePlayer
+	        		}
+	        	}
+	        });
+		}
+	}
+
+	SendLoserStartBracket(currentGameNum, losePlayer, bracketSpots){
+		var destGame = 0.5*(currentGameNum % 2 ==0 ? currentGameNum : currentGameNum+1)+bracketSpots;
+		var topGame = 2 * (destGame - bracketSpots) - 1;
+		var botGame = 2 * (destGame - bracketSpots);
+
+		if (currentGameNum == topGame){
+			this.setState({
+        	masterGameObject : {
+	        		...this.state.masterGameObject,
+	        		[destGame] : {
+	        			...this.state.masterGameObject[destGame],
+	        			playerA : losePlayer
+	        		}
+	        	}
+	        });
+		} else if(currentGameNum == botGame) {
+			this.setState({
+        	masterGameObject : {
+	        		...this.state.masterGameObject,
+	        		[destGame] : {
+	        			...this.state.masterGameObject[destGame],
+	        			playerB : losePlayer
+	        		}
+	        	}
+	        });
+		}		
 	}
 	
 	buttonClick(){
@@ -288,7 +412,7 @@ export default class VsTournament extends React.Component {
 					width = {baseStageWidth}
 					gameNumber = {this.state.masterGameObject[gameCounter].gameNumber}
 					bracket = {this.state.masterGameObject[gameCounter].bracket}
-					SendWinner = {this.SendWinner.bind(this)}
+					WinnerLoserHandler = {this.WinnerLoserHandler.bind(this)}
 					bracketSpots = {bracketSpots}
 					/>);
 				
@@ -316,6 +440,7 @@ export default class VsTournament extends React.Component {
 		
 		//create Games in Losers Bracket
 		var loserBracket = [];
+		var startBezArr = [];
 		
 		for (k = 0; k < LoserArr.length; k++){
 			for( i = 0; i < LoserArr[k]; i++){
@@ -331,18 +456,28 @@ export default class VsTournament extends React.Component {
 					width = {baseStageWidth}
 					gameNumber = {this.state.masterGameObject[gameCounter].gameNumber}
 					bracket = {this.state.masterGameObject[gameCounter].bracket}
-					SendWinner = {this.SendWinner.bind(this)}
+					WinnerLoserHandler = {this.WinnerLoserHandler.bind(this)}
 					bracketSpots = {bracketSpots}
 					/>);
 				
 				nextBezArr.push(<BezierCurves
 					height = {baseStageHeight* Math.pow(2,round % 2 == 0 ? round/2 : (round +1) /2)}
 					width = {40}
-					bracket = {this.state.masterGameObject[gameCounter].bracket}
+					bracket = {this.state.masterGameObject[gameCounter].bracket + (round%2 == 0?'':2)}
 					/>); 
 				
 				gameCounter = gameCounter + 1;
 			}
+			if (k == 0){
+				for (var n = 0; n < bracketSpots/2; n++){
+					startBezArr.push(<BezierCurves
+					height = {baseStageHeight}
+					width = {40}
+					bracket = {this.state.masterGameObject[gameCounter].bracket}
+					/>);
+				}
+				loserBracket.push(<div>{startBezArr}</div>)
+			};
 			loserBracket.push(<div>{nextRoundArr}</div>);
 			loserBracket.push(<div>{nextBezArr}</div>);
 			nextRoundArr=[];
