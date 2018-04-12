@@ -57,26 +57,19 @@ export default class TileTeam extends React.Component {
 	}
 	
 	render(){
-		var stageWidth = this.props.width;
-		var stageHeight = this.props.height;
-		var rectWidth = stageWidth;
-		var rectHeight = 48;
-		var rectX = (stageWidth - rectWidth)*0.5;
-		var rectY = (stageHeight - rectHeight)*0.5;
-		var timeTrialClipW = 40;
-		var seedClipW = 40;
+		var teamWidth = this.props.width;
+		var teamHeight = this.props.height;
+		var clipWidth = teamHeight;
 		var fontSize = 12;
 		var seedFontSize = 16;
 		
 		
 		return(
-			<Group y={this.props.globalY}>
+			<Group x={this.props.globalX} y={this.props.globalY}>
 				<Group>
 					<Rect 
-						x={rectX} 
-						y={rectY}
-						width={rectWidth}
-	        			height={rectHeight}
+						width={teamWidth}
+	        			height={teamHeight}
 	                    fill= {this.BackgroundColor(this.props.name,this.props.hover)}
 						stroke= 'black'
 						strokeWidth= {0.5}
@@ -86,14 +79,12 @@ export default class TileTeam extends React.Component {
                 <Group
                 	clipX = {0}
                 	clipY = {0}
-		            clipWidth = {seedClipW}
-		            clipHeight = {stageHeight}
+		            clipWidth = {clipWidth}
+		            clipHeight = {teamHeight}
             	>	
                     <Rect 
-						x={rectX} 
-						y={rectY}
-						width={rectWidth}
-	        			height={rectHeight}
+						width={teamWidth}
+	        			height={teamHeight}
 	                    fill= {seedColor}
 						stroke= 'black'
 						strokeWidth= {0.5}
@@ -101,16 +92,14 @@ export default class TileTeam extends React.Component {
                     />
                 </Group>
                 <Group
-                	clipX = {stageWidth - timeTrialClipW }
+                	clipX = {teamWidth - clipWidth}
                 	clipY = {0}
-		            clipWidth = {timeTrialClipW}
-		            clipHeight = {stageHeight}
+		            clipWidth = {clipWidth}
+		            clipHeight = {teamHeight}
             	>	
                     <Rect 
-						x={rectX} 
-						y={rectY}
-						width={rectWidth}
-	        			height={rectHeight}
+						width={teamWidth}
+	        			height={teamHeight}
 	                    fill= {timeColor}
 						stroke= 'black'
 						strokeWidth= {0.5}
@@ -118,10 +107,10 @@ export default class TileTeam extends React.Component {
                     />
                 </Group>
                 <Group>
-                	<Text
+                	<Text //seed number
                 		text = {this.props.seed}
-                		x = {seedClipW/2 + rectX - 9}
-                		y = {(stageHeight-seedFontSize)/2}
+                		x = {clipWidth/2 - 9}
+                		y = {(teamHeight-seedFontSize)/2}
                 		fontSize = {seedFontSize}
                 		fontStyle = 'bold'
                 		shadowBlur = {2}
@@ -129,33 +118,32 @@ export default class TileTeam extends React.Component {
                 		width = {18}
                 		align = 'center'
                 	/>
-                	<Text
+                	<Text //player name
                 		text = {this.props.name}
-                		x = {seedClipW + rectX + 48 + 10}
-                		y = {(stageHeight-fontSize)/2}
+                		x = {clipWidth + 48 + 10}
+                		y = {(teamHeight-fontSize)/2}
                 		fontSize = {fontSize}
                 		fontVariant = 'small-caps'
                 		fill = 'black'
-                		width = {rectWidth-seedClipW-timeTrialClipW}
+                		width = {teamWidth - 2 * teamHeight}
                 		align = 'left'
                 	/>
-                	<Text
+                	<Text //player avg time
                 		text = {this.props.time}
-                		x = { stageWidth - timeTrialClipW}
-                		y = {(stageHeight-fontSize)/2}
+                		x = {teamWidth - clipWidth}
+                		y = {(teamHeight-fontSize)/2}
                 		fontSize = {fontSize}
                 		fill = 'white'
-                		width = {timeTrialClipW}
+                		width = {clipWidth}
                 		align = 'center'
                 		shadowBlur = {2}
                 	/>
 					<TileFlag
 						img = {this.props.img}
-						rectHeight = {rectHeight}
-						rectWidth = {rectWidth}
-						rectX = {rectX + seedClipW}
-						rectY = {rectY}
-						stageHeight = {stageHeight}
+						rectHeight = {teamHeight}
+						rectWidth = {teamWidth}
+						rectX = {clipWidth}
+						stageHeight = {teamHeight}
 					/>
 				</Group>
 			</Group>

@@ -2,9 +2,13 @@
 
 import React from 'react';
 import Konva from "konva";
-import { Stage, Layer, Text } from "react-konva";
+import { Rect, Group, Text } from "react-konva";
 import TileTeam from './TileTeam';
 
+var defaultColor = '#7F7F7F';
+var completeColor = '#A3A3CC';
+var availableColor = '#FEFCF9';
+var hoverColor = '#FBF1E3';
 
 export default class GameComponent extends React.Component {
 	constructor(props){
@@ -23,11 +27,23 @@ export default class GameComponent extends React.Component {
 	}
 	
 	
-	//for testing
+	//for testing/////////////////////////////////////////
 	randomIntFromInterval(min,max)
 	{
 	    return Math.floor(Math.random()*(max-min+1)+min);
 	}
+	//////////////////////////////////////////////////////
+	
+	BackgroundColor(name, hover){
+		if (name === 'COMPLETE'){
+			return completeColor;
+		} else if (hover === true) {
+			return hoverColor;
+		} else {
+			return defaultColor;
+		}
+	}
+	
 	
 	handleOnclick (){
 		var decider = this.randomIntFromInterval(0,100);
@@ -81,44 +97,75 @@ export default class GameComponent extends React.Component {
 	}
 
 	render(){
-		var stageWidth = this.props.width;
-		var stageHeight = this.props.height;
-		var gameNumber = this.props.gameNumber;
-
-		var tiles = [];
-		
+		var teamHeight = this.props.vizGeo.teamHeight;
+		var teamWidth = this.props.vizGeo.teamWidth;
+		var gameWidth = teamWidth + 2 * teamHeight;
+		var gameHeight = teamHeight * 3.5;
+		var gameFontSize = 16;
 		
 		return(
-			<Stage 
-				width={stageWidth} 
-				height={stageHeight}
+			<Group 
+				x={this.props.x}
+				y={this.props.y}
+				width={gameWidth} 
+				height={gameHeight}
 				onClick={this.handleOnclick.bind(this)}
 				onmouseover={this.handleOnMouseOver.bind(this)}
 				onmouseout={this.handleOnMouseOut.bind(this)}
+				draggable={true}
 			>
-				<Layer>
-					<TileTeam
-						seed = {this.state.seedA}
-						name = {this.state.nameA}
-						time = {this.state.timeTrialA}
-						img = {this.state.flagA}
-						height = {stageHeight/2}
-						width = {stageWidth}
-						globalY = {0}
-						hover = {this.state.hover}
-					/>
-					<TileTeam
-						seed = {this.state.seedB}
-						name = {this.state.nameB}
-						time = {this.state.timeTrialB}
-						img = {this.state.flagB}
-						height = {stageHeight/2}
-						width = {stageWidth}
-						globalY = {stageHeight/2}
-						hover = {this.state.hover}
-					/>
-				</Layer>
-			</Stage>
+				<Rect
+					x={0}
+					y={0}
+					width={gameWidth}
+        			height={gameHeight}
+                    fill= {this.BackgroundColor(this.props.name,this.props.hover)}
+					stroke= 'black'
+					strokeWidth= {2}
+				/>
+				<Rect
+					x={0}
+					y={0}
+					width={teamHeight}
+        			height={gameHeight}
+                    fill= {'#323232'}
+					stroke= 'black'
+					strokeWidth= {2}
+				/>
+				<Text //game number
+            		text = {this.props.gameNumber}
+            		x = {teamHeight/2 - 9}
+            		y = {(gameHeight-gameFontSize)/2}
+            		fontSize = {gameFontSize}
+            		fontStyle = 'bold'
+            		shadowBlur = {2}
+            		fill = 'white'
+            		width = {18}
+            		align = 'center'
+            	/>
+				<TileTeam
+					seed = {this.state.seedA}
+					name = {this.state.nameA}
+					time = {this.state.timeTrialA}
+					img = {this.state.flagA}
+					height = {teamHeight}
+					width = {teamWidth}
+					globalX = {1.5*teamHeight}
+					globalY = {0.5*teamHeight}
+					hover = {this.state.hover}
+				/>
+				<TileTeam
+					seed = {this.state.seedB}
+					name = {this.state.nameB}
+					time = {this.state.timeTrialB}
+					img = {this.state.flagB}
+					height = {teamHeight}
+					width = {teamWidth}
+					globalX = {1.5*teamHeight}
+					globalY = {2*teamHeight}
+					hover = {this.state.hover}
+				/>
+			</Group>
 		);
 	}
 }
