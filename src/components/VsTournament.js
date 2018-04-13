@@ -358,23 +358,21 @@ export default class VsTournament extends React.Component {
 		var vizGeo = {
 			teamHeight : 48,
 			teamWidth : 300,
-			horizSpace : 90,
+			horizSpace : 96,
 			vertSpace : 84
 		};
-		
 		
 		//------------------------------------------------------------------
 		//this.props.location.state.'GIVEN NAME' to access props thru Link
 		//------------------------------------------------------------------
+		var k = 0;
 		var teams = Object.keys(this.props.location.state.players).length;
 		var bracketSpots = Math.pow(2,this.DetermineBracketPower(teams));
 		var bracketPower = this.DetermineBracketPower(teams);
-		var k = 0;
 		var gameWidth = vizGeo.teamWidth + 2*vizGeo.teamHeight;
 		var gameHeight = vizGeo.teamHeight*3.5;
 		var boardHeight = vizGeo.vertSpace*(3+(bracketSpots/2)) + bracketSpots*gameHeight/2;
 		
-		//create tournament skeleton
 		//create loserArr
 		var LoserArr = [];
 		for (k = 1; k <= 2*(bracketPower-1); k++){
@@ -388,38 +386,56 @@ export default class VsTournament extends React.Component {
 		
 		//create Games in Winner Bracket (includes start round)
 		var winnerBracket = [];
-		var nextRoundArr = [];
-		var nextBezArr = [];
+		var bezArr = [];
 		var gameCounter = 1;
 		
 		for (k = 0; k < winnerArr.length; k++){
 			for(var i = 0; i < winnerArr[k]; i++){
 				
-				var round = this.DetermineRoundNumber(
-						this.state.masterGameObject[gameCounter].gameNumber,
-						bracketSpots,
-						this.state.masterGameObject[gameCounter].bracket);
+				var moduleCCht = (gameHeight+vizGeo.vertSpace)*Math.pow(2,k);		
+				var halfModuleHeight = ((gameHeight+vizGeo.vertSpace)*(Math.pow(2,k))-vizGeo.vertSpace)/2;
+				var xLoc = (k+(bracketPower-1)*2)*(gameWidth+vizGeo.horizSpace) + vizGeo.horizSpace;
+				var yLoc = boardHeight-(winnerArr[k]-i)*(gameHeight+vizGeo.vertSpace)*(Math.pow(2,k)) - vizGeo.vertSpace + halfModuleHeight - gameHeight/2;
 				
 				winnerBracket.push(
 					<GameComponent
 						playerA = {this.state.masterGameObject[gameCounter].playerA}
 						playerB = {this.state.masterGameObject[gameCounter].playerB}
-						height = {vizGeo.gameHeight * Math.pow(2,this.round)}
-						width = {vizGeo.gameWidth}
 						gameNumber = {this.state.masterGameObject[gameCounter].gameNumber}
 						bracket = {this.state.masterGameObject[gameCounter].bracket}
 						WinnerLoserHandler = {this.WinnerLoserHandler.bind(this)}
 						bracketSpots = {bracketSpots}
 						vizGeo = {vizGeo}
-						x = {(round+(bracketPower-1)*2)*(gameWidth+vizGeo.horizSpace)}
-						y = {boardHeight-(this.NgmsInRndWBrkt(bracketSpots,round)-i)*(gameHeight+vizGeo.vertSpace)*(Math.pow(2,round)) - vizGeo.vertSpace +((gameHeight+vizGeo.vertSpace)*(Math.pow(2,round))-vizGeo.vertSpace)/2 - gameHeight/2}
+						x = {xLoc}
+						y = {yLoc}
 					/>
 				);
 				
-				nextBezArr.push(
+				var ye = i % 2 == 0 ? yLoc + (gameHeight + moduleCCht)/2 : yLoc + (gameHeight - moduleCCht)/2;
+				
+				if(k == winnerArr.length -1 && i == winnerArr[k]-1){
+					ye = yLoc + gameHeight/2;
+				}
+				
+				//push in loser side at same time for start round
+				if(k==0){
+					bezArr.push(
+						<BezierCurves
+							xs = {xLoc}
+							ys = {yLoc + gameHeight/2}
+							xe = {xLoc - vizGeo.horizSpace}
+							ye = {ye}
+							bracket = {this.state.masterGameObject[gameCounter].bracket + (k%2 == 0?'':2)}
+						/>
+					);
+				}
+				
+				bezArr.push(
 					<BezierCurves
-						height = {vizGeo.gameHeight*Math.pow(2,round)}
-						width = {40}
+						xs = {xLoc + gameWidth}
+						ys = {yLoc + gameHeight/2}
+						xe = {xLoc + gameWidth + vizGeo.horizSpace}
+						ye = {ye}
 						bracket = {this.state.masterGameObject[gameCounter].bracket}
 					/>
 				);
@@ -428,69 +444,74 @@ export default class VsTournament extends React.Component {
 		}
 		
 		//create Special Bracket for Winners
+		winnerBracket.push(
+			<GameComponent
+				playerA = {this.state.masterGameObject[gameCounter].playerA}
+				playerB = {this.state.masterGameObject[gameCounter].playerB}
+				gameNumber = {this.state.masterGameObject[gameCounter].gameNumber}
+				bracket = {this.state.masterGameObject[gameCounter].bracket}
+				WinnerLoserHandler = {this.WinnerLoserHandler.bind(this)}
+				bracketSpots = {bracketSpots}
+				vizGeo = {vizGeo}
+				x = {(winnerArr.length+(bracketPower-1)*2)*(gameWidth+vizGeo.horizSpace) + vizGeo.horizSpace}
+				y = {(boardHeight-gameHeight)/2}
+			/>
+		);
 		gameCounter = gameCounter + 1;
 		
 		//create Games in Losers Bracket
 		var loserBracket = [];
-		var startBezArr = [];
 		
 		for (k = 0; k < LoserArr.length; k++){
 			for( i = 0; i < LoserArr[k]; i++){
 				
-				round = this.DetermineRoundNumber(
-						this.state.masterGameObject[gameCounter].gameNumber,
-						bracketSpots,
-						this.state.masterGameObject[gameCounter].bracket);
+				moduleCCht = (gameHeight+vizGeo.vertSpace)*Math.pow(2,k%2==0?(k/2)+1:(k+1)/2);
+				xLoc = ((bracketPower-1)*2)*vizGeo.horizSpace + (((bracketPower-1)*2)-1)*gameWidth - k*(gameWidth+vizGeo.horizSpace);
+				yLoc = boardHeight-(LoserArr[k]-i)*(gameHeight+vizGeo.vertSpace)*(Math.pow(2,(k%2==0?(k/2)+1:(k+1)/2))) - vizGeo.vertSpace + ((gameHeight+vizGeo.vertSpace)*(Math.pow(2,(k%2==0?(k/2)+1:(k+1)/2)))-vizGeo.vertSpace)/2 - gameHeight/2;
+				console.log('moduleCCht' + moduleCCht);
+				
 						
-				nextRoundArr.push(
+				loserBracket.push(
 					<GameComponent
 						playerA = {this.state.masterGameObject[gameCounter].playerA}
 						playerB = {this.state.masterGameObject[gameCounter].playerB}
-						height = {vizGeo.gameHeight * Math.pow(2,round % 2 == 0 ? round/2 : (round +1) /2)}
-						width = {vizGeo.gameWidth}
 						gameNumber = {this.state.masterGameObject[gameCounter].gameNumber}
 						bracket = {this.state.masterGameObject[gameCounter].bracket}
 						WinnerLoserHandler = {this.WinnerLoserHandler.bind(this)}
 						bracketSpots = {bracketSpots}
 						vizGeo = {vizGeo}
+						x = {xLoc}
+						y = {yLoc}
 					/>
 				);
 				
-				nextBezArr.push(
+				ye = i % 2 == 0 ? yLoc + (gameHeight + moduleCCht)/2 : yLoc + (gameHeight - moduleCCht)/2;
+				
+				if(k%2 ==0 ){
+					ye = yLoc + gameHeight/2;
+				}
+				
+				bezArr.push(
 					<BezierCurves
-						height = {vizGeo.gameHeight* Math.pow(2,round % 2 == 0 ? round/2 : (round +1) /2)}
-						width = {40}
-						bracket = {this.state.masterGameObject[gameCounter].bracket + (round%2 == 0?'':2)}
+						xs = {xLoc}
+						ys = {yLoc + gameHeight/2}
+						xe = {xLoc - vizGeo.horizSpace}
+						ye = {ye}
+						bracket = {this.state.masterGameObject[gameCounter].bracket + (k%2 == 0?'':2)}
 					/>
 				); 
-				
 				gameCounter = gameCounter + 1;
 			}
-			if (k == 0){
-				for (var n = 0; n < bracketSpots/2; n++){
-					startBezArr.push(
-						<BezierCurves
-							height = {vizGeo.gameHeight}
-							width = {40}
-							bracket = {this.state.masterGameObject[gameCounter].bracket}
-						/>
-					);
-				}
-				loserBracket.push(<div>{startBezArr}</div>);
-			}
-			loserBracket.push(<div>{nextRoundArr}</div>);
-			loserBracket.push(<div>{nextBezArr}</div>);
-			nextRoundArr=[];
-			nextBezArr=[];
 		}
 		
-		loserBracket.reverse();
 		
 		return (
 			<Stage width={window.innerWidth} height={window.innerHeight} draggable={true}>
 				<Layer>
 					<Group>
+						{loserBracket.map(element => element)}
 						{winnerBracket.map(element => element)}
+						{bezArr.map(element => element)}
 					</Group>
 				</Layer>
 			</Stage>

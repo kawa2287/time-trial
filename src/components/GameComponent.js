@@ -112,7 +112,7 @@ export default class GameComponent extends React.Component {
 				onClick={this.handleOnclick.bind(this)}
 				onmouseover={this.handleOnMouseOver.bind(this)}
 				onmouseout={this.handleOnMouseOut.bind(this)}
-				draggable={true}
+				draggable={false}
 			>
 				<Rect
 					x={0}
