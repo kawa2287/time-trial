@@ -24,8 +24,6 @@ export default class TileFlag extends React.Component {
   
 	componentWillReceiveProps(newProps) {
 		if (newProps.img !== this.props.img){
-			console.log('received new flag');
-			console.log(newProps.img);
 			const image = new window.Image();
 	        image.src = newProps.img;
 	        image.onload = () => {
@@ -37,13 +35,15 @@ export default class TileFlag extends React.Component {
 	}
 
     render() {
-  		var imgHt = 30;
+  		var imgHt = 48;
+  		var imgWidth =48;
   		var imgX = 5 + this.props.rectX;
   		var imgY = (this.props.stageHeight/2) - (imgHt/2);
-  		console.log('rendering...');
 
     	return <Image 
     		image={this.state.image} 
+    		height={imgHt}
+    		width={imgWidth}
     		ref={node => this.imageNode = node} 
     		x = {imgX}
     		y = {imgY}

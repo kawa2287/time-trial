@@ -4,11 +4,12 @@ import React from 'react';
 import Konva from "konva";
 import { Rect, Group, Text } from "react-konva";
 import TileTeam from './TileTeam';
+import Colors from '../static/Colors';
 
-var defaultColor = '#7F7F7F';
-var completeColor = '#A3A3CC';
-var availableColor = '#FEFCF9';
-var hoverColor = '#FBF1E3';
+var defaultColor = Colors.gameNotReadyColor;
+var completeColor = Colors.gameCompleteColor;
+var availableColor = Colors.gameAvailColor;
+var gameNumberColor = Colors.gameNumberColor;
 
 export default class GameComponent extends React.Component {
 	constructor(props){
@@ -16,13 +17,18 @@ export default class GameComponent extends React.Component {
 		this.state = {
 			nameA : this.props.playerA.name,
 			nameB : this.props.playerB.name,
+			countryA :this.props.playerA.country.name,
+			countryB: this.props.playerB.country.name,
 			seedA : this.props.playerA.seed,
 			seedB : this.props.playerB.seed,
 			timeTrialA : this.props.playerA.timeTrial,
 			timeTrialB : this.props.playerB.timeTrial,
-			flagA : this.props.playerA.country.flagPathMD,
-			flagB : this.props.playerB.country.flagPathMD,
-			hover : false
+			flagA : this.props.playerA.country.flagPathSVG,
+			flagB : this.props.playerB.country.flagPathSVG,
+			lossesA : this.props.playerA.losses,
+			lossesB : this.props.playerB.losses,
+			hover : false,
+			status : this.props.status
 		};
 	}
 	
@@ -34,28 +40,43 @@ export default class GameComponent extends React.Component {
 	}
 	//////////////////////////////////////////////////////
 	
-	BackgroundColor(name, hover){
-		if (name === 'COMPLETE'){
+	BackgroundColor(status){
+		if (status === 'COMPLETE'){
 			return completeColor;
-		} else if (hover === true) {
-			return hoverColor;
+		} else if (this.props.playerA.seed>=1 && this.props.playerB.seed >=1) {
+			return availableColor;
 		} else {
 			return defaultColor;
 		}
 	}
 	
 	
-	handleOnclick (){
-		var decider = this.randomIntFromInterval(0,100);
+	handleOnclick (e){
 		
-		var winner = decider > 50 ? this.props.playerA : this.props.playerB;
-		var loser = decider <= 50 ? this.props.playerA : this.props.playerB;
+		var pAtime = this.props.playerA.timeTrial + (this.randomIntFromInterval(-10,15));
+		var pBtime = this.props.playerB.timeTrial + (this.randomIntFromInterval(-10,15));
 		
-		if(winner.name == 'BYE'){
+		var winner;
+		var loser;
+		
+		// decide winner or loser
+		if (this.props.playerB.name =="BYE") {
+			winner = this.props.playerA;
+			loser = this.props.playerB;
+		} else if ( this.props.playerA.name == "BYE"){
 			winner = this.props.playerB;
+			loser = this.props.playerA;
+		}else if (pAtime <= pBtime){
+			winner = this.props.playerA;
+			loser = this.props.playerB;
+		} else if (pAtime > pBtime) {
+			winner = this.props.playerB;
+			loser = this.props.playerA;
 		}
 		
+		//determine where to send players
 		this.props.WinnerLoserHandler(
+			e,
 			this.props.gameNumber, 
 			this.props.bracketSpots,
 			winner, 
@@ -67,16 +88,12 @@ export default class GameComponent extends React.Component {
 	handleOnMouseOver(){
 		this.setState({
 			hover : true
-		}, function afterClick() {
-			console.log("hover on!");
 		});
 	}
 	
 	handleOnMouseOut (){
 		this.setState({
 			hover : false
-		}, function afterClick() {
-			console.log("hover off!");
 		});
 	}
 
@@ -88,13 +105,19 @@ export default class GameComponent extends React.Component {
 				nameB : newProps.playerB.name,
 				seedA : newProps.playerA.seed,
 				seedB : newProps.playerB.seed,
+				countryA : newProps.playerA.country.name,
+				countryB: newProps.playerB.country.name,
 				timeTrialA : newProps.playerA.timeTrial,
 				timeTrialB : newProps.playerB.timeTrial,
-				flagA : newProps.playerA.country.flagPathMD,
-				flagB : newProps.playerB.country.flagPathMD
+				flagA : newProps.playerA.country.flagPathSVG,
+				flagB : newProps.playerB.country.flagPathSVG,
+				lossesA : newProps.playerA.losses,
+				lossesB : newProps.playerB.losses,
+				status : newProps.status
 		    });
 		}
 	}
+
 
 	render(){
 		var teamHeight = this.props.vizGeo.teamHeight;
@@ -102,6 +125,11 @@ export default class GameComponent extends React.Component {
 		var gameWidth = teamWidth + 2 * teamHeight;
 		var gameHeight = teamHeight * 3.5;
 		var gameFontSize = 16;
+		
+		console.log('gameNumber', this.props.gameNumber);
+		console.log('gameComponentStatus', this.props.status);
+		console.log('dumbStatus', this.props.playerA.seed>=1 && this.props.playerB.seed >=1);
+		console.log('-----------------------');
 		
 		return(
 			<Group 
@@ -119,7 +147,7 @@ export default class GameComponent extends React.Component {
 					y={0}
 					width={gameWidth}
         			height={gameHeight}
-                    fill= {this.BackgroundColor(this.props.name,this.props.hover)}
+                    fill= {this.BackgroundColor(this.state.status)}
 					stroke= 'black'
 					strokeWidth= {2}
 				/>
@@ -128,7 +156,7 @@ export default class GameComponent extends React.Component {
 					y={0}
 					width={teamHeight}
         			height={gameHeight}
-                    fill= {'#323232'}
+                    fill= {gameNumberColor}
 					stroke= 'black'
 					strokeWidth= {2}
 				/>
@@ -145,6 +173,7 @@ export default class GameComponent extends React.Component {
             	/>
 				<TileTeam
 					seed = {this.state.seedA}
+					country = {this.state.countryA}
 					name = {this.state.nameA}
 					time = {this.state.timeTrialA}
 					img = {this.state.flagA}
@@ -153,9 +182,11 @@ export default class GameComponent extends React.Component {
 					globalX = {1.5*teamHeight}
 					globalY = {0.5*teamHeight}
 					hover = {this.state.hover}
+					losses = {this.state.lossesA}
 				/>
 				<TileTeam
 					seed = {this.state.seedB}
+					country = {this.state.countryB}
 					name = {this.state.nameB}
 					time = {this.state.timeTrialB}
 					img = {this.state.flagB}
@@ -164,6 +195,7 @@ export default class GameComponent extends React.Component {
 					globalX = {1.5*teamHeight}
 					globalY = {2*teamHeight}
 					hover = {this.state.hover}
+					losses = {this.state.lossesB}
 				/>
 			</Group>
 		);

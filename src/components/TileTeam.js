@@ -4,12 +4,16 @@ import React from 'react';
 import Konva from "konva";
 import {Group, Rect, Text } from "react-konva";
 import TileFlag from './TileFlag';
+import Colors from '../static/Colors';
 
-var tileColor = '#eef3f5';
-var byeColor = '#0CC6BD';
-var hoverColor = '#FCBFB8';
-var seedColor = '#4A0D53';
-var timeColor = '#E68E38';
+var tileColor = Colors.tileColor;
+var byeColor = Colors.byeColor;
+var hoverColor = Colors.hoverColor;
+var seedColor = Colors.seedColor;
+var timeColor = Colors.timeColor;
+var eliminatedColor = Colors.eliminatedColor;
+var loserColor
+var emptyColor = Colors.gameNotReadyColor;
 
 export default class TileTeam extends React.Component {
 	constructor(props){
@@ -23,9 +27,13 @@ export default class TileTeam extends React.Component {
 		};
 	}
 	
-	BackgroundColor(name, hover){
+	BackgroundColor(name, hover, losses){
 		if (name === 'BYE'){
 			return byeColor;
+		} else if (losses >=2){
+			return eliminatedColor;
+		} else if (name === '') {
+			return (emptyColor);
 		} else if (hover === true) {
 			return hoverColor;
 		} else {
@@ -33,29 +41,15 @@ export default class TileTeam extends React.Component {
 		}
 	}
 	
-	handleOnMouseOver (){
-		this.setState(
-			{
-				filter: Konva.Filters.Grayscale
-			},
-			function afterClick(){
-				this.mainGroup.cache();
-			}
-		);
+	nameDisplay(name,country,hover){
+		if (hover === true){
+			return country;
+		} else {
+			return name;
+		}
 	}
-	
-	handleOnMouseOut (){
-		this.setState(
-			{
-				filter: Konva.Filters.Enhance
-			},
-			function afterClick(){
-				this.mainGroup.cache();
-				this.mainGroup.enhance(0.5);
-			}
-		);
-	}
-	
+
+
 	render(){
 		var teamWidth = this.props.width;
 		var teamHeight = this.props.height;
@@ -70,7 +64,7 @@ export default class TileTeam extends React.Component {
 					<Rect 
 						width={teamWidth}
 	        			height={teamHeight}
-	                    fill= {this.BackgroundColor(this.props.name,this.props.hover)}
+	                    fill= {this.BackgroundColor(this.props.name,this.props.hover,this.props.losses)}
 						stroke= 'black'
 						strokeWidth= {0.5}
 						cornerRadius={5}
@@ -119,7 +113,7 @@ export default class TileTeam extends React.Component {
                 		align = 'center'
                 	/>
                 	<Text //player name
-                		text = {this.props.name}
+                		text = {this.nameDisplay(this.props.name,this.props.country,this.props.hover)}
                 		x = {clipWidth + 48 + 10}
                 		y = {(teamHeight-fontSize)/2}
                 		fontSize = {fontSize}

@@ -6,12 +6,6 @@ import { Line } from "react-konva";
 
 
 export default class BezierCurves extends React.Component {
-	
-	victoryLine (victory){
-		if(victory === true) {
-			return 4;
-		}
-	}
 
 	render(){
 		var sx;
@@ -32,6 +26,8 @@ export default class BezierCurves extends React.Component {
 		x3 = this.props.xe;
 		y3 = this.props.ye;
 		
+		var color = this.props.color;
+		var stroke = this.props.stroke;
 
 		return(
 			<Line
@@ -39,8 +35,8 @@ export default class BezierCurves extends React.Component {
 		             ctx.beginPath();
 		             ctx.moveTo(sx, sy);
 		             ctx.bezierCurveTo(x1,y1,x2,y2,x3,y3);
-		             ctx.setAttr('strokeStyle', 'black');
-		             ctx.setAttr('lineWidth', 1);
+		             ctx.setAttr('strokeStyle', color);
+		             ctx.setAttr('lineWidth', stroke);
 		             ctx.stroke();
          		}}
      		/>
