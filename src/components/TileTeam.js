@@ -12,7 +12,7 @@ var hoverColor = Colors.hoverColor;
 var seedColor = Colors.seedColor;
 var timeColor = Colors.timeColor;
 var eliminatedColor = Colors.eliminatedColor;
-var loserColor
+var loserColor = Colors.byeColor;
 var emptyColor = Colors.gameNotReadyColor;
 
 export default class TileTeam extends React.Component {
@@ -27,11 +27,13 @@ export default class TileTeam extends React.Component {
 		};
 	}
 	
-	BackgroundColor(name, hover, losses){
+	BackgroundColor(name, hover){
 		if (name === 'BYE'){
 			return byeColor;
-		} else if (losses >=2){
+		} else if (name == this.props.loser && this.props.loserEliminated ){
 			return eliminatedColor;
+		} else if (name == this.props.loser) {
+			return loserColor;
 		} else if (name === '') {
 			return (emptyColor);
 		} else if (hover === true) {
@@ -41,11 +43,28 @@ export default class TileTeam extends React.Component {
 		}
 	}
 	
+	TextDecoration(name) {
+		if( name == this.props.loser) {
+			return 'line-through';
+		} else {
+			return '';
+		}
+	}
+	
+	
 	nameDisplay(name,country,hover){
 		if (hover === true){
 			return country;
 		} else {
 			return name;
+		}
+	}
+	
+	timeDisplay(time,winChance,hover){
+		if (hover === true){
+			return winChance+'%';
+		} else {
+			return time;
 		}
 	}
 
@@ -57,14 +76,13 @@ export default class TileTeam extends React.Component {
 		var fontSize = 12;
 		var seedFontSize = 16;
 		
-		
 		return(
 			<Group x={this.props.globalX} y={this.props.globalY}>
 				<Group>
 					<Rect 
 						width={teamWidth}
 	        			height={teamHeight}
-	                    fill= {this.BackgroundColor(this.props.name,this.props.hover,this.props.losses)}
+	                    fill= {this.BackgroundColor(this.props.name,this.props.hover)}
 						stroke= 'black'
 						strokeWidth= {0.5}
 						cornerRadius={5}
@@ -121,9 +139,10 @@ export default class TileTeam extends React.Component {
                 		fill = 'black'
                 		width = {teamWidth - 2 * teamHeight}
                 		align = 'left'
+                		textDecoration = {this.TextDecoration(this.props.name)}
                 	/>
                 	<Text //player avg time
-                		text = {this.props.time}
+                		text = {this.timeDisplay(this.props.time,this.props.winChance,this.props.hover)}
                 		x = {teamWidth - clipWidth}
                 		y = {(teamHeight-fontSize)/2}
                 		fontSize = {fontSize}

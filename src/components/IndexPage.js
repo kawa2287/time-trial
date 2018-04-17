@@ -38,7 +38,7 @@ export default class IndexPage extends React.Component {
 		    timeTrial : timeTrial,
 		    wins : 0,
 		    losses : 0,
-		    totalTime : timeTrial,
+		    totalTime : 0,
 		    avgTime : 0,
 		    splitTIme : 0
 		};
@@ -80,7 +80,7 @@ export default class IndexPage extends React.Component {
 	  			
 	  		this.addTeam(name, countryArr[this.randomIntFromInterval(0,countryArr.length)], 0);
 	  		
-	  		this.addTimeTrial(name, Math.round(this.randomIntFromInterval(1000,5000))/100);
+	  		this.addTimeTrial(name, Math.round(this.randomIntFromInterval(1000,3000))/100);
 	  	}
 	  	this.getBestTime(this.state.players);
 	  	// --------------------------------------------------------------------------------
