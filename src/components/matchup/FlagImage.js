@@ -35,19 +35,15 @@ export default class TileFlag extends React.Component {
 	}
 
     render() {
-  		var imgHt = this.props.flagHeight;
-  		var imgWidth =this.props.flagWidth;
-  		var imgX = 5 + this.props.rectX;
-  		var imgY = (this.props.stageHeight/2) - (imgHt/2);
+  		var flagHeight = this.props.flagHeight;
+  		var flagWidth =this.props.flagWidth;
 
     	return <Image 
+    	    y={-flagHeight/6}
     		image={this.state.image} 
-    		height={imgHt}
-    		width={imgWidth}
-    		ref={node => this.imageNode = node} 
-    		x = {imgX}
-    		y = {imgY}
-    		shadowBlur={3}
+    		height={flagHeight}
+    		width={flagWidth}
+    		ref={node => this.imageNode = node}
     	/>;
     }
 }

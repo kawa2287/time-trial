@@ -157,6 +157,8 @@ export default class TileTeam extends React.Component {
 						rectWidth = {teamWidth}
 						rectX = {clipWidth}
 						stageHeight = {teamHeight}
+						flagHeight = {48}
+						flagWidth = {48}
 					/>
 				</Group>
 			</Group>

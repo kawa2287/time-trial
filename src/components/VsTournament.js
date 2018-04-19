@@ -1,6 +1,10 @@
 'use strict';
 
 import React from 'react';
+import SkyLight from 'react-skylight';
+import { Stage, Group, Layer } from "react-konva";
+import Colors from '../static/Colors';
+
 import BezierCurves from './BezierCurves';
 import GameComponent from './GameComponent';
 import BracketLine from './BracketLine';
@@ -16,7 +20,7 @@ import SendWinnerLoseBracket from './outcomes/SendWinnerLoseBracket';
 import SendLoserWinBracket from './outcomes/SendLoserWinBracket';
 import SendLoserStartBracket from './outcomes/SendLoserStartBracket';
 import SendWinnerSpecialLoserBracket from './outcomes/SendWinnerSpecialLoserBracket';
-import { Stage, Group, Layer } from "react-konva";
+
 
 //------------------------------------------------------------------
 //declare geometries here
@@ -30,6 +34,13 @@ var vizGeo = {
 	lColAr: ['yellow','red','pink','orange','white']
 };
 
+//------------------------------------------------------------------
+//declare global variables here
+//------------------------------------------------------------------
+var k = 0;
+var LoserArr = [];
+var winnerArr = [];
+
 export default class VsTournament extends React.Component {
 	constructor(props){
 		super(props);
@@ -37,7 +48,10 @@ export default class VsTournament extends React.Component {
 			masterGameObject:{},
 			scale:1,
 			posX:null,
-			posY:null
+			posY:null,
+			matchupPlayerA :{},
+			matchupPlayerB :{},
+			matchupGameNumber : 1
 		};
 		
 		//bind imported state dependent functions
@@ -54,6 +68,7 @@ export default class VsTournament extends React.Component {
 		var seededArray = [];
 		var toggle = 0;
 		var bracketSpots = Math.pow(2,DetermineBracketPower(teams));
+		var bracketPower = DetermineBracketPower(teams);
 		
 		//populate seeded array
 		PropogateSeedsArr(teams,mastArr);
@@ -126,6 +141,16 @@ export default class VsTournament extends React.Component {
 				this.state.masterGameObject[(k+1)/2].playerB = seededArray[k];
 			}
 		}
+		
+		//create loserArr
+		for (k = 1; k <= 2*(bracketPower-1); k++){
+			LoserArr.push(NgmsInRnd.loserBracket(bracketSpots,k));
+		}
+		
+		//create winnerArr
+		for (k = 0; k < bracketPower; k++){
+			winnerArr.push(NgmsInRnd.winnerBracket(bracketSpots,k));
+		}
 	}
 
 	wheel(e){
@@ -141,27 +166,50 @@ export default class VsTournament extends React.Component {
                 y: e.target.getStage().getPointerPosition().y / oldScale - e.target.getStage().y() / oldScale,
             };
         
-        this.setState({
-        	scale : newScale
-        });
-        
         var newPos = {
                 x: -(mousePointTo.x - e.target.getStage().getPointerPosition().x / newScale) * newScale,
                 y: -(mousePointTo.y - e.target.getStage().getPointerPosition().y / newScale) * newScale
             };
         
         this.setState({
+        	scale : newScale,
         	posX:newPos.x,
         	posY:newPos.y
         });
 	}
 	
+	showMatchup(newPos,playerA, playerB,byeRound, gameNumber){
+		
+		if(byeRound !== true){
+			this.setState({
+				posX:newPos.x,
+	        	posY:newPos.y,
+				matchupPlayerA: playerA,
+				matchupPlayerB: playerB,
+				matchupGameNumber : gameNumber
+			}, function afterClick(){
+				this.customDialog.show();
+			});
+		} 
+	}
+	
 	render() {
+		
+	var matchupDialog = {
+		width: '1000',
+	    height: '600',
+	    position: 'fixed',
+	    top: '50%',
+	    left: '50%',
+	    marginTop: '-300',
+	    marginLeft: '-500',
+		backgroundColor: Colors.gameNotReadyColor,
+		color: Colors.gameNotReadyColor,
+    };
 		
 		//------------------------------------------------------------------
 		//this.props.location.state.'GIVEN NAME' to access props thru Link
 		//------------------------------------------------------------------
-		var k = 0;
 		var teams = Object.keys(this.props.location.state.players).length;
 		var bracketSpots = Math.pow(2,DetermineBracketPower(teams));
 		var bracketPower = DetermineBracketPower(teams);
@@ -169,17 +217,7 @@ export default class VsTournament extends React.Component {
 		var gameHeight = vizGeo.teamHeight*3.5;
 		var boardHeight = vizGeo.vertSpace*(3+(bracketSpots/2)) + bracketSpots*gameHeight/2;
 		
-		//create loserArr
-		var LoserArr = [];
-		for (k = 1; k <= 2*(bracketPower-1); k++){
-			LoserArr.push(NgmsInRnd.loserBracket(bracketSpots,k));
-		}
-		//create winnerArr
-		var winnerArr = [];
-		for (k = 0; k < bracketPower; k++){
-			winnerArr.push(NgmsInRnd.winnerBracket(bracketSpots,k));
-		}
-		
+
 		//create Games in Winner Bracket (includes start round)
 		var winnerBracket = [];
 		var bezArr = [];
@@ -212,6 +250,7 @@ export default class VsTournament extends React.Component {
 						winner = {this.state.masterGameObject[gameCounter].winner}
 						loser = {this.state.masterGameObject[gameCounter].loser}
 						loserEliminated = {this.state.masterGameObject[gameCounter].loserEliminated}
+						showMatchup = {this.showMatchup.bind(this)}
 					/>
 				);
 				
@@ -289,6 +328,7 @@ export default class VsTournament extends React.Component {
 				winner = {this.state.masterGameObject[gameCounter].winner}
 				loser = {this.state.masterGameObject[gameCounter].loser}
 				loserEliminated = {this.state.masterGameObject[gameCounter].loserEliminated}
+				showMatchup = {this.showMatchup.bind(this)}
 			/>
 		);
 		gameCounter = gameCounter + 1;
@@ -319,6 +359,7 @@ export default class VsTournament extends React.Component {
 						winner = {this.state.masterGameObject[gameCounter].winner}
 						loser = {this.state.masterGameObject[gameCounter].loser}
 						loserEliminated = {this.state.masterGameObject[gameCounter].loserEliminated}
+						showMatchup = {this.showMatchup.bind(this)}
 					/>
 				);
 				
@@ -366,12 +407,18 @@ export default class VsTournament extends React.Component {
 		
 		bezArr.reverse();
 		
-		console.log(this.state.masterGameObject);
-		
-		
 		return (
 			<div>
-				<VsMatchup/>
+				<SkyLight dialogStyles={matchupDialog} hideOnOverlayClicked ref={ref => this.customDialog = ref} >
+					<VsMatchup
+						players = {[this.state.matchupPlayerA,this.state.matchupPlayerB]}
+						gameNumber = {this.state.matchupGameNumber}
+						dialogHeight = {matchupDialog.height}
+						dialogWidth = {matchupDialog.width}
+						WinnerLoserHandler = {this.WinnerLoserHandler.bind(this)}
+						bracketSpots = {bracketSpots}
+					/>
+				</SkyLight>
 				<Stage 
 					ref={"stage"}
 					x={this.state.posX}

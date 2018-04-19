@@ -10,7 +10,8 @@ const Colors = {
     gameNotReadyColor : '#A39094',
     gameCompleteColor : '#E5CAE7',
     gameAvailColor : '#E6D9A4',
-    gameNumberColor : '#323232'
+    gameNumberColor : '#323232',
+    matchupBorder : '#666666'
 };
 
 export default Colors;

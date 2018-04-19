@@ -1,31 +1,24 @@
 'use strict';
 
 import DetermineRoundNumber from '../vsBracketMethods/higherOrderMethods/DetermineRoundNumber';
+import StabilizeView from '../viewMethods/StabilizeView';
+import DetermineBracket from '../vsBracketMethods/baseMethods/DetermineBracket';
 
-export default function WinnerLoserHandler (e, currentGameNum, bracketSpots, winPlayer, losePlayer, currentBracket, winTime, loseTime,byeRound){
+export default function WinnerLoserHandler (currentGameNum, bracketSpots, winPlayer, losePlayer, winTime, loseTime,byeRound){
 	//stabilize view and update game status
-	var mousePointTo = {
-            x: e.target.getStage().getPointerPosition().x - e.target.getStage().x(),
-            y: e.target.getStage().getPointerPosition().y - e.target.getStage().y(),
-        };
-    var newPos = {
-            x: -(mousePointTo.x - e.target.getStage().getPointerPosition().x),
-            y: -(mousePointTo.y - e.target.getStage().getPointerPosition().y)
-        };
+    var currentBracket = DetermineBracket(currentGameNum,bracketSpots);
     
      //update stats [GLOBAL]
     
     if(byeRound === false) {
     	winPlayer.wins = winPlayer.wins + 1;
     	losePlayer.losses = losePlayer.losses + 1;
-    	winPlayer.totalTime = winPlayer.totalTime + winTime;
-    	losePlayer.totalTime = losePlayer.totalTime + loseTime;
+    	//winPlayer.totalTime = winPlayer.totalTime + winTime;
+    	//losePlayer.totalTime = losePlayer.totalTime + loseTime;
     	var loserEliminated = losePlayer.losses == 2 ? true : false;
     }
     
     this.setState({
-    	posX:newPos.x,
-    	posY:newPos.y,
     	masterGameObject : {
     		...this.state.masterGameObject,
     		[currentGameNum] : {
