@@ -11,7 +11,8 @@ const Colors = {
     gameCompleteColor : '#E5CAE7',
     gameAvailColor : '#E6D9A4',
     gameNumberColor : '#323232',
-    matchupBorder : '#666666'
+    matchupBorder : '#666666',
+    smokeGray : '#E5E5E5'
 };
 
 export default Colors;

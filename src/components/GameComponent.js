@@ -7,6 +7,8 @@ import TileTeam from './TileTeam';
 import Colors from '../static/Colors';
 import Settings from '../static/Settings';
 import StabilizeView from './viewMethods/StabilizeView';
+import DetermineWinChance from './vsBracketMethods/baseMethods/DetermineWinChance';
+import DetermineAvgTime from './vsBracketMethods/baseMethods/DetermineAvgTime';
 
 var defaultColor = Colors.gameNotReadyColor;
 var completeColor = Colors.gameCompleteColor;
@@ -43,13 +45,11 @@ export default class GameComponent extends React.Component {
 		};
 	}
 	
-	
-	//for testing/////////////////////////////////////////
 	randomIntFromInterval(min,max)
 	{
 	    return Math.floor(Math.random()*(max-min+1)+min);
 	}
-	//////////////////////////////////////////////////////
+
 	
 	BackgroundColor(status){
 		if (status === 'COMPLETE'){
@@ -58,25 +58,6 @@ export default class GameComponent extends React.Component {
 			return availableColor;
 		} else {
 			return defaultColor;
-		}
-	}
-	
-	DetermineAvgTime(timeTrial, totalTime, wins, losses){
-		if (wins == 0 && losses == 0){
-			return timeTrial;
-		} else {
-			return  Math.round(100*(totalTime + timeTrial)/(1 + wins + losses))/100;
-		}
-	}
-	
-	
-	DetermineWinChance(playerName, opponentName, playerTime, opponentTime){
-		if(playerName == 'BYE') {
-			return 0;
-		} else if (opponentName == 'BYE'){
-			return 100;
-		} else {
-			return Math.min(99,Math.max(1,Math.round(100-50*(Settings.timeToWinOutright -(opponentTime - playerTime))/Settings.timeToWinOutright)));
 		}
 	}
 	
@@ -94,69 +75,39 @@ export default class GameComponent extends React.Component {
 		
 			// decide winner or loser
 			
-			if (this.props.playerA.name == 'BYE' || this.props.playerB.name == 'BYE'){
-				if (this.props.playerB.name =="BYE") {
-					winner = this.props.playerA;
-					loser = this.props.playerB;
-					byeRound = true;
-				} else if ( this.props.playerA.name == "BYE"){
-					winner = this.props.playerB;
-					loser = this.props.playerA;
-					byeRound = true;
-				}
-				this.props.WinnerLoserHandler(
-					
-					this.props.gameNumber, 
-					this.props.bracketSpots,
-					winner, 
-					loser,
-					winnerTime,
-					loserTime,
-					byeRound
-				);
-			} else {
-				if (pAtime <= pBtime){
-					winner = this.props.playerA;
-					loser = this.props.playerB;
-					winnerTime = pAtime;
-					loserTime = pBtime;
-					byeRound = false;
-				} else if (pAtime > pBtime) {
-					winner = this.props.playerB;
-					loser = this.props.playerA;
-					winnerTime = pBtime;
-					loserTime = pAtime;
-					byeRound = false;
-				}
-				//Dialog Popup
-				this.props.showMatchup(
-					newPos,
-					this.props.playerA,
-					this.props.playerB,
-					byeRound,
-					this.props.gameNumber
-					);
+			if (this.props.playerB.name =="BYE") {
+				winner = this.props.playerA;
+				loser = this.props.playerB;
+			 	byeRound = true;
+			} else if ( this.props.playerA.name == "BYE"){
+				winner = this.props.playerB;
+				loser = this.props.playerA;
+				byeRound = true;
+			} else if (pAtime <= pBtime){
+				winner = this.props.playerA;
+				loser = this.props.playerB;
+				winnerTime = pAtime;
+				loserTime = pBtime;
+				byeRound = false;
+			} else if (pAtime > pBtime) {
+				winner = this.props.playerB;
+				loser = this.props.playerA;
+				winnerTime = pBtime;
+				loserTime = pAtime;
+				byeRound = false;
 			}
-		
-			
-			
-			
-			/*
-			//determine where to send players
-			this.props.WinnerLoserHandler(
-				e,
-				this.props.gameNumber, 
+			//Dialog Popup
+			this.props.showMatchup(
+				newPos,
+				this.props.playerA,
+				this.props.playerB,
+				byeRound,
+				this.props.gameNumber,
 				this.props.bracketSpots,
-				winner, 
-				loser,
-				this.props.bracket,
-				winnerTime,
-				loserTime,
-				byeRound
+				winner,
+				loser
 			);
-			*/
 		}
-		
 	}
 	
 	handleOnMouseOver(){
@@ -208,8 +159,8 @@ export default class GameComponent extends React.Component {
 		var gameWidth = teamWidth + 2 * teamHeight;
 		var gameHeight = teamHeight * 3.5;
 		var gameFontSize = 16;
-		var pAavgTime = this.DetermineAvgTime(this.state.timeTrialA, this.state.totalTimeA, this.state.winsA, this.state.lossesA);
-		var pBavgTime = this.DetermineAvgTime(this.state.timeTrialB, this.state.totalTimeB, this.state.winsB, this.state.lossesB);
+		var pAavgTime = DetermineAvgTime(this.state.timeTrialA, this.state.totalTimeA, this.state.winsA, this.state.lossesA);
+		var pBavgTime = DetermineAvgTime(this.state.timeTrialB, this.state.totalTimeB, this.state.winsB, this.state.lossesB);
 		
 		
 		
@@ -265,7 +216,7 @@ export default class GameComponent extends React.Component {
 					globalY = {0.5*teamHeight}
 					hover = {this.state.hover}
 					losses = {this.state.lossesA}
-					winChance = {this.DetermineWinChance(this.props.playerA.name, this.props.playerB.name, pAavgTime, pBavgTime)}
+					winChance = {DetermineWinChance(this.props.playerA.name, this.props.playerB.name, pAavgTime, pBavgTime)}
 					loser = {this.props.loser}
 					loserEliminated = {this.props.loserEliminated}
 				/>
@@ -281,7 +232,7 @@ export default class GameComponent extends React.Component {
 					globalY = {2*teamHeight}
 					hover = {this.state.hover}
 					losses = {this.state.lossesB}
-					winChance = {this.DetermineWinChance(this.props.playerB.name, this.props.playerA.name, pBavgTime, pAavgTime)}
+					winChance = {DetermineWinChance(this.props.playerB.name, this.props.playerA.name, pBavgTime, pAavgTime)}
 					loser = {this.props.loser}
 					loserEliminated = {this.props.loserEliminated}
 				/>

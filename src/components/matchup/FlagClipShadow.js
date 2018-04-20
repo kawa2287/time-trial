@@ -4,11 +4,14 @@ import React from 'react';
 import Konva from "konva";
 import { Shape } from "react-konva";
 
-export default function FlagClipBorder(Geo)  {
+export default function FlagClipBorder(Geo,selectedDeco)  {
+	
 	return(
 		<Shape
 			x={Geo.margin + Geo.positionWidth}
-			shadowBlur = {2}
+			shadowBlur = {selectedDeco.shadowBlur}
+			shadowOpacity= {selectedDeco.shadowOpacity}
+			shadowColor= {selectedDeco.shadowColor}
  			sceneFunc={function (ctx) {
 	             ctx.beginPath();
 	             ctx.moveTo(Geo.flagClip.xs, Geo.flagClip.ys);

@@ -1,11 +1,9 @@
 'use strict';
 
 import DetermineRoundNumber from '../vsBracketMethods/higherOrderMethods/DetermineRoundNumber';
-import StabilizeView from '../viewMethods/StabilizeView';
 import DetermineBracket from '../vsBracketMethods/baseMethods/DetermineBracket';
 
-export default function WinnerLoserHandler (currentGameNum, bracketSpots, winPlayer, losePlayer, winTime, loseTime,byeRound){
-	//stabilize view and update game status
+export default function WinnerLoserHandler (currentGameNum, bracketSpots, winPlayer, losePlayer, winTime, loseTime, byeRound){
     var currentBracket = DetermineBracket(currentGameNum,bracketSpots);
     
      //update stats [GLOBAL]
@@ -13,8 +11,9 @@ export default function WinnerLoserHandler (currentGameNum, bracketSpots, winPla
     if(byeRound === false) {
     	winPlayer.wins = winPlayer.wins + 1;
     	losePlayer.losses = losePlayer.losses + 1;
-    	//winPlayer.totalTime = winPlayer.totalTime + winTime;
-    	//losePlayer.totalTime = losePlayer.totalTime + loseTime;
+    	winPlayer.totalTime = Number(winPlayer.totalTime) + Number(winTime);
+    	losePlayer.totalTime = Number(losePlayer.totalTime) + Number(loseTime);
+    	winPlayer.bestTime = winPlayer.bestTime > winTime ? winTime : winPlayer.bestTime;
     	var loserEliminated = losePlayer.losses == 2 ? true : false;
     }
     
@@ -40,7 +39,11 @@ export default function WinnerLoserHandler (currentGameNum, bracketSpots, winPla
 		this.SendWinnerWinBracket(currentGameNum, roundNumber, winPlayer, bracketSpots);
 		this.SendLoserWinBracket(currentGameNum, roundNumber,losePlayer, bracketSpots);
 	} else if (currentBracket == "specialBracket"){
-		this.SendWinnerSpecialLoserBracket(currentGameNum,winPlayer,bracketSpots);
+		if(currentGameNum == bracketSpots){
+			this.SendWinnerSpecialWinnerBracket(currentGameNum,winPlayer,losePlayer,bracketSpots);
+		} else {
+			this.SendWinnerSpecialLoserBracket(currentGameNum,winPlayer,bracketSpots);
+		}
 	} else {
 		this.SendWinnerLoseBracket(currentGameNum, roundNumber, winPlayer, bracketSpots);
 	}

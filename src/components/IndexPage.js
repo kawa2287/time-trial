@@ -40,7 +40,8 @@ export default class IndexPage extends React.Component {
 		    losses : 0,
 		    totalTime : 0,
 		    avgTime : 0,
-		    splitTIme : 0
+		    splitTIme : 0,
+		    bestTime : timeTrial
 		};
 		this.setState({
 	  		nRows : this.state.nRows + 1
@@ -48,8 +49,11 @@ export default class IndexPage extends React.Component {
 	}
 	
 	addTimeTrial(name,time){
-		this.state.players[name].timeTrial = time;
-		this.setState({players: this.state.players}, function afterClick(){this.getBestTime(this.state.players)});
+		this.state.players[name].timeTrial = Number(time);
+		this.state.players[name].bestTime = Number(time);
+		this.setState({
+			players: this.state.players
+		}, function afterClick(){this.getBestTime(this.state.players)});
 	}
 	
 	getBestTime(playersObj){
@@ -65,10 +69,10 @@ export default class IndexPage extends React.Component {
   }
   
   componentDidMount() {
-  	
+
   		//this section is to populate random number of teams... delete for production use
 	  	//---------------------------------------------------------------------------------
-	  	var nTeams = 14;
+	  	var nTeams = 7;
 	  	var countryArr = [];
 	  	for (var item in countries[0]){
 	  		countryArr.push(countries[0][item].name);
@@ -84,7 +88,7 @@ export default class IndexPage extends React.Component {
 	  	}
 	  	this.getBestTime(this.state.players);
 	  	// --------------------------------------------------------------------------------
-  	
+
   }
   
   render() {

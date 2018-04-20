@@ -24,7 +24,7 @@ export default function SeedShape(Geo, player)  {
 	 		<Text //seed number
         		text = {player.seed}
         		x = {Geo.seedPos.x - Geo.seedFontSize}
-        		y = {Geo.seedPos.y-Geo.positionFontSize/2}
+        		y = {Geo.seedPos.y - Geo.positionFontSize/2}
         		fontSize = {Geo.seedFontSize}
         		fontStyle = 'bold'
         		shadowBlur = {2}

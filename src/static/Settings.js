@@ -1,7 +1,8 @@
 'use strict';
 
 const Settings = {
-    timeToWinOutright : 20
+    timeToWinOutright : 20,
+    cupsPerPerson : 4
 };
 
 export default Settings;
