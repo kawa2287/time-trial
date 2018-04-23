@@ -41,6 +41,8 @@ var vizGeo = {
 var k = 0;
 var LoserArr = [];
 var winnerArr = [];
+var mastArr = [];
+var seededArray = [];
 
 export default class VsTournament extends React.Component {
 	constructor(props){
@@ -52,10 +54,13 @@ export default class VsTournament extends React.Component {
 			posY:null,
 			matchupPlayerA :{},
 			matchupPlayerB :{},
-			matchupGameNumber : 1
+			matchupGameNumber : 1,
+			windowWidth : 0,
+			windowHeight : 0
 		};
 		
 		//bind imported state dependent functions
+		this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
 		this.WinnerLoserHandler = WinnerLoserHandler.bind(this);
 		this.SetPlayerInDestGame = SetPlayerInDestGame.bind(this);
 		this.SendWinnerWinBracket = SendWinnerWinBracket.bind(this);
@@ -66,8 +71,6 @@ export default class VsTournament extends React.Component {
 		this.SendWinnerSpecialWinnerBracket = SendWinnerSpecialWinnerBracket.bind(this);
 		
 		var teams = Object.keys(this.props.location.state.players).length;
-		var mastArr = [];
-		var seededArray = [];
 		var toggle = 0;
 		var bracketSpots = Math.pow(2,DetermineBracketPower(teams));
 		var bracketPower = DetermineBracketPower(teams);
@@ -158,6 +161,19 @@ export default class VsTournament extends React.Component {
 			winnerArr.push(NgmsInRnd.winnerBracket(bracketSpots,k));
 		}
 	}
+	
+	componentDidMount() {
+		this.updateWindowDimensions();
+		window.addEventListener('resize', this.updateWindowDimensions);
+	}
+	
+	componentWillUnmount() {
+		window.removeEventListener('resize', this.updateWindowDimensions);
+	}
+	
+	updateWindowDimensions() {
+		this.setState({ windowWidth: window.innerWidth, windowHeight: window.innerHeight });
+	}
 
 	wheel(e){
 		
@@ -182,6 +198,56 @@ export default class VsTournament extends React.Component {
         	posX:newPos.x,
         	posY:newPos.y
         });
+	}
+	
+	ScrapeAvg(seededArray){
+		var tempArr = [];
+		var tempPlayerArr = [];
+		var packagedArray = [];
+		
+		//push data into unsorted array
+		for (var player in seededArray){
+			if(seededArray[player].avgTime !== 0){
+				tempPlayerArr.push(seededArray[player].name);
+				tempPlayerArr.push(seededArray[player].country);
+				tempPlayerArr.push(seededArray[player].avgTime);
+				
+				tempArr.push(tempPlayerArr);
+				tempPlayerArr = [];
+			}
+		}
+		
+		//sort the array
+		tempArr.sort(function(a, b) {
+		    var valueA, valueB;
+		
+		    valueA = a[2]; // Where 1 is your index, from your example
+		    valueB = b[2];
+		    if (valueA < valueB) {
+		        return -1;
+		    }
+		    else if (valueA > valueB) {
+		        return 1;
+		    }
+		    return 0;
+		});
+		
+		//pump html into final array
+		var tempHtmlArr = [];
+		for (var i = 0; i < tempArr.length; i++) {
+			tempHtmlArr.push(<div className={"rank"}>{i + 1}</div>);
+			tempHtmlArr.push(<div className={"flag"}><img  src={tempArr[i][1].flagPathSVG} width={32} /></div>);
+			tempHtmlArr.push(<div className={"player-name"}>{tempArr[i][0]}</div>);
+			tempHtmlArr.push(<div className={"time"}>{tempArr[i][2]}</div>);
+			
+			packagedArray.push(<div className={"chart-row"}>{tempHtmlArr}</div>);
+			
+			tempHtmlArr = [];
+			
+		}
+		
+		
+		return packagedArray;
 	}
 	
 	showMatchup(
@@ -218,7 +284,16 @@ export default class VsTournament extends React.Component {
 		this.customDialog.hide();
 	}
 	
+	_executeAfterModalClose(){
+	    this.setState ({
+	    	matchupPlayerA :{},
+			matchupPlayerB :{}
+	    });
+    }
+	
 	render() {
+		
+		console.log('tableOfavg',this.ScrapeAvg(seededArray));
 		
 	var matchupDialog = {
 		width: '1000',
@@ -462,9 +537,20 @@ export default class VsTournament extends React.Component {
 		
 		bezArr.reverse();
 		
+		var tempArr = this.ScrapeAvg(seededArray);
+		
+		var renderHeight = Math.round(this.state.windowHeight*0.8);
+		var divStyle = {
+	    	height: Math.round(renderHeight*0.8)
+		};
+		
 		return (
-			<div>
-				<SkyLight dialogStyles={matchupDialog} hideOnOverlayClicked ref={ref => this.customDialog = ref} >
+			<div className={'tournament-container'}>
+				<SkyLight 
+					dialogStyles={matchupDialog} 
+					hideOnOverlayClicked ref={ref => this.customDialog = ref}
+					afterClose={this._executeAfterModalClose}
+				>
 					<VsMatchup
 						players = {[this.state.matchupPlayerA,this.state.matchupPlayerB]}
 						gameNumber = {this.state.matchupGameNumber}
@@ -476,11 +562,12 @@ export default class VsTournament extends React.Component {
 					/>
 				</SkyLight>
 				<Stage 
+					className={'bracket-area'}
 					ref={"stage"}
 					x={this.state.posX}
 					y={this.state.posY}
-					width={window.innerWidth} 
-					height={window.innerHeight} 
+					width={Math.round(this.state.windowWidth*0.75)} 
+					height={renderHeight} 
 					draggable={true}
 					onWheel = {this.wheel.bind(this)}
 					scaleX = {this.state.scale}
@@ -495,6 +582,25 @@ export default class VsTournament extends React.Component {
 						</Group>
 					</Layer>
 				</Stage>
+				<div className={'side-panel-area'} style={divStyle} >
+					<div className={'side-panel-chart orange'}>
+						<div className={"chart-title"}>
+					    	Best Avg Times
+					    </div>
+					    <div className={"chart-header"}>
+				        	<div className={"rank"}>Rank</div>
+				        	<div className={"flag"}></div>
+				        	<div className={"player-name"}>Name</div>
+				        	<div className={"time"}>Avg Time</div>
+				        </div>
+					    <div className={"chart-main"}>
+					        {tempArr.map(element => element)}
+					    </div>
+					</div>
+					<div className={'side-panel-selectors orange'}>
+						<p>I'm in the panel selectors! </p>
+					</div>
+				</div>
 			</div>
 		);
 	}

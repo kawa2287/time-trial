@@ -135,8 +135,8 @@ class VsMatchup extends React.Component {
 	}
 	
 	simulateClick(){
-		var pAtime = Math.round(100*(this.props.players[0].timeTrial + (this.randomIntFromInterval(-10,15))))/100;
-		var pBtime = Math.round(100*(this.props.players[1].timeTrial + (this.randomIntFromInterval(-10,15))))/100;
+		var pAtime = Math.round(100*(this.props.players[0].timeTrial + (this.randomIntFromInterval(-5,5))))/100;
+		var pBtime = Math.round(100*(this.props.players[1].timeTrial + (this.randomIntFromInterval(-5,5))))/100;
 		
 		// decide winner or loser
 		if (pAtime <= pBtime){
@@ -161,13 +161,15 @@ class VsMatchup extends React.Component {
 	//////////////////////////////////////////////////////
 	
 	handleSubmitClick(){
-		this.winnerClick(this.state.winner, this.state.winTime);
-		this.setState({
-			winTime : 0,
-			winner : {},
-			selectedPlayer : null
-		});
-		this.props.hideMatchup();
+		if (this.state.winner !== null){
+			this.winnerClick(this.state.winner, this.state.winTime);
+			this.setState({
+				winTime : 0,
+				winner : null,
+				selectedPlayer : null
+			});
+			this.props.hideMatchup();
+		}
 	}
 	
 	handlePlayerSelect(player){

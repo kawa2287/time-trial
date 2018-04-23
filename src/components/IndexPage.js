@@ -51,6 +51,7 @@ export default class IndexPage extends React.Component {
 	addTimeTrial(name,time){
 		this.state.players[name].timeTrial = Number(time);
 		this.state.players[name].bestTime = Number(time);
+		this.state.players[name].avgTime = Number(time);
 		this.setState({
 			players: this.state.players
 		}, function afterClick(){this.getBestTime(this.state.players)});
@@ -72,7 +73,7 @@ export default class IndexPage extends React.Component {
 
   		//this section is to populate random number of teams... delete for production use
 	  	//---------------------------------------------------------------------------------
-	  	var nTeams = 7;
+	  	var nTeams = 15;
 	  	var countryArr = [];
 	  	for (var item in countries[0]){
 	  		countryArr.push(countries[0][item].name);
@@ -84,7 +85,7 @@ export default class IndexPage extends React.Component {
 	  			
 	  		this.addTeam(name, countryArr[this.randomIntFromInterval(0,countryArr.length)], 0);
 	  		
-	  		this.addTimeTrial(name, Math.round(this.randomIntFromInterval(1000,3000))/100);
+	  		this.addTimeTrial(name, Math.round(this.randomIntFromInterval(1000,2000))/100);
 	  	}
 	  	this.getBestTime(this.state.players);
 	  	// --------------------------------------------------------------------------------
@@ -104,7 +105,7 @@ export default class IndexPage extends React.Component {
 	          players={this.state.players}
 	          addTimeTrial={this.addTimeTrial.bind(this)}/>
 	          
-	          <Link to={{pathname:"/VsTournament", state:{players : this.state.players}}} >
+	          <Link to={{pathname:"/VsTournament", state:{players : this.state.players, tournamentType : 'VS'}}} >
 		          <div className="task-preview">
 					  <img src="./img/buttons/tournament.png"></img>
 					  <h2 className="name">VS Tournament</h2>

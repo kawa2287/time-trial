@@ -2,6 +2,7 @@
 
 import DetermineRoundNumber from '../vsBracketMethods/higherOrderMethods/DetermineRoundNumber';
 import DetermineBracket from '../vsBracketMethods/baseMethods/DetermineBracket';
+import DetermineAvgTime from '../vsBracketMethods/baseMethods/DetermineAvgTime';
 
 export default function WinnerLoserHandler (currentGameNum, bracketSpots, winPlayer, losePlayer, winTime, loseTime, byeRound){
     var currentBracket = DetermineBracket(currentGameNum,bracketSpots);
@@ -14,6 +15,7 @@ export default function WinnerLoserHandler (currentGameNum, bracketSpots, winPla
     	winPlayer.totalTime = Number(winPlayer.totalTime) + Number(winTime);
     	losePlayer.totalTime = Number(losePlayer.totalTime) + Number(loseTime);
     	winPlayer.bestTime = winPlayer.bestTime > winTime ? winTime : winPlayer.bestTime;
+    	winPlayer.avgTime = DetermineAvgTime(winPlayer.timeTrial,winPlayer.totalTime,winPlayer.wins,winPlayer.losses);
     	var loserEliminated = losePlayer.losses == 2 ? true : false;
     }
     

@@ -25,13 +25,12 @@ export default function StatsTile (Geo,player,dialogWidth, selectedDeco){
 	statSpace = (statHeight-(Geo.nameSize + Geo.statLabelSize))/3;
 	statHzDist = (width)/(nStats);
 	
-	console.log('avgTime', avgTime);
 	
 	avgTime = DetermineAvgTime(player.timeTrial, player.totalTime, player.wins, player.losses);
 	avgCupTime = Math.round(100*avgTime/Settings.cupsPerPerson)/100;
 	index = Math.round(100*player.timeTrial/avgTime)/100;
 	
-	console.log('avgTime', avgTime);
+	var countryName = player.country == null ? '' : player.country.name;
 	
 	return (
 		<Group x = {Geo.margin*2 + Geo.flagWidth + Geo.positionWidth} >	
@@ -56,6 +55,19 @@ export default function StatsTile (Geo,player,dialogWidth, selectedDeco){
 				fontSize = {Geo.nameSize}
 				shadowBlur = {2}
 				shadowOpacity= {0.5}
+			/>
+			
+			<Text //country
+				y = {Geo.tileHeight- (Geo.seedFontSize*2+Geo.margin/2)/2 }
+				text = {countryName}
+				align = 'right'
+				width = {width}
+				fill = {Geo.borderColor}
+				fontVariant = 'small-caps'
+				fontSize = {Geo.seedFontSize}
+				shadowBlur = {selectedDeco.shadowBlur}
+				shadowOpacity= {selectedDeco.shadowOpacity}
+				shadowColor={selectedDeco.shadowColor}
 			/>
 			
 			<Text //wins
