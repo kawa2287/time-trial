@@ -16,9 +16,6 @@ export default function StatsTile(Geo,players, dialogWidth, dialogHeight, winTim
     
     var percentFontSize = Geo.margin*1.5;
     
-    console.log('winTime',winTime);
-    
-  
     return(
         <Group x = {Geo.margin + Geo.timeCircleRadius} y = {dialogHeight/2 - 2.5*Geo.margin} >	
             <Rect //player A

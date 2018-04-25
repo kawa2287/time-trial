@@ -6,10 +6,16 @@ import { Stage, Group, Layer } from "react-konva";
 import Colors from '../static/Colors';
 
 import BezierCurves from './BezierCurves';
+import Button from './Button';
 import GameComponent from './GameComponent';
 import BracketLine from './BracketLine';
 import VsMatchup from './VsMatchup';
 import PropogateSeedsArr from './vsBracketMethods/higherOrderMethods/PropogateSeedsArr';
+import CreateMasterGameObject from './vsBracketMethods/higherOrderMethods/CreateMasterGameObject';
+import CreateGmsWinBracket from './vsBracketMethods/higherOrderMethods/CreateGmsWinBracket';
+import CreateGmsSpecialWinBracket from './vsBracketMethods/higherOrderMethods/CreateGmsSpecialWinBracket';
+import CreateGmsLoseBracket from './vsBracketMethods/higherOrderMethods/CreateGmsLoseBracket';
+import CreateGmsFinalsBracket from './vsBracketMethods/higherOrderMethods/CreateGmsFinalsBracket';
 import DetermineBracketPower from './vsBracketMethods/baseMethods/DetermineBracketPower';
 import * as NgmsInRnd from './vsBracketMethods/baseMethods/NgamesInRound';
 import DetermineBracket from './vsBracketMethods/baseMethods/DetermineBracket';
@@ -21,6 +27,9 @@ import SendLoserWinBracket from './outcomes/SendLoserWinBracket';
 import SendLoserStartBracket from './outcomes/SendLoserStartBracket';
 import SendWinnerSpecialLoserBracket from './outcomes/SendWinnerSpecialLoserBracket';
 import SendWinnerSpecialWinnerBracket from './outcomes/SendWinnerSpecialWinnerBracket';
+import ChartHeaders from './sideChart/ChartHeaders';
+import ChartTitle from './sideChart/ChartTitle';
+import ChartDataManager from './sideChart/ChartDataManager';
 
 
 //------------------------------------------------------------------
@@ -39,10 +48,21 @@ var vizGeo = {
 //declare global variables here
 //------------------------------------------------------------------
 var k = 0;
-var LoserArr = [];
+var loserArr = [];
 var winnerArr = [];
 var mastArr = [];
 var seededArray = [];
+
+var teams;
+var bracketSpots;
+var bracketPower;
+var nGamesTotal;
+
+var gameWidth;
+var gameHeight;
+var boardHeight;
+
+var gVars = {};
 
 export default class VsTournament extends React.Component {
 	constructor(props){
@@ -55,8 +75,9 @@ export default class VsTournament extends React.Component {
 			matchupPlayerA :{},
 			matchupPlayerB :{},
 			matchupGameNumber : 1,
-			windowWidth : 0,
-			windowHeight : 0
+			windowWidth : window.innerWidth,
+			windowHeight : window.innerHeight,
+			chartDisplay : 'timeTrial'
 		};
 		
 		//bind imported state dependent functions
@@ -69,54 +90,35 @@ export default class VsTournament extends React.Component {
 		this.SendLoserStartBracket = SendLoserStartBracket.bind(this);
 		this.SendWinnerSpecialLoserBracket = SendWinnerSpecialLoserBracket.bind(this);
 		this.SendWinnerSpecialWinnerBracket = SendWinnerSpecialWinnerBracket.bind(this);
+		this.ChartTitle = ChartTitle.bind(this);
 		
-		var teams = Object.keys(this.props.location.state.players).length;
+		teams = Object.keys(this.props.location.state.players).length;
+		bracketSpots = Math.pow(2,DetermineBracketPower(teams));
+		bracketPower = DetermineBracketPower(teams);
+		nGamesTotal = bracketSpots*2;
+		gameWidth = vizGeo.teamWidth + 2*vizGeo.teamHeight;
+		gameHeight = vizGeo.teamHeight*3.5;
+		boardHeight = vizGeo.vertSpace*(3+(bracketSpots/2)) + bracketSpots*gameHeight/2;
+		
+		gVars = {
+			gameWidth : gameWidth,
+			gameHeight : gameHeight,
+			boardHeight : boardHeight,
+			winnerArr : winnerArr,
+			loserArr : loserArr,
+			vizGeo : vizGeo,
+			bracketPower : bracketPower,
+			bracketSpots : bracketSpots,
+			showMatchup : this.showMatchup.bind(this)
+		};
+		
 		var toggle = 0;
-		var bracketSpots = Math.pow(2,DetermineBracketPower(teams));
-		var bracketPower = DetermineBracketPower(teams);
 		
 		//populate seeded array
 		PropogateSeedsArr(teams,mastArr);
 		
 		//Create Master Game Object
-		var nGamesTotal = bracketSpots*2;
-		for(var game = 1; game <= nGamesTotal; game++){
-			this.state.masterGameObject[game] = {
-				gameNumber : game,
-				playerA:{
-					name : '',
-				    country : '',
-				    seed : '',
-				    timeTrial : 0,
-				    wins : 0,
-				    losses : 0,
-				    totalTime : 0,
-				    avgTime : 0,
-				    splitTIme : 0,
-				    avgCupTime : 0,
-				    bestTime: 0
-				},
-				playerB:{
-					name : '',
-				    country : '',
-				    seed : '',
-				    timeTrial : 0,
-				    wins : 0,
-				    losses : 0,
-				    totalTime : 0,
-				    avgTime : 0,
-				    splitTIme : 0,
-				    avgCupTime : 0,
-				    bestTime: 0
-				},
-				bracket : DetermineBracket(game,bracketSpots),
-				status : '',
-				spotsFilled : 0,
-				winner: '',
-				loser: '',
-				loserEliminated : false
-			};
-		}
+		this.state.masterGameObject = CreateMasterGameObject(nGamesTotal, bracketSpots);
 		
 		//Add Props to Seeded Array
 		for (var item in mastArr) {
@@ -136,7 +138,7 @@ export default class VsTournament extends React.Component {
 				    losses : 0,
 				    totalTime : 0,
 				    avgTime : 0,
-				    splitTIme : 0
+				    splitTime : 0
 					});
 			}
 			toggle = 0;
@@ -153,18 +155,24 @@ export default class VsTournament extends React.Component {
 		
 		//create loserArr
 		for (k = 1; k <= 2*(bracketPower-1); k++){
-			LoserArr.push(NgmsInRnd.loserBracket(bracketSpots,k));
+			loserArr.push(NgmsInRnd.loserBracket(bracketSpots,k));
 		}
 		
 		//create winnerArr
 		for (k = 0; k < bracketPower; k++){
 			winnerArr.push(NgmsInRnd.winnerBracket(bracketSpots,k));
 		}
+		
+		//protect against window reload
+		window.onbeforeunload = function() {
+		    return "Data will be lost if you leave the page, are you sure?";
+		};
 	}
 	
 	componentDidMount() {
 		this.updateWindowDimensions();
 		window.addEventListener('resize', this.updateWindowDimensions);
+		this.handleStatButtonClick(seededArray,'timeTrial');
 	}
 	
 	componentWillUnmount() {
@@ -200,54 +208,10 @@ export default class VsTournament extends React.Component {
         });
 	}
 	
-	ScrapeAvg(seededArray){
-		var tempArr = [];
-		var tempPlayerArr = [];
-		var packagedArray = [];
-		
-		//push data into unsorted array
-		for (var player in seededArray){
-			if(seededArray[player].avgTime !== 0){
-				tempPlayerArr.push(seededArray[player].name);
-				tempPlayerArr.push(seededArray[player].country);
-				tempPlayerArr.push(seededArray[player].avgTime);
-				
-				tempArr.push(tempPlayerArr);
-				tempPlayerArr = [];
-			}
-		}
-		
-		//sort the array
-		tempArr.sort(function(a, b) {
-		    var valueA, valueB;
-		
-		    valueA = a[2]; // Where 1 is your index, from your example
-		    valueB = b[2];
-		    if (valueA < valueB) {
-		        return -1;
-		    }
-		    else if (valueA > valueB) {
-		        return 1;
-		    }
-		    return 0;
+	handleStatButtonClick(query){
+		this.setState({
+			chartDisplay : query
 		});
-		
-		//pump html into final array
-		var tempHtmlArr = [];
-		for (var i = 0; i < tempArr.length; i++) {
-			tempHtmlArr.push(<div className={"rank"}>{i + 1}</div>);
-			tempHtmlArr.push(<div className={"flag"}><img  src={tempArr[i][1].flagPathSVG} width={32} /></div>);
-			tempHtmlArr.push(<div className={"player-name"}>{tempArr[i][0]}</div>);
-			tempHtmlArr.push(<div className={"time"}>{tempArr[i][2]}</div>);
-			
-			packagedArray.push(<div className={"chart-row"}>{tempHtmlArr}</div>);
-			
-			tempHtmlArr = [];
-			
-		}
-		
-		
-		return packagedArray;
 	}
 	
 	showMatchup(
@@ -284,16 +248,8 @@ export default class VsTournament extends React.Component {
 		this.customDialog.hide();
 	}
 	
-	_executeAfterModalClose(){
-	    this.setState ({
-	    	matchupPlayerA :{},
-			matchupPlayerB :{}
-	    });
-    }
 	
 	render() {
-		
-		console.log('tableOfavg',this.ScrapeAvg(seededArray));
 		
 	var matchupDialog = {
 		width: '1000',
@@ -310,239 +266,44 @@ export default class VsTournament extends React.Component {
 		//------------------------------------------------------------------
 		//this.props.location.state.'GIVEN NAME' to access props thru Link
 		//------------------------------------------------------------------
-		var teams = Object.keys(this.props.location.state.players).length;
-		var bracketSpots = Math.pow(2,DetermineBracketPower(teams));
-		var bracketPower = DetermineBracketPower(teams);
-		var gameWidth = vizGeo.teamWidth + 2*vizGeo.teamHeight;
-		var gameHeight = vizGeo.teamHeight*3.5;
-		var boardHeight = vizGeo.vertSpace*(3+(bracketSpots/2)) + bracketSpots*gameHeight/2;
-		
-
-		//create Games in Winner Bracket (includes start round)
-		var winnerBracket = [];
 		var bezArr = [];
-		var gameCounter = 1;
-		var moduleCCht;
-		var halfModuleHeight;
-		var xLoc;
-		var yLoc;
-		
-		for (k = 0; k < winnerArr.length; k++){
-			for(var i = 0; i < winnerArr[k]; i++){
-				
-				moduleCCht = (gameHeight+vizGeo.vertSpace)*Math.pow(2,k);		
-				halfModuleHeight = ((gameHeight+vizGeo.vertSpace)*(Math.pow(2,k))-vizGeo.vertSpace)/2;
-				xLoc = (k+(bracketPower-1)*2)*(gameWidth+vizGeo.horizSpace) + vizGeo.horizSpace;
-				yLoc = boardHeight-(winnerArr[k]-i)*(gameHeight+vizGeo.vertSpace)*(Math.pow(2,k)) - vizGeo.vertSpace + halfModuleHeight - gameHeight/2;
-				
-				winnerBracket.push(
-					<GameComponent
-						playerA = {this.state.masterGameObject[gameCounter].playerA}
-						playerB = {this.state.masterGameObject[gameCounter].playerB}
-						gameNumber = {this.state.masterGameObject[gameCounter].gameNumber}
-						bracket = {this.state.masterGameObject[gameCounter].bracket}
-						bracketSpots = {bracketSpots}
-						vizGeo = {vizGeo}
-						x = {xLoc}
-						y = {yLoc}
-						status = {this.state.masterGameObject[gameCounter].status}
-						winner = {this.state.masterGameObject[gameCounter].winner}
-						loser = {this.state.masterGameObject[gameCounter].loser}
-						loserEliminated = {this.state.masterGameObject[gameCounter].loserEliminated}
-						showMatchup = {this.showMatchup.bind(this)}
-					/>
-				);
-				
-				var ye = i % 2 == 0 ? yLoc + (gameHeight + moduleCCht)/2 : yLoc + (gameHeight - moduleCCht)/2;
-				
-				if(k == winnerArr.length -1 && i == winnerArr[k]-1){
-					ye = yLoc + gameHeight/2;
-				}
-				
-				//push in loser side at same time for start round
-				if(k==0){
-					bezArr.push(
-						<BezierCurves
-							xs = {xLoc}
-							ys = {yLoc + gameHeight/2}
-							xe = {xLoc - vizGeo.horizSpace}
-							ye = {ye}
-							color = 'red'
-							stroke = {2}
-							bracket = {this.state.masterGameObject[gameCounter].bracket + (k%2 == 0?'':2)}
-						/>
-					);
-				}
-				
-				//push in loser lines of winner bracket
-				if(k!==0){
-					var xToLoser = xLoc - 3*k*(gameWidth+vizGeo.horizSpace) + gameWidth/2;
-					bezArr.push(
-						<BracketLine
-							xs = {xLoc + gameWidth/2}
-							ys = {yLoc + gameHeight}
-							x1 = {xLoc + gameWidth/2}
-							y1 = {yLoc + (gameHeight + moduleCCht)/2}
-							x2 = {xToLoser}
-							y2 = {yLoc + (gameHeight + moduleCCht)/2}
-							x3 = {xToLoser}
-							y3 = {yLoc + gameHeight}
-							radius = {vizGeo.radius}
-							color = {vizGeo.lColAr[k-1]}
-							stroke = {8*k}
-							bracket = {this.state.masterGameObject[gameCounter].bracket + (k%2 == 0?'':2)}
-							direction = 'clockwise'
-						/>
-					); 
-				}
-				
-				bezArr.push(
-					<BezierCurves
-						xs = {xLoc + gameWidth}
-						ys = {yLoc + gameHeight/2}
-						xe = {xLoc + gameWidth + vizGeo.horizSpace}
-						ye = {ye}
-						color = 'blue'
-						stroke = {4}
-						bracket = {this.state.masterGameObject[gameCounter].bracket}
-					/>
-				);
-				gameCounter = gameCounter + 1;
-			}
-		}
-		
-		//create Special Bracket for Winners
-		winnerBracket.push(
-			<GameComponent
-				playerA = {this.state.masterGameObject[gameCounter].playerA}
-				playerB = {this.state.masterGameObject[gameCounter].playerB}
-				gameNumber = {this.state.masterGameObject[gameCounter].gameNumber}
-				bracket = {this.state.masterGameObject[gameCounter].bracket}
-				bracketSpots = {bracketSpots}
-				vizGeo = {vizGeo}
-				x = {(winnerArr.length+(bracketPower-1)*2)*(gameWidth+vizGeo.horizSpace) + vizGeo.horizSpace}
-				y = {(boardHeight-gameHeight)/2}
-				status = {this.state.masterGameObject[gameCounter].status}
-				winner = {this.state.masterGameObject[gameCounter].winner}
-				loser = {this.state.masterGameObject[gameCounter].loser}
-				loserEliminated = {this.state.masterGameObject[gameCounter].loserEliminated}
-				showMatchup = {this.showMatchup.bind(this)}
-			/>
-		);
-		gameCounter = gameCounter + 1;
-		
-		//create Games in Losers Bracket
+		var winnerBracket = [];
 		var loserBracket = [];
-		
-		for (k = 0; k < LoserArr.length; k++){
-			for( i = 0; i < LoserArr[k]; i++){
-				
-				moduleCCht = (gameHeight+vizGeo.vertSpace)*Math.pow(2,k%2==0?(k/2)+1:(k+1)/2);
-				xLoc = ((bracketPower-1)*2)*vizGeo.horizSpace + (((bracketPower-1)*2)-1)*gameWidth - k*(gameWidth+vizGeo.horizSpace);
-				yLoc = boardHeight-(LoserArr[k]-i)*(gameHeight+vizGeo.vertSpace)*(Math.pow(2,(k%2==0?(k/2)+1:(k+1)/2))) - vizGeo.vertSpace + ((gameHeight+vizGeo.vertSpace)*(Math.pow(2,(k%2==0?(k/2)+1:(k+1)/2)))-vizGeo.vertSpace)/2 - gameHeight/2;
-				
-						
-				loserBracket.push(
-					<GameComponent
-						playerA = {this.state.masterGameObject[gameCounter].playerA}
-						playerB = {this.state.masterGameObject[gameCounter].playerB}
-						gameNumber = {this.state.masterGameObject[gameCounter].gameNumber}
-						bracket = {this.state.masterGameObject[gameCounter].bracket}
-						bracketSpots = {bracketSpots}
-						vizGeo = {vizGeo}
-						x = {xLoc}
-						y = {yLoc}
-						status = {this.state.masterGameObject[gameCounter].status}
-						winner = {this.state.masterGameObject[gameCounter].winner}
-						loser = {this.state.masterGameObject[gameCounter].loser}
-						loserEliminated = {this.state.masterGameObject[gameCounter].loserEliminated}
-						showMatchup = {this.showMatchup.bind(this)}
-					/>
-				);
-				
-				ye = i % 2 == 0 ? yLoc + (gameHeight + moduleCCht)/2 : yLoc + (gameHeight - moduleCCht)/2;
-				
-				if(k%2 ==0 ){
-					ye = yLoc + gameHeight/2;
-				}
-				
-				if (k==LoserArr.length -1){
-					var xEnd = xLoc + (LoserArr.length + winnerArr.length + 1)*(gameWidth + vizGeo.horizSpace) - vizGeo.horizSpace - gameWidth/2;
-					bezArr.push(
-						<BracketLine
-							xs = {xLoc + gameWidth/2}
-							ys = {yLoc}
-							x1 = {xLoc + gameWidth/2}
-							y1 = {vizGeo.vertSpace/2}
-							x2 = {xEnd}
-							y2 = {vizGeo.vertSpace/2}
-							x3 = {xEnd}
-							y3 = {yLoc}
-							radius = {vizGeo.radius}
-							color = 'blue'
-							stroke = {4}
-							bracket = {this.state.masterGameObject[gameCounter].bracket + (k%2 == 0?'':2)}
-							direction = 'counter-clockwise'
-						/>
-					); 
-				} else {
-					bezArr.push(
-						<BezierCurves
-							xs = {xLoc}
-							ys = {yLoc + gameHeight/2}
-							xe = {xLoc - vizGeo.horizSpace}
-							ye = {ye}
-							color = 'blue'
-							stroke = {4}
-							bracket = {this.state.masterGameObject[gameCounter].bracket + (k%2 == 0?'':2)}
-						/>
-					); 
-				}
-				gameCounter = gameCounter + 1;
-			}
-		}
-		
-		//create Games in finals Bracket
 		var finalsBracket = [];
+
+		// Create Games
+		var gameCounter = 1;
 		
-		for (k = 0; k < 1; k++){
-			
-			console.log('currentBracket',this.state.masterGameObject[gameCounter].bracket);
-				
-			xLoc = (winnerArr.length + LoserArr.length + 1)*(gameWidth+vizGeo.horizSpace) + vizGeo.horizSpace + (gameWidth+vizGeo.horizSpace)*k;
-			yLoc = boardHeight/2 - gameHeight/2;
-			
-					
-			finalsBracket.push(
-				<GameComponent
-					playerA = {this.state.masterGameObject[gameCounter].playerA}
-					playerB = {this.state.masterGameObject[gameCounter].playerB}
-					gameNumber = {this.state.masterGameObject[gameCounter].gameNumber}
-					bracket = {this.state.masterGameObject[gameCounter].bracket}
-					bracketSpots = {bracketSpots}
-					vizGeo = {vizGeo}
-					x = {xLoc}
-					y = {yLoc}
-					status = {this.state.masterGameObject[gameCounter].status}
-					winner = {this.state.masterGameObject[gameCounter].winner}
-					loser = {this.state.masterGameObject[gameCounter].loser}
-					loserEliminated = {this.state.masterGameObject[gameCounter].loserEliminated}
-					showMatchup = {this.showMatchup.bind(this)}
-				/>
-			);
-			
-			gameCounter = gameCounter + 1;
+		// create Games in Winner Bracket (includes start round)
+		var createdWinGames = CreateGmsWinBracket(gVars,gameCounter,this.state.masterGameObject);
+		winnerBracket.push(createdWinGames.winnerBracket);
+		createdWinGames.bezArr.map(element => bezArr.push(element));
+		gameCounter = createdWinGames.gameCounter;
 		
-		}
+		// create Games in Special Winner Bracket
+		winnerBracket.push(CreateGmsSpecialWinBracket(gVars,gameCounter,this.state.masterGameObject));
+		gameCounter = gameCounter +1;
+		
+		// create Games in Loser Bracket
+		var createdLoseGames = CreateGmsLoseBracket(gVars,gameCounter,this.state.masterGameObject);
+		loserBracket = createdLoseGames.loserBracket;
+		createdLoseGames.bezArr.map(element => bezArr.push(element));
+		gameCounter = createdLoseGames.gameCounter;
+		
+		// create Games in Finals Bracket
+		var createdFinalsGames = CreateGmsFinalsBracket(gVars,gameCounter,this.state.masterGameObject);
+		finalsBracket = createdFinalsGames.finalsBracket;
 		
 		bezArr.reverse();
-		
-		var tempArr = this.ScrapeAvg(seededArray);
+		console.log(bezArr);
 		
 		var renderHeight = Math.round(this.state.windowHeight*0.8);
 		var divStyle = {
-	    	height: Math.round(renderHeight*0.8)
+	    	height: Math.round(renderHeight)
 		};
+		
+		var chartTitle = this.ChartTitle(this.state.chartDisplay);
+		
 		
 		return (
 			<div className={'tournament-container'}>
@@ -583,22 +344,30 @@ export default class VsTournament extends React.Component {
 					</Layer>
 				</Stage>
 				<div className={'side-panel-area'} style={divStyle} >
-					<div className={'side-panel-chart orange'}>
+					<div className={'side-panel-chart'}>
 						<div className={"chart-title"}>
-					    	Best Avg Times
+					    	{chartTitle}
 					    </div>
-					    <div className={"chart-header"}>
-				        	<div className={"rank"}>Rank</div>
-				        	<div className={"flag"}></div>
-				        	<div className={"player-name"}>Name</div>
-				        	<div className={"time"}>Avg Time</div>
-				        </div>
-					    <div className={"chart-main"}>
-					        {tempArr.map(element => element)}
-					    </div>
+					    <ChartHeaders query = {this.state.chartDisplay}/>
+					    <ChartDataManager
+					    	seededArray = {seededArray}
+					    	query = {this.state.chartDisplay}
+					    />
 					</div>
-					<div className={'side-panel-selectors orange'}>
-						<p>I'm in the panel selectors! </p>
+					<div className={'side-panel-selectors'}>
+						<div className={"row-of-buttons"}> 
+							<Button title='Seed' clickHandle={this.handleStatButtonClick.bind(this)}/>
+							<Button title='Place' clickHandle={this.handleStatButtonClick.bind(this)}/>
+						</div>
+						<div className={"row-of-buttons"}> 
+							<Button title='Time Trial' clickHandle={this.handleStatButtonClick.bind(this)}/>
+							<Button title='Avg Times' clickHandle={this.handleStatButtonClick.bind(this)}/>
+							<Button title='Best Times' clickHandle={this.handleStatButtonClick.bind(this)}/>
+						</div>
+						<div className={"row-of-buttons"}> 
+							<Button title='Cup Time' clickHandle={this.handleStatButtonClick.bind(this)}/>
+							<Button title='Index' clickHandle={this.handleStatButtonClick.bind(this)}/>
+						</div>
 					</div>
 				</div>
 			</div>

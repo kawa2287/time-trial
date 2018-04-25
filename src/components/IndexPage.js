@@ -9,6 +9,7 @@ import VsTournament from './VsTournament';
 import {BrowserRouter as Router, Route, Link} from 'react-router';
 import demoNames from '../data/demoNames';
 import countries from '../data/countries';
+import Settings from '../static/Settings';
 
 
 
@@ -31,6 +32,7 @@ export default class IndexPage extends React.Component {
 
   addTeam(name, country, timeTrial){
   	timeTrial = timeTrial || '-';
+  	
   	this.state.players[name] = {
 		    name : name,
 		    country : CountryKeyVal[country],
@@ -41,7 +43,13 @@ export default class IndexPage extends React.Component {
 		    totalTime : 0,
 		    avgTime : 0,
 		    splitTIme : 0,
-		    bestTime : timeTrial
+		    bestTime : timeTrial,
+		    index: 1,
+		    avgCupTime : 0,
+		    maxRound: 0,
+		    vsGroupAvg: 0
+		    
+		    
 		};
 		this.setState({
 	  		nRows : this.state.nRows + 1
@@ -52,6 +60,7 @@ export default class IndexPage extends React.Component {
 		this.state.players[name].timeTrial = Number(time);
 		this.state.players[name].bestTime = Number(time);
 		this.state.players[name].avgTime = Number(time);
+		this.state.players[name].avgCupTime = Math.round(100*time/Settings.cupsPerPerson)/100;
 		this.setState({
 			players: this.state.players
 		}, function afterClick(){this.getBestTime(this.state.players)});
@@ -70,6 +79,7 @@ export default class IndexPage extends React.Component {
   }
   
   componentDidMount() {
+  	
 
   		//this section is to populate random number of teams... delete for production use
 	  	//---------------------------------------------------------------------------------

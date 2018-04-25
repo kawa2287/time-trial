@@ -140,6 +140,8 @@ export default class TileTeam extends React.Component {
                 		width = {teamWidth - 2 * teamHeight}
                 		align = 'left'
                 		textDecoration = {this.TextDecoration(this.props.name)}
+                		ellipsis = 'true'
+                		wrap = 'none'
                 	/>
                 	<Text //player avg time
                 		text = {this.timeDisplay(this.props.time,this.props.winChance,this.props.hover)}

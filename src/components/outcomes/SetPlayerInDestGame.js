@@ -1,6 +1,7 @@
 'use strict';
 
 export default function SetPlayerInDestGame(currentGameNum, destGame, topGame, botGame, player){
+	
 	if (currentGameNum == topGame){
 		this.setState({
     	masterGameObject : {

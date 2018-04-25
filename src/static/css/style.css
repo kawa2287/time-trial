@@ -383,7 +383,7 @@ footer p {
 .side-panel-chart {
   margin:10px;
   display: flex;
-  flex: 4 1 auto;
+  flex: 4;
   width: 100%;
   flex-direction: column;
 }
@@ -391,8 +391,9 @@ footer p {
 .side-panel-selectors {
   margin:10px;
   display: flex;
-  flex: 1 1 auto;
+  flex: 1;
   width: 100%;
+  flex-direction:column;
 }
 
 .chart-title {
@@ -404,7 +405,7 @@ footer p {
 
 .chart-main {
   flex: 1 1 auto;
-  overflow: scroll;
+  overflow:scroll;
 }
 
 .chart-header {
@@ -464,4 +465,24 @@ footer p {
 .time {
   flex: 1 1 auto;
   width: 40px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+
+.inner-square {
+  flex:1;
+  font-size: 12px;
+  color: white;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+}
+
+.row-of-buttons {
+  display: flex;
+  flex:1;
 }

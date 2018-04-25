@@ -8,5 +8,5 @@ export default function DetermineBracketPower(nTeams){
 				return bracketPower;
 			}
 		}
-		return bracketPower;
+	return bracketPower;
 }

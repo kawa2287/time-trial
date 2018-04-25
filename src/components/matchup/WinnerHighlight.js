@@ -9,7 +9,6 @@ export default function WinnerHighlight (Geo,player,dialogWidth, winner){
 	
 	var winnerName;
 	var opacity = 0;
-	console.log('winnerhigh',winner);
 	
 	if(winner ==  null){
 		winnerName = '';

@@ -180,7 +180,7 @@ export default class GameComponent extends React.Component {
 					y={0}
 					width={gameWidth}
         			height={gameHeight}
-                    fill= {this.BackgroundColor(this.state.status)}
+                    fill= {this.BackgroundColor(this.props.status)}
 					stroke= 'black'
 					strokeWidth= {2}
 				/>
@@ -205,33 +205,33 @@ export default class GameComponent extends React.Component {
             		align = 'center'
             	/>
 				<TileTeam
-					seed = {this.state.seedA}
-					country = {this.state.countryA}
-					name = {this.state.nameA}
+					seed = {this.props.playerA.seed}
+					country = {this.props.playerA.country.name}
+					name = {this.props.playerA.name}
 					time = {pAavgTime}
-					img = {this.state.flagA}
+					img = {this.props.playerA.country.flagPathSVG}
 					height = {teamHeight}
 					width = {teamWidth}
 					globalX = {1.5*teamHeight}
 					globalY = {0.5*teamHeight}
 					hover = {this.state.hover}
-					losses = {this.state.lossesA}
+					losses = {this.props.playerA.losses}
 					winChance = {DetermineWinChance(this.props.playerA.name, this.props.playerB.name, pAavgTime, pBavgTime)}
 					loser = {this.props.loser}
 					loserEliminated = {this.props.loserEliminated}
 				/>
 				<TileTeam
-					seed = {this.state.seedB}
-					country = {this.state.countryB}
-					name = {this.state.nameB}
+					seed = {this.props.playerB.seed}
+					country = {this.props.playerB.country.name}
+					name = {this.props.playerB.name}
 					time = {pBavgTime}
-					img = {this.state.flagB}
+					img = {this.props.playerB.country.flagPathSVG}
 					height = {teamHeight}
 					width = {teamWidth}
 					globalX = {1.5*teamHeight}
 					globalY = {2*teamHeight}
 					hover = {this.state.hover}
-					losses = {this.state.lossesB}
+					losses = {this.props.playerB.losses}
 					winChance = {DetermineWinChance(this.props.playerB.name, this.props.playerA.name, pBavgTime, pAavgTime)}
 					loser = {this.props.loser}
 					loserEliminated = {this.props.loserEliminated}

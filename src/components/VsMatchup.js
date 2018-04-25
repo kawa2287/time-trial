@@ -169,6 +169,7 @@ class VsMatchup extends React.Component {
 				selectedPlayer : null
 			});
 			this.props.hideMatchup();
+			this.props.updateChart();
 		}
 	}
 	
@@ -212,8 +213,6 @@ class VsMatchup extends React.Component {
 	}
 
    render() {
-   	
-   		console.log('winnerState',this.state.winner);
    	
 		return (
 			<Stage width={this.props.dialogWidth} height={this.props.dialogHeight}>
