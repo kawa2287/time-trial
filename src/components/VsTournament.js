@@ -5,10 +5,7 @@ import SkyLight from 'react-skylight';
 import { Stage, Group, Layer } from "react-konva";
 import Colors from '../static/Colors';
 
-import BezierCurves from './BezierCurves';
 import Button from './Button';
-import GameComponent from './GameComponent';
-import BracketLine from './BracketLine';
 import VsMatchup from './VsMatchup';
 import PropogateSeedsArr from './vsBracketMethods/higherOrderMethods/PropogateSeedsArr';
 import CreateMasterGameObject from './vsBracketMethods/higherOrderMethods/CreateMasterGameObject';
@@ -18,7 +15,6 @@ import CreateGmsLoseBracket from './vsBracketMethods/higherOrderMethods/CreateGm
 import CreateGmsFinalsBracket from './vsBracketMethods/higherOrderMethods/CreateGmsFinalsBracket';
 import DetermineBracketPower from './vsBracketMethods/baseMethods/DetermineBracketPower';
 import * as NgmsInRnd from './vsBracketMethods/baseMethods/NgamesInRound';
-import DetermineBracket from './vsBracketMethods/baseMethods/DetermineBracket';
 import WinnerLoserHandler from './outcomes/WinnerLoserHandler';
 import SetPlayerInDestGame from './outcomes/SetPlayerInDestGame';
 import SendWinnerWinBracket from './outcomes/SendWinnerWinBracket';
@@ -47,7 +43,6 @@ var vizGeo = {
 //------------------------------------------------------------------
 //declare global variables here
 //------------------------------------------------------------------
-var k = 0;
 var loserArr = [];
 var winnerArr = [];
 var mastArr = [];
@@ -295,7 +290,6 @@ export default class VsTournament extends React.Component {
 		finalsBracket = createdFinalsGames.finalsBracket;
 		
 		bezArr.reverse();
-		console.log(bezArr);
 		
 		var renderHeight = Math.round(this.state.windowHeight*0.8);
 		var divStyle = {

@@ -5,7 +5,6 @@ import Konva from "konva";
 import { Rect, Group, Text } from "react-konva";
 import TileTeam from './TileTeam';
 import Colors from '../static/Colors';
-import Settings from '../static/Settings';
 import StabilizeView from './viewMethods/StabilizeView';
 import DetermineWinChance from './vsBracketMethods/baseMethods/DetermineWinChance';
 import DetermineAvgTime from './vsBracketMethods/baseMethods/DetermineAvgTime';
@@ -18,30 +17,9 @@ var gameNumberColor = Colors.gameNumberColor;
 export default class GameComponent extends React.Component {
 	constructor(props){
 		super(props);
-		
+
 		this.state = {
-			nameA : this.props.playerA.name,
-			nameB : this.props.playerB.name,
-			countryA :this.props.playerA.country.name,
-			countryB: this.props.playerB.country.name,
-			seedA : this.props.playerA.seed,
-			seedB : this.props.playerB.seed,
-			timeTrialA : this.props.playerA.timeTrial,
-			timeTrialB : this.props.playerB.timeTrial,
-			totalTimeA : this.props.playerA.totalTime,
-			totalTimeB : this.props.playerB.totalTime,
-			avgTimeA : this.props.playerA.avgTime,
-			avgTimeB : this.props.playerB.avgTime,
-			flagA : this.props.playerA.country.flagPathSVG,
-			flagB : this.props.playerB.country.flagPathSVG,
-			winsA : this.props.playerA.wins,
-			winsB : this.props.playerB.wins,
-			lossesA : this.props.playerA.losses,
-			lossesB : this.props.playerB.losses,
-			hover : false,
-			status : this.props.status,
-			winner : this.props.winner,
-			loser : this.props.loser
+			hover : false
 		};
 	}
 	
@@ -54,7 +32,7 @@ export default class GameComponent extends React.Component {
 	BackgroundColor(status){
 		if (status === 'COMPLETE'){
 			return completeColor;
-		} else if (this.props.playerA.seed>=1 && this.props.playerB.seed >=1) {
+		} else if (this.props.gProps.playerA.seed>=1 && this.props.gProps.playerB.seed >=1) {
 			return availableColor;
 		} else {
 			return defaultColor;
@@ -68,42 +46,42 @@ export default class GameComponent extends React.Component {
 		var winnerTime;
 		var loserTime;
 		var byeRound;
-		if (this.props.playerA.seed>=1 && this.props.playerB.seed >=1 && this.props.status !== 'COMPLETE'){
+		if (this.props.gProps.playerA.seed>=1 && this.props.gProps.playerB.seed >=1 && this.props.gProps.status !== 'COMPLETE'){
 			var newPos = StabilizeView(e);
-			var pAtime = this.props.playerA.timeTrial + (this.randomIntFromInterval(-10,15));
-			var pBtime = this.props.playerB.timeTrial + (this.randomIntFromInterval(-10,15));
+			var pAtime = this.props.gProps.playerA.timeTrial + (this.randomIntFromInterval(-10,15));
+			var pBtime = this.props.gProps.playerB.timeTrial + (this.randomIntFromInterval(-10,15));
 		
 			// decide winner or loser
 			
-			if (this.props.playerB.name =="BYE") {
-				winner = this.props.playerA;
-				loser = this.props.playerB;
+			if (this.props.gProps.playerB.name =="BYE") {
+				winner = this.props.gProps.playerA;
+				loser = this.props.gProps.playerB;
 			 	byeRound = true;
-			} else if ( this.props.playerA.name == "BYE"){
-				winner = this.props.playerB;
-				loser = this.props.playerA;
+			} else if ( this.props.gProps.playerA.name == "BYE"){
+				winner = this.props.gProps.playerB;
+				loser = this.props.gProps.playerA;
 				byeRound = true;
 			} else if (pAtime <= pBtime){
-				winner = this.props.playerA;
-				loser = this.props.playerB;
+				winner = this.props.gProps.playerA;
+				loser = this.props.gProps.playerB;
 				winnerTime = pAtime;
 				loserTime = pBtime;
 				byeRound = false;
 			} else if (pAtime > pBtime) {
-				winner = this.props.playerB;
-				loser = this.props.playerA;
+				winner = this.props.gProps.playerB;
+				loser = this.props.gProps.playerA;
 				winnerTime = pBtime;
 				loserTime = pAtime;
 				byeRound = false;
 			}
 			//Dialog Popup
-			this.props.showMatchup(
+			this.props.gProps.showMatchup(
 				newPos,
-				this.props.playerA,
-				this.props.playerB,
+				this.props.gProps.playerA,
+				this.props.gProps.playerB,
 				byeRound,
-				this.props.gameNumber,
-				this.props.bracketSpots,
+				this.props.gProps.gameNumber,
+				this.props.gProps.bracketSpots,
 				winner,
 				loser
 			);
@@ -122,52 +100,21 @@ export default class GameComponent extends React.Component {
 		});
 	}
 
-	componentWillReceiveProps(newProps) {
-		if ({...newProps} !== {...this.props}){
-		    this.setState({
-		    	...this.props,
-		    	nameA : newProps.playerA.name,
-				nameB : newProps.playerB.name,
-				seedA : newProps.playerA.seed,
-				seedB : newProps.playerB.seed,
-				countryA : newProps.playerA.country.name,
-				countryB: newProps.playerB.country.name,
-				timeTrialA : newProps.playerA.timeTrial,
-				timeTrialB : newProps.playerB.timeTrial,
-				totalTimeA : newProps.playerA.totalTime,
-				totalTimeB : newProps.playerB.totalTime,
-				avgTimeA : newProps.playerA.avgTime,
-				avgTimeB : newProps.playerB.avgTime,
-				flagA : newProps.playerA.country.flagPathSVG,
-				flagB : newProps.playerB.country.flagPathSVG,
-				winsA : newProps.playerA.wins,
-				winsB : newProps.playerB.wins,
-				lossesA : newProps.playerA.losses,
-				lossesB : newProps.playerB.losses,
-				status : newProps.status,
-				winner : newProps.winner,
-				loser : newProps.loser,
-				loserEliminated : newProps.loserEliminated
-		    });
-		}
-	}
-
-
 	render(){
-		var teamHeight = this.props.vizGeo.teamHeight;
-		var teamWidth = this.props.vizGeo.teamWidth;
+		var teamHeight = this.props.gProps.vizGeo.teamHeight;
+		var teamWidth = this.props.gProps.vizGeo.teamWidth;
 		var gameWidth = teamWidth + 2 * teamHeight;
 		var gameHeight = teamHeight * 3.5;
 		var gameFontSize = 16;
-		var pAavgTime = DetermineAvgTime(this.state.timeTrialA, this.state.totalTimeA, this.state.winsA, this.state.lossesA);
-		var pBavgTime = DetermineAvgTime(this.state.timeTrialB, this.state.totalTimeB, this.state.winsB, this.state.lossesB);
+		var pAavgTime = DetermineAvgTime(this.props.gProps.playerA.timeTrial, this.props.gProps.playerA.totalTime, this.props.gProps.playerA.wins, this.props.gProps.playerA.losses);
+		var pBavgTime = DetermineAvgTime(this.props.gProps.playerB.timeTrial, this.props.gProps.playerB.totalTime, this.props.gProps.playerB.wins, this.props.gProps.playerB.losses);
 		
 		
 		
 		return(
 			<Group 
-				x={this.props.x}
-				y={this.props.y}
+				x={this.props.gProps.x}
+				y={this.props.gProps.y}
 				width={gameWidth} 
 				height={gameHeight}
 				onClick={this.handleOnclick.bind(this)}
@@ -180,7 +127,7 @@ export default class GameComponent extends React.Component {
 					y={0}
 					width={gameWidth}
         			height={gameHeight}
-                    fill= {this.BackgroundColor(this.props.status)}
+                    fill= {this.BackgroundColor(this.props.gProps.status)}
 					stroke= 'black'
 					strokeWidth= {2}
 				/>
@@ -194,7 +141,7 @@ export default class GameComponent extends React.Component {
 					strokeWidth= {2}
 				/>
 				<Text //game number
-            		text = {this.props.gameNumber}
+            		text = {this.props.gProps.gameNumber}
             		x = {teamHeight/2 - 9}
             		y = {(gameHeight-gameFontSize)/2}
             		fontSize = {gameFontSize}
@@ -205,36 +152,36 @@ export default class GameComponent extends React.Component {
             		align = 'center'
             	/>
 				<TileTeam
-					seed = {this.props.playerA.seed}
-					country = {this.props.playerA.country.name}
-					name = {this.props.playerA.name}
+					seed = {this.props.gProps.playerA.seed}
+					country = {this.props.gProps.playerA.country.name}
+					name = {this.props.gProps.playerA.name}
 					time = {pAavgTime}
-					img = {this.props.playerA.country.flagPathSVG}
+					img = {this.props.gProps.playerA.country.flagPathSVG}
 					height = {teamHeight}
 					width = {teamWidth}
 					globalX = {1.5*teamHeight}
 					globalY = {0.5*teamHeight}
 					hover = {this.state.hover}
-					losses = {this.props.playerA.losses}
-					winChance = {DetermineWinChance(this.props.playerA.name, this.props.playerB.name, pAavgTime, pBavgTime)}
-					loser = {this.props.loser}
-					loserEliminated = {this.props.loserEliminated}
+					losses = {this.props.gProps.playerA.losses}
+					winChance = {DetermineWinChance(this.props.gProps.playerA.name, this.props.gProps.playerB.name, pAavgTime, pBavgTime)}
+					loser = {this.props.gProps.loser}
+					loserEliminated = {this.props.gProps.loserEliminated}
 				/>
 				<TileTeam
-					seed = {this.props.playerB.seed}
-					country = {this.props.playerB.country.name}
-					name = {this.props.playerB.name}
+					seed = {this.props.gProps.playerB.seed}
+					country = {this.props.gProps.playerB.country.name}
+					name = {this.props.gProps.playerB.name}
 					time = {pBavgTime}
-					img = {this.props.playerB.country.flagPathSVG}
+					img = {this.props.gProps.playerB.country.flagPathSVG}
 					height = {teamHeight}
 					width = {teamWidth}
 					globalX = {1.5*teamHeight}
 					globalY = {2*teamHeight}
 					hover = {this.state.hover}
-					losses = {this.props.playerB.losses}
-					winChance = {DetermineWinChance(this.props.playerB.name, this.props.playerA.name, pBavgTime, pAavgTime)}
-					loser = {this.props.loser}
-					loserEliminated = {this.props.loserEliminated}
+					losses = {this.props.gProps.playerB.losses}
+					winChance = {DetermineWinChance(this.props.gProps.playerB.name, this.props.gProps.playerA.name, pBavgTime, pAavgTime)}
+					loser = {this.props.gProps.loser}
+					loserEliminated = {this.props.gProps.loserEliminated}
 				/>
 			</Group>
 		);

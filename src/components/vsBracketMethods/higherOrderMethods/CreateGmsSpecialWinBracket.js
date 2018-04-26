@@ -2,6 +2,7 @@
 
 import React from 'react';
 import GameComponent from '../../GameComponent';
+import GameComponentProps from '../baseMethods/GameComponentProps';
 
 export default function CreateGmsSpecialWinBracket(gVars,gameCounter,masterGameObject ){
     
@@ -13,22 +14,24 @@ export default function CreateGmsSpecialWinBracket(gVars,gameCounter,masterGameO
 	var vizGeo = gVars.vizGeo;
 	var bracketPower = gVars.bracketPower;
 	var bracketSpots = gVars.bracketSpots;
+	
+	var xLoc = (winnerArr.length+(bracketPower-1)*2)*(gameWidth+vizGeo.horizSpace) + vizGeo.horizSpace;
+	var yLoc = (boardHeight-gameHeight)/2;
+	
 
 	return  (
 	    <GameComponent
-			playerA = {masterGameObject[gameCounter].playerA}
-			playerB = {masterGameObject[gameCounter].playerB}
-			gameNumber = {masterGameObject[gameCounter].gameNumber}
-			bracket = {masterGameObject[gameCounter].bracket}
-			bracketSpots = {bracketSpots}
-			vizGeo = {vizGeo}
-			x = {(winnerArr.length+(bracketPower-1)*2)*(gameWidth+vizGeo.horizSpace) + vizGeo.horizSpace}
-			y = {(boardHeight-gameHeight)/2}
-			status = {masterGameObject[gameCounter].status}
-			winner = {masterGameObject[gameCounter].winner}
-			loser = {masterGameObject[gameCounter].loser}
-			loserEliminated = {masterGameObject[gameCounter].loserEliminated}
-			showMatchup = {gVars.showMatchup}
+	    	gProps = {
+				GameComponentProps(
+					gVars,
+					gameCounter,
+					masterGameObject,
+					bracketSpots,
+					vizGeo,
+					xLoc,
+					yLoc
+				)
+			}
 		/>
 	);
 	

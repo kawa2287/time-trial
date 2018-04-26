@@ -2,6 +2,7 @@
 
 import React from 'react';
 import GameComponent from '../../GameComponent';
+import GameComponentProps from '../baseMethods/GameComponentProps';
 import BezierCurves from '../../BezierCurves';
 import BracketLine from '../../BracketLine';
 
@@ -37,19 +38,17 @@ export default function CreateGmsLoseBracket(gVars,gameCounter,masterGameObject 
 					
 			loserBracket.push(
 				<GameComponent
-					playerA = {masterGameObject[gameCounter].playerA}
-					playerB = {masterGameObject[gameCounter].playerB}
-					gameNumber = {masterGameObject[gameCounter].gameNumber}
-					bracket = {masterGameObject[gameCounter].bracket}
-					bracketSpots = {bracketSpots}
-					vizGeo = {vizGeo}
-					x = {xLoc}
-					y = {yLoc}
-					status = {masterGameObject[gameCounter].status}
-					winner = {masterGameObject[gameCounter].winner}
-					loser = {masterGameObject[gameCounter].loser}
-					loserEliminated = {masterGameObject[gameCounter].loserEliminated}
-					showMatchup = {gVars.showMatchup}
+					gProps = {
+						GameComponentProps(
+							gVars,
+							gameCounter,
+							masterGameObject,
+							bracketSpots,
+							vizGeo,
+							xLoc,
+							yLoc
+						)
+					}
 				/>
 			);
 			

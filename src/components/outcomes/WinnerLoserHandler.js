@@ -11,6 +11,10 @@ export default function WinnerLoserHandler (currentGameNum, bracketSpots, winPla
 	var roundNumber = DetermineRoundNumber(currentGameNum, bracketSpots, currentBracket);
     var bracketPower = DetermineBracketPower(bracketSpots);
     
+    if (winTime == null || winTime == 0){
+    	winTime = winPlayer.timeTrial;
+    }
+    
     // update stats [GLOBAL]
     if(byeRound === false) {
     	winPlayer.wins = winPlayer.wins + 1;
