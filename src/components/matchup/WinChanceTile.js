@@ -6,7 +6,12 @@ import React from 'react';
 import DetermineWinChance from '../vsBracketMethods/baseMethods/DetermineWinChance';
 import DetermineAvgTime from '../vsBracketMethods/baseMethods/DetermineAvgTime';
 
-export default function StatsTile(Geo,players, dialogWidth, dialogHeight, winTime){
+const formattedSeconds = (sec) =>
+	Math.floor(sec) + '.' + 
+	(sec < 1 ? Math.round(Math.floor(sec*10)) : Math.round(10*( (Math.floor(sec*10)/10) % (Math.floor(sec)))) ) +
+	Math.floor((sec % 0.1)*100);
+
+export default function StatsTile(Geo,players, dialogWidth, dialogHeight, winTime, keySeq, timeElapsed){
     
     var width = dialogWidth - (Geo.margin*3 + Geo.timeCircleRadius);
     var pAavgTime = DetermineAvgTime(players[0].timeTrial, players[0].totalTime, players[0].wins, players[0].losses);
@@ -15,6 +20,15 @@ export default function StatsTile(Geo,players, dialogWidth, dialogHeight, winTim
     var pBwinChance = DetermineWinChance(players[1].name,players[0].name,pBavgTime, pAavgTime)/100;
     
     var percentFontSize = Geo.margin*1.5;
+    var circleFill 
+    
+    if (keySeq == 0){
+        circleFill = 'white';  //set at 0
+    } else if (keySeq == 1) {
+        circleFill = 'green'; //running
+    } else {
+        circleFill = '#fdfd96'; //stopped
+    }
     
     return(
         <Group x = {Geo.margin + Geo.timeCircleRadius} y = {dialogHeight/2 - 2.5*Geo.margin} >	
@@ -40,7 +54,7 @@ export default function StatsTile(Geo,players, dialogWidth, dialogHeight, winTim
             <Circle //player B
                 y = {Geo.margin*2.5}
                 radius= {Geo.timeCircleRadius}
-                fill= {'#fdfd96'}
+                fill= {circleFill}
                 stroke= {Geo.borderColor}
 				strokeWidth= {5}
 				shadowBlur = {2}
@@ -71,7 +85,7 @@ export default function StatsTile(Geo,players, dialogWidth, dialogHeight, winTim
             <Text //winTime
                 y = {Geo.margin*2.5 - percentFontSize/2}
                 x = {-Geo.timeCircleRadius}
-                text = {winTime}
+                text = {formattedSeconds(timeElapsed) || winTime}
     			align = 'center'
     			fill = 'black'
     			width = {Geo.timeCircleRadius*2}

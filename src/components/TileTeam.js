@@ -135,9 +135,9 @@ export default class TileTeam extends React.Component {
                 		x = {clipWidth + 48 + 10}
                 		y = {(teamHeight-fontSize)/2}
                 		fontSize = {fontSize}
-                		fontVariant = 'small-caps'
                 		fill = 'black'
                 		width = {teamWidth - 2 * teamHeight}
+                		font-family = 'sans-serif'
                 		align = 'left'
                 		textDecoration = {this.TextDecoration(this.props.name)}
                 		ellipsis = 'true'

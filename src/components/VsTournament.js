@@ -27,7 +27,6 @@ import ChartHeaders from './sideChart/ChartHeaders';
 import ChartTitle from './sideChart/ChartTitle';
 import ChartDataManager from './sideChart/ChartDataManager';
 
-
 //------------------------------------------------------------------
 //declare geometries here
 //------------------------------------------------------------------
@@ -74,6 +73,10 @@ export default class VsTournament extends React.Component {
 			windowHeight : window.innerHeight,
 			chartDisplay : 'timeTrial'
 		};
+		
+		
+		//DATABASE/////
+	
 		
 		//bind imported state dependent functions
 		this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
@@ -246,17 +249,17 @@ export default class VsTournament extends React.Component {
 	
 	render() {
 		
-	var matchupDialog = {
-		width: '1000',
-	    height: '600',
-	    position: 'fixed',
-	    top: '50%',
-	    left: '50%',
-	    marginTop: '-300',
-	    marginLeft: '-500',
-		backgroundColor: Colors.gameNotReadyColor,
-		color: Colors.gameNotReadyColor,
-    };
+		var matchupDialog = {
+			width: '1000',
+		    height: '600',
+		    position: 'fixed',
+		    top: '50%',
+		    left: '50%',
+		    marginTop: '-300',
+		    marginLeft: '-500',
+			backgroundColor: Colors.gameNotReadyColor,
+			color: Colors.gameNotReadyColor,
+	    };
 		
 		//------------------------------------------------------------------
 		//this.props.location.state.'GIVEN NAME' to access props thru Link

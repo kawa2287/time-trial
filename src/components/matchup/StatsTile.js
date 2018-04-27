@@ -51,7 +51,6 @@ export default function StatsTile (Geo,player,dialogWidth, selectedDeco){
 				text = {player.name}
 				align = 'left'
 				fill = 'white'
-				fontVariant = 'small-caps'
 				fontSize = {Geo.nameSize}
 				shadowBlur = {2}
 				shadowOpacity= {0.5}
@@ -63,7 +62,6 @@ export default function StatsTile (Geo,player,dialogWidth, selectedDeco){
 				align = 'right'
 				width = {width}
 				fill = {Geo.borderColor}
-				fontVariant = 'small-caps'
 				fontSize = {Geo.seedFontSize}
 				shadowBlur = {selectedDeco.shadowBlur}
 				shadowOpacity= {selectedDeco.shadowOpacity}
@@ -77,7 +75,6 @@ export default function StatsTile (Geo,player,dialogWidth, selectedDeco){
 				align = 'center'
 				width = {statHzDist}
 				fill = {Geo.statColor}
-				fontVariant = 'small-caps'
 				fontSize = {Geo.nameSize}
 				shadowBlur = {2}
 				shadowOpacity= {0.5}
@@ -89,7 +86,6 @@ export default function StatsTile (Geo,player,dialogWidth, selectedDeco){
 				align = 'center'
 				width = {statHzDist}
 				fill = {Geo.statColor}
-				fontVariant = 'small-caps'
 				fontSize = {Geo.nameSize}
 				shadowBlur = {2}
 				shadowOpacity= {0.5}
@@ -101,7 +97,6 @@ export default function StatsTile (Geo,player,dialogWidth, selectedDeco){
 				align = 'center'
 				width = {statHzDist}
 				fill = {Geo.statColor}
-				fontVariant = 'small-caps'
 				fontSize = {Geo.nameSize}
 				shadowBlur = {2}
 				shadowOpacity= {0.5}
@@ -113,7 +108,6 @@ export default function StatsTile (Geo,player,dialogWidth, selectedDeco){
 				align = 'center'
 				width = {statHzDist}
 				fill = {Geo.statColor}
-				fontVariant = 'small-caps'
 				fontSize = {Geo.nameSize}
 				shadowBlur = {2}
 				shadowOpacity= {0.5}
@@ -125,7 +119,6 @@ export default function StatsTile (Geo,player,dialogWidth, selectedDeco){
 				align = 'center'
 				width = {statHzDist}
 				fill = {Geo.statColor}
-				fontVariant = 'small-caps'
 				fontSize = {Geo.nameSize}
 				shadowBlur = {2}
 				shadowOpacity= {0.5}
@@ -137,7 +130,6 @@ export default function StatsTile (Geo,player,dialogWidth, selectedDeco){
 				align = 'center'
 				width = {statHzDist}
 				fill = {Geo.statColor}
-				fontVariant = 'small-caps'
 				fontSize = {Geo.nameSize}
 				shadowBlur = {2}
 				shadowOpacity= {0.5}
@@ -150,7 +142,6 @@ export default function StatsTile (Geo,player,dialogWidth, selectedDeco){
 				align = 'center'
 				width = {statHzDist}
 				fill = {Geo.borderColor}
-				fontVariant = 'small-caps'
 				fontSize = {Geo.statLabelSize}
 				shadowBlur = {2}
 				shadowOpacity= {0.5}
@@ -162,7 +153,6 @@ export default function StatsTile (Geo,player,dialogWidth, selectedDeco){
 				align = 'center'
 				width = {statHzDist}
 				fill = {Geo.borderColor}
-				fontVariant = 'small-caps'
 				fontSize = {Geo.statLabelSize}
 				shadowBlur = {2}
 				shadowOpacity= {0.5}
@@ -174,7 +164,6 @@ export default function StatsTile (Geo,player,dialogWidth, selectedDeco){
 				align = 'center'
 				width = {statHzDist}
 				fill = {Geo.borderColor}
-				fontVariant = 'small-caps'
 				fontSize = {Geo.statLabelSize}
 				shadowBlur = {2}
 				shadowOpacity= {0.5}
@@ -186,7 +175,6 @@ export default function StatsTile (Geo,player,dialogWidth, selectedDeco){
 				align = 'center'
 				width = {statHzDist}
 				fill = {Geo.borderColor}
-				fontVariant = 'small-caps'
 				fontSize = {Geo.statLabelSize}
 				shadowBlur = {2}
 				shadowOpacity= {0.5}
@@ -198,7 +186,6 @@ export default function StatsTile (Geo,player,dialogWidth, selectedDeco){
 				align = 'center'
 				width = {statHzDist}
 				fill = {Geo.borderColor}
-				fontVariant = 'small-caps'
 				fontSize = {Geo.statLabelSize}
 				shadowBlur = {2}
 				shadowOpacity= {0.5}
@@ -210,7 +197,6 @@ export default function StatsTile (Geo,player,dialogWidth, selectedDeco){
 				align = 'center'
 				width = {statHzDist}
 				fill = {Geo.borderColor}
-				fontVariant = 'small-caps'
 				fontSize = {Geo.statLabelSize}
 				shadowBlur = {2}
 				shadowOpacity= {0.5}

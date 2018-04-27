@@ -1,8 +1,11 @@
 Attempt at a bracket Web App
 
 Lots of things to do...
-
-currently this is just a tutorial to help understand how node and react work together
+    - Create 4 Player Version
+    - Style Time Trials Better
+    - Add and extract data from sqlite database
+    - Hook up dash buttons instead of keyboard strokes
+    - Create 'blind draw' option
 
 to run on c9.io : enter the following into terminal:
 

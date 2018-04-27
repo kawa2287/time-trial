@@ -5,6 +5,12 @@ import Colors from '../static/Colors';
 import WinChanceTile from './matchup/WinChanceTile';
 
 
+const formattedSeconds = (sec) =>
+	Math.floor(sec) + '.' + 
+	(sec < 1 ? Math.round(Math.floor(sec*10)) : Math.round(10*( (Math.floor(sec*10)/10) % (Math.floor(sec)))) ) +
+	Math.floor((sec % 0.1)*100);
+	
+	
 var tileHeight = 128;
 var flagHeight = 192;
 var flagWidth = 192;
@@ -55,7 +61,7 @@ var Geo = {
 		x : 167,
 		y : 105
 	},
-	alphaArr : ['A','B','C','D'],
+	alphaArr : [1,2,3,4],
 	colorArr : [
 		'#ff6961',
 		'#61f7ff',
@@ -64,23 +70,27 @@ var Geo = {
 	]
 };
 
-function initTiles(players,Geo, dialogHeight, dialogWidth, winnerClick, winTime, winner, selectedPlayer){
+function initTiles(initVarsObj){
+		
 	var arr = [];
 	
-	for(var i = 0; i < players.length; i++){
+	for(var i = 0; i < initVarsObj.players.length; i++){
 		arr.push(
 			MatchupTile(
-				Geo,
-				players[i],
-				dialogHeight - dialogHeight/(i+1),
-				Geo.alphaArr[i], 
-				Geo.colorArr[i], 
-				dialogWidth,
-				dialogHeight,
-				winnerClick,
-				winTime,
-				winner,
-				selectedPlayer
+				initVarsObj.Geo,
+				initVarsObj.players[i],
+				initVarsObj.dialogHeight - initVarsObj.dialogHeight/(i+1),
+				initVarsObj.Geo.alphaArr[i], 
+				initVarsObj.Geo.colorArr[i], 
+				initVarsObj.dialogWidth,
+				initVarsObj.dialogHeight,
+				initVarsObj.winnerClick,
+				initVarsObj.winTime,
+				initVarsObj.winner,
+				initVarsObj.selectedPlayer,
+				initVarsObj.keyPress,
+				initVarsObj.stopHandler,
+				initVarsObj.keySeq
 			)
 		);
 	}
@@ -100,7 +110,10 @@ class VsMatchup extends React.Component {
 			loser : null,
 			winTime : 0,
 			loseTime : 0,
-			selectedPlayer : null
+			selectedPlayer : null,
+			keyPress : null,
+			timeElapsed: 0,
+			keySeq : 0
 		};
 	}
 	
@@ -134,6 +147,65 @@ class VsMatchup extends React.Component {
 		});
 	}
 	
+	handleStartClick(event) {
+		
+    	this.setState({
+    		keyPress : event.key
+    	});
+    		
+		if(event.key == ' ' && this.state.keySeq == 0){
+    		this.incrementer = setInterval( () =>
+		    	this.setState({
+					timeElapsed: this.state.timeElapsed + .01,
+					keySeq : 1
+		    	}, function afterClick() {
+		    		this.setState({
+		    			keyPress : null
+		    		});
+		    	}),10
+	    	);
+    	} else if (event.key == ' ' && this.state.keySeq == 1){
+    		this.setState({
+    			keySeq : 2,
+    			keyPress : null
+    		}, function  afterClick() {
+    			clearInterval(this.incrementer);
+    		});
+    		
+    	} else if (event.key == ' ' && this.state.keySeq == 2){
+    		this.setState({
+    			keySeq : 0,
+    			keyPress : null,
+    			timeElapsed : 0,
+    			winTime: 0,
+    			winner: null,
+    			selectedPlayer: null
+    		});
+    	}
+    }
+    
+    handleStopMainTimer(player){
+    	clearInterval(this.incrementer);
+    	
+    	var loser;
+    	
+    	if(player.name == this.props.players[0].name){
+    		loser = this.props.players[1];
+    	}else {
+    		loser = this.props.players[0];
+    	}
+    	
+    	this.setState({
+    		winner: player,
+    		selectedPlayer: player,
+    		loser: loser,
+    		winTime:Number(formattedSeconds(this.state.timeElapsed)),
+    		keySeq:2,
+    		keyPress: null
+    	});
+    }
+ 
+	
 	simulateClick(){
 		var pAtime = Math.round(100*(this.props.players[0].timeTrial + (this.randomIntFromInterval(-5,5))))/100;
 		var pBtime = Math.round(100*(this.props.players[1].timeTrial + (this.randomIntFromInterval(-5,5))))/100;
@@ -166,7 +238,12 @@ class VsMatchup extends React.Component {
 			this.setState({
 				winTime : 0,
 				winner : null,
-				selectedPlayer : null
+				loser : null,
+				selectedPlayer : null,
+				keySeq : 0,
+    			keyPress : null,
+    			timeElapsed : 0
+				
 			});
 			this.props.hideMatchup();
 			this.props.updateChart();
@@ -204,8 +281,8 @@ class VsMatchup extends React.Component {
 				this.props.bracketSpots,
 				winner, 
 				loser,
-				winTime, //need to fix win Time
-				loseTime, //need to fix lose Time
+				winTime,
+				loseTime, 
 				false
 			);
 		}
@@ -214,87 +291,109 @@ class VsMatchup extends React.Component {
 
    render() {
    	
+   		var initVars = {
+   			players : this.props.players,
+			Geo: Geo,
+			dialogHeight : this.props.dialogHeight,
+			dialogWidth: this.props.dialogWidth,
+			winnerClick: this.handlePlayerSelect.bind(this),
+			winTime:this.state.winTime, 
+			winner: this.state.winner,
+			selectedPlayer: this.state.selectedPlayer,
+			keyPress: this.state.keyPress,
+			stopHandler: this.handleStopMainTimer.bind(this),
+			keySeq: this.state.keySeq
+   		};
+  
 		return (
-			<Stage width={this.props.dialogWidth} height={this.props.dialogHeight}>
-				<Layer>
-					<Group>
-						{initTiles(this.props.players,Geo,this.props.dialogHeight, this.props.dialogWidth,this.handlePlayerSelect.bind(this),this.state.winTime, this.state.winner, this.state.selectedPlayer).map(element => element)}
-						{WinChanceTile(Geo, this.props.players, this.props.dialogWidth, this.props.dialogHeight,this.state.winTime)}
-						<Group
-							onClick={this.simulateClick.bind(this)}
-							onmouseover={this.handleOnMouseOverSim.bind(this)}
-							onmouseout={this.handleOnMouseOutSim.bind(this)}
-						>
-							<Rect
-								x={this.props.dialogWidth/4 - simulateButtonWidth/2}
-								y={this.props.dialogHeight - 2*Geo.margin - simulateButtonHeight}
-								width={simulateButtonWidth}
-								height={simulateButtonHeight}
-								fill= {this.state.simHover === true ? Colors.hoverColor : 'white'}
-								stroke= {Geo.borderColor}
-								strokeWidth= {0}
-								shadowBlur = {10}
-								shadowOpacity= {0.1}
-								cornerRadius={5}
-							/>
-							<Text 
-								x={this.props.dialogWidth/4 - simulateButtonWidth/2}
-								y={this.props.dialogHeight - 2*Geo.margin - simulateButtonHeight/2 - Geo.seedFontSize/2}
-								width={simulateButtonWidth}
-								text = {'simulate'}
-								align = 'center'
-								fill = 'black'
-								fontVariant = 'small-caps'
-								fontSize = {Geo.seedFontSize}
-								shadowBlur = {2}
-								shadowOpacity= {0.5}
-							/>
-							<Text 
-								x={this.props.dialogWidth*3/4 - simulateButtonWidth/2}
-								y={this.props.dialogHeight - 2*Geo.margin - simulateButtonHeight/2 - Geo.seedFontSize/2}
-								width={simulateButtonWidth}
-								text = {'submit'}
-								align = 'center'
-								fill = 'black'
-								fontVariant = 'small-caps'
-								fontSize = {Geo.seedFontSize}
-								shadowBlur = {2}
-								shadowOpacity= {0.5}
-							/>
+			<div>
+				<input 
+					className="controls"
+					type="text" 
+					id="one" 
+					placeholder="Controls Area"
+					onKeyPress={this.handleStartClick.bind(this)}
+					value = {this.state.keyPress}
+				/>
+				<Stage width={this.props.dialogWidth} height={this.props.dialogHeight}>
+					<Layer>
+						<Group>
+							{initTiles(initVars).map(element => element)}
+							{WinChanceTile(Geo, this.props.players, this.props.dialogWidth, this.props.dialogHeight,this.state.winTime,this.state.keySeq, this.state.timeElapsed)}
+							<Group
+								onClick={this.simulateClick.bind(this)}
+								onmouseover={this.handleOnMouseOverSim.bind(this)}
+								onmouseout={this.handleOnMouseOutSim.bind(this)}
+							>
+								<Rect
+									x={this.props.dialogWidth/4 - simulateButtonWidth/2}
+									y={this.props.dialogHeight - 2*Geo.margin - simulateButtonHeight}
+									width={simulateButtonWidth}
+									height={simulateButtonHeight}
+									fill= {this.state.simHover === true ? Colors.hoverColor : 'white'}
+									stroke= {Geo.borderColor}
+									strokeWidth= {0}
+									shadowBlur = {10}
+									shadowOpacity= {0.1}
+									cornerRadius={5}
+								/>
+								<Text 
+									x={this.props.dialogWidth/4 - simulateButtonWidth/2}
+									y={this.props.dialogHeight - 2*Geo.margin - simulateButtonHeight/2 - Geo.seedFontSize/2}
+									width={simulateButtonWidth}
+									text = {'simulate'}
+									align = 'center'
+									fill = 'black'
+									fontSize = {Geo.seedFontSize}
+									shadowBlur = {2}
+									shadowOpacity= {0.5}
+								/>
+								<Text 
+									x={this.props.dialogWidth*3/4 - simulateButtonWidth/2}
+									y={this.props.dialogHeight - 2*Geo.margin - simulateButtonHeight/2 - Geo.seedFontSize/2}
+									width={simulateButtonWidth}
+									text = {'submit'}
+									align = 'center'
+									fill = 'black'
+									fontSize = {Geo.seedFontSize}
+									shadowBlur = {2}
+									shadowOpacity= {0.5}
+								/>
+							</Group>
+							<Group
+								onClick={this.handleSubmitClick.bind(this)}
+								onmouseover={this.handleOnMouseOverSub.bind(this)}
+								onmouseout={this.handleOnMouseOutSub.bind(this)}
+							>
+								<Rect
+									x={this.props.dialogWidth*3/4 - simulateButtonWidth/2}
+									y={this.props.dialogHeight - 2*Geo.margin - simulateButtonHeight}
+									width={simulateButtonWidth}
+									height={simulateButtonHeight}
+									fill= {this.state.subHover === true ? Colors.hoverColor : 'white'}
+									stroke= {Geo.borderColor}
+									strokeWidth= {0}
+									shadowBlur = {10}
+									shadowOpacity= {0.1}
+									cornerRadius={5}
+								/>
+								<Text 
+									x={this.props.dialogWidth*3/4 - simulateButtonWidth/2}
+									y={this.props.dialogHeight - 2*Geo.margin - simulateButtonHeight/2 - Geo.seedFontSize/2}
+									width={simulateButtonWidth}
+									text = {'submit'}
+									align = 'center'
+									fill = 'black'
+									fontVariant = 'small-caps'
+									fontSize = {Geo.seedFontSize}
+									shadowBlur = {2}
+									shadowOpacity= {0.5}
+								/>
+							</Group>
 						</Group>
-						<Group
-							onClick={this.handleSubmitClick.bind(this)}
-							onmouseover={this.handleOnMouseOverSub.bind(this)}
-							onmouseout={this.handleOnMouseOutSub.bind(this)}
-						>
-							<Rect
-								x={this.props.dialogWidth*3/4 - simulateButtonWidth/2}
-								y={this.props.dialogHeight - 2*Geo.margin - simulateButtonHeight}
-								width={simulateButtonWidth}
-								height={simulateButtonHeight}
-								fill= {this.state.subHover === true ? Colors.hoverColor : 'white'}
-								stroke= {Geo.borderColor}
-								strokeWidth= {0}
-								shadowBlur = {10}
-								shadowOpacity= {0.1}
-								cornerRadius={5}
-							/>
-							<Text 
-								x={this.props.dialogWidth*3/4 - simulateButtonWidth/2}
-								y={this.props.dialogHeight - 2*Geo.margin - simulateButtonHeight/2 - Geo.seedFontSize/2}
-								width={simulateButtonWidth}
-								text = {'submit'}
-								align = 'center'
-								fill = 'black'
-								fontVariant = 'small-caps'
-								fontSize = {Geo.seedFontSize}
-								shadowBlur = {2}
-								shadowOpacity= {0.5}
-							/>
-						</Group>
-					</Group>
-				</Layer>
-			</Stage>
+					</Layer>
+				</Stage>
+			</div>
 		);
     }
 }

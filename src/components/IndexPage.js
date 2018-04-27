@@ -15,26 +15,25 @@ import Settings from '../static/Settings';
 
 
 export default class IndexPage extends React.Component {
-  constructor(){
-    super();
-    this.getBestTime = this.getBestTime.bind(this);
-    this.state = {
-    	nRows : 0,
-    	players : {},
-    	bestTime : null
-    };
-  }
-  
-   randomIntFromInterval(min,max)
-	{
+	constructor(){
+		super();
+		this.getBestTime = this.getBestTime.bind(this);
+		this.state = {
+			nRows : 0,
+			players : {},
+			bestTime : null
+		};
+	}
+	
+	randomIntFromInterval(min,max){
 	    return Math.floor(Math.random()*(max-min+1)+min);
 	}
-
-  addTeam(name, country, timeTrial){
-  	timeTrial = timeTrial || '-';
-  	
-  	this.state.players[name] = {
-		    name : name,
+	
+	addTeam(name, country, timeTrial){
+	    timeTrial = timeTrial || '-';
+	  
+    	this.state.players[name] = {
+			name : name,
 		    country : CountryKeyVal[country],
 		    seed : 0,
 		    timeTrial : timeTrial,
@@ -47,10 +46,9 @@ export default class IndexPage extends React.Component {
 		    index: 1,
 		    avgCupTime : 0,
 		    maxRound: 0,
-		    vsGroupAvg: 0
-		    
-		    
+		    vsGroupAvg: 0 
 		};
+		
 		this.setState({
 	  		nRows : this.state.nRows + 1
 	  	});
@@ -67,23 +65,24 @@ export default class IndexPage extends React.Component {
 	}
 	
 	getBestTime(playersObj){
-    for (var k in playersObj){
-      if(playersObj[k].timeTrial != '-'){
-        if (this.state.bestTime == null){
-          this.setState({bestTime:playersObj[k].timeTrial});
-        } else if (Number(playersObj[k].timeTrial) < Number(this.state.bestTime)) { 
-          this.setState({bestTime:playersObj[k].timeTrial});
-        }
-      }
-    }
-  }
+		for (var k in playersObj){
+			if(playersObj[k].timeTrial != '-'){
+			    if (this.state.bestTime == null){
+			        this.setState({bestTime:playersObj[k].timeTrial});
+			    } else if (Number(playersObj[k].timeTrial) < Number(this.state.bestTime)) { 
+			        this.setState({bestTime:playersObj[k].timeTrial});
+			    }
+		    }
+		}
+	}
   
-  componentDidMount() {
-  	/*
+    componentDidMount() {
+    	
+  	
 
   		//this section is to populate random number of teams... delete for production use
 	  	//---------------------------------------------------------------------------------
-	  	var nTeams = 17;
+	  	var nTeams = 13;
 	  	var countryArr = [];
 	  	for (var item in countries[0]){
 	  		countryArr.push(countries[0][item].name);
@@ -99,38 +98,39 @@ export default class IndexPage extends React.Component {
 	  	}
 	  	this.getBestTime(this.state.players);
 	  	// --------------------------------------------------------------------------------
-*/
-  }
-  
-  render() {
+	  	
 
-    return (
-      <div className="home">
-      
-        <div className="buttons-selector">
-	          <AddTeamPopUp 
-	          addTeamClick={this.addTeam.bind(this)}
-	          />
-	          <TimeTrialPopUp
-	          players={this.state.players}
-	          addTimeTrial={this.addTimeTrial.bind(this)}/>
-	          
-	          <Link to={{pathname:"/VsTournament", state:{players : this.state.players, tournamentType : 'VS'}}} >
-		          <div className="task-preview">
-					  <img src="./img/buttons/tournament.png"></img>
-					  <h2 className="name">VS Tournament</h2>
-				  </div>
-			  </Link>
-        </div>
-        
-        <div className="buttons-selector">
-		      <Table 
-		      teamRows={this.state.nRows}
-		      players={this.state.players}
-		      bestTime={this.state.bestTime}
-		      />
-        </div>     
-      </div>
-    );
-  }
+    }
+  
+    render() {
+
+	    return (
+	        <div className="home">
+	      
+	        	<div className="buttons-selector">
+		            <AddTeamPopUp 
+		        		addTeamClick={this.addTeam.bind(this)}
+		            />
+		            <TimeTrialPopUp
+		        		players={this.state.players}
+		        		addTimeTrial={this.addTimeTrial.bind(this)}/>
+		          
+		        	<Link to={{pathname:"/VsTournament", state:{players : this.state.players, tournamentType : 'VS'}}} >
+			        	<div className="task-preview">
+							<img src="./img/buttons/tournament.png"></img>
+							<h2 className="name">VS Tournament</h2>
+						</div>
+					</Link>
+	        	</div>
+	        
+		        <div className="buttons-selector">
+				      <Table 
+					      teamRows={this.state.nRows}
+					      players={this.state.players}
+					      bestTime={this.state.bestTime}
+				      />
+		        </div>     
+    		</div>
+    	);
+    }
 }

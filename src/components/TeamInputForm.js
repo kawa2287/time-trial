@@ -3,75 +3,168 @@
 import React from 'react';
 import Flag from './Flag';
 import CountryKeyVal from './CountryKeyVal';
+import countries from '../data/countries';
+
+var countryArr = [];
+
+var textProps = {
+	color : '#dfdfdf',
+	fontSize : '30',
+	textShadow : '0 0 3px #939393'
+};
+
+var inputStyle = {
+	color : '#dfdfdf',
+	fontSize : '25'
+};
 
 export default class TeamInputForm extends React.Component {
-  constructor(){
-    super();
-    this.state={
-      name: '', 
-      country: 'Select Country'
-    };
-  }
+    constructor(){
+		super();
+		this.state={
+	    	name: null, 
+	    	country: 'Select Country'
+		};
 
-  onSubmitClick(){
-      this.props.addTeamClick(
-        this.state.name, 
-        this.state.country
-        );
-
-      this.setState({
-        name : "",
-        country : 'Select Country'
-      });
-      document.getElementById("country").value = "";
-  }
-
-  
-  render() {
-    
-    var countryNames = [];
-
-    for (var x in CountryKeyVal){
-      countryNames.push(CountryKeyVal[x].name);
+		for (var item in countries[0]){
+	  		countryArr.push(countries[0][item].name);
+	  	}
     }
     
-    return (
-      <div className ="wrap">
-          <div className="input-line">
-              <label className="string">Enter Name</label>
-              <input 
-              placeholder="Input Name"
-              value={this.state.name} 
-              type="text" id="name" 
-              onChange={(e)=>{this.setState({name: e.target.value})}}
-              />
-          </div>
-          <div className="input-line">
-              <label className="string">Select Country</label>
-              <input  
-              list="countryList" 
-              placeholder="Select Country" 
-              value={this.props.country}
-              onChange={(e)=>{this.setState({country: e.target.value})}} 
-              type="text" id="country" 
-              />
-              <datalist id="countryList">
-                  {countryNames.map((name, i) => <option data-id={i} value={name}/>)}
-              </datalist>
-          </div>
-          <div className="country-select-image">
-              <Flag 
-              icon={CountryKeyVal[this.state.country].flagPathXL} 
-              />
-          </div>
-          <div className="name-display">
-              {this.state.name}
-          </div>
-          <div className="button">
-            <button onClick={this.onSubmitClick.bind(this)}>Submit Team</button>
-          </div>
-          
-      </div>
-    );
-  }
+    randomIntFromInterval(min,max){
+	    return Math.floor(Math.random()*(max-min+1)+min);
+	}
+
+    onSubmitClick(){
+
+    	if((/\d/.test(this.state.name) || /[a-zA-Z]/.test(this.state.name)) && this.state.name !== null && this.state.country !== null && this.state.country !== 'Select Country'){
+    		this.props.addTeamClick(
+				this.state.name, 
+				this.state.country
+			);
+	
+		    this.setState({
+				name : "",
+				country : 'Select Country'
+		    });
+		    document.getElementById("country").value = "";
+    	}
+    }
+    
+    randomCountry() {
+    	var randCountry = countryArr[this.randomIntFromInterval(0,countryArr.length)];
+    	this.setState({
+    		country : randCountry
+    	});
+    	document.getElementById("country").value = randCountry;
+    }
+
+  
+    render() {
+	
+		var countryNames = [];
+	
+		for (var x in CountryKeyVal){
+		  countryNames.push(CountryKeyVal[x].name);
+		}
+		
+		var Background = CountryKeyVal[this.state.country].flagPathSVG;
+		
+		var bgStyle = {
+			height : this.props.geo.height,
+			width : this.props.geo.width
+		};
+		
+
+	
+		return (
+			<div className='input-wrapper' style = {bgStyle}>
+				<img className='background-img' src={Background} width={860}/>
+				<div className='input-inner-wrapper' style={bgStyle}>
+					<div className='halfportion'>
+					
+						<div className='quad2'>
+							<div className='sector'>
+								<div className='enter-text'>
+									<input 
+										className='input-info'
+										style={inputStyle}
+										value={this.state.name} 
+										type="text" 
+										id="name" 
+										onChange={(e)=>{this.setState({name: e.target.value})}}
+									/>
+								</div>
+							</div>
+							<div className='sector'>
+								<div className='enter-text'>
+									<input 
+										className='input-info'
+										style={inputStyle}
+										list="countryList"
+										value={this.props.country}
+										onChange={(e)=>{this.setState({country: e.target.value})}} 
+										type="text"
+										id="country" 
+										
+									/>
+									<datalist id="countryList">
+									    {countryNames.map((name, i) => <option data-id={i} value={name}/>)}
+									</datalist>
+								</div>
+							</div>
+						</div>
+						
+						<div className='quad1'>
+							<div className='sector'>
+								<div className='enter-text'>
+									<h1 className='maintext' style={textProps}>Enter Name</h1>
+								</div>
+							</div>
+							<div className='sector'>
+								<div className='enter-text'>
+									<h1 className='maintext' style={textProps}>Select Country</h1>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div className='halfportion'>
+						<div className='quad2'>
+							<div className='sector'/>
+							<div className='sector'>
+								<div className='buttons'>
+									<button 
+										className='typical-button' 	
+										onClick={this.randomCountry.bind(this)}
+									>
+										Randomize Country
+									</button>
+								</div>
+							</div>
+							<div className='sector'>
+								<div className='buttons'>
+									<button 
+										className='typical-button'
+										onClick={this.onSubmitClick.bind(this)}
+									>
+										Submit
+									</button>
+								</div>
+							</div>
+							<div className='sector'/>
+						</div>
+						
+						<div className='quad1'>
+							<div className='sector'>
+								<div className='buttons'>
+									<img src={CountryKeyVal[this.state.country].flagPathSVG} width={300}/>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+		    </div>
+		);
+    }
 }
+

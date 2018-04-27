@@ -14,6 +14,22 @@ var sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.Database('./src/db/playerDB.sqlite');
 
 
+/*
+db.run('CREATE TABLE IF NOT EXISTS players(name)');
+ 
+  db.run(`INSERT INTO players(name) VALUES(?)`, ['Canada'], function(err) {
+    if (err) {
+      return console.log(err.message);
+    }
+    // get the last insert id
+    console.log(`A row has been inserted with rowid ${this.lastID}`);
+  });
+ 
+  // close the database connection
+  db.close();
+*/
+
+
 // initialize the server and configure support for ejs templates
 const app = new Express();
 const server = new Server(app);
