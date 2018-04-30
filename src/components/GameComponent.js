@@ -14,6 +14,21 @@ var completeColor = Colors.gameCompleteColor;
 var availableColor = Colors.gameAvailColor;
 var gameNumberColor = Colors.gameNumberColor;
 
+var teamHeight;
+var teamWidth;
+var gameWidth;
+var gameHeight;
+var gameFontSize = 16;
+
+var pAavgTime;
+var pBavgTime;
+var pCavgTime;
+var pDavgTime;
+
+var playerArr =[];
+var playerAvgTmArr = [];
+var cap;
+
 export default class GameComponent extends React.Component {
 	constructor(props){
 		super(props);
@@ -21,13 +36,23 @@ export default class GameComponent extends React.Component {
 		this.state = {
 			hover : false
 		};
+		
+		teamHeight = this.props.gProps.vizGeo.teamHeight;
+		teamWidth = this.props.gProps.vizGeo.teamWidth;
+		gameWidth = this.props.gProps.gVars.gameWidth;
+		gameHeight = this.props.gProps.gVars.gameHeight;
+	}
+	
+	componentWillReceiveProps(newProps) {
+		if ({...newProps} !== {...this.props}){
+		    this.gProps = newProps.gProps;
+		}
 	}
 	
 	randomIntFromInterval(min,max)
 	{
 	    return Math.floor(Math.random()*(max-min+1)+min);
 	}
-
 	
 	BackgroundColor(status){
 		if (status === 'COMPLETE'){
@@ -41,50 +66,100 @@ export default class GameComponent extends React.Component {
 	
 	handleOnclick (e){
 		
-		var winner;
-		var loser;
-		var winnerTime;
-		var loserTime;
-		var byeRound;
-		if (this.props.gProps.playerA.seed>=1 && this.props.gProps.playerB.seed >=1 && this.props.gProps.status !== 'COMPLETE'){
-			var newPos = StabilizeView(e);
-			var pAtime = this.props.gProps.playerA.timeTrial + (this.randomIntFromInterval(-10,15));
-			var pBtime = this.props.gProps.playerB.timeTrial + (this.randomIntFromInterval(-10,15));
+		var winLosePackage = {
+			playerA : this.gProps.playerA,
+			playerB : this.gProps.playerB,
+			playerC : this.gProps.playerC,
+			playerD : this.gProps.playerD,
+			winner1 : null,
+			winner2 : null,
+			loser1 : null,
+			loser2 : null,
+			byeRound : null,
+			newPos : null,
+			gameNumber : this.gProps.gameNumber,
+			bracketSpots : this.gProps.bracketSpots,
+			bracket : this.gProps.bracket,
+			mode : this.gProps.mode
+		};
 		
-			// decide winner or loser
-			
-			if (this.props.gProps.playerB.name =="BYE") {
-				winner = this.props.gProps.playerA;
-				loser = this.props.gProps.playerB;
-			 	byeRound = true;
-			} else if ( this.props.gProps.playerA.name == "BYE"){
-				winner = this.props.gProps.playerB;
-				loser = this.props.gProps.playerA;
-				byeRound = true;
-			} else if (pAtime <= pBtime){
-				winner = this.props.gProps.playerA;
-				loser = this.props.gProps.playerB;
-				winnerTime = pAtime;
-				loserTime = pBtime;
-				byeRound = false;
-			} else if (pAtime > pBtime) {
-				winner = this.props.gProps.playerB;
-				loser = this.props.gProps.playerA;
-				winnerTime = pBtime;
-				loserTime = pAtime;
-				byeRound = false;
+		if (this.props.gProps.mode == 'VS'){
+			if (this.props.gProps.playerA.seed >=1 && 
+				this.props.gProps.playerB.seed >=1 && 
+				this.props.gProps.status !== 'COMPLETE'){
+					
+				winLosePackage.newPos = StabilizeView(e);
+
+				// decide winner or loser if BYE present
+				if (this.props.gProps.playerB.name =="BYE") {
+					winLosePackage.winner1 = this.props.gProps.playerA;
+					winLosePackage.loser1 = this.props.gProps.playerB;
+				 	winLosePackage.byeRound = true;
+				} else if ( this.props.gProps.playerA.name == "BYE"){
+					winLosePackage.winner1 = this.props.gProps.playerB;
+					winLosePackage.loser1 = this.props.gProps.playerA;
+					winLosePackage.byeRound = true;
+				}
+				//Dialog Popup
+				this.props.gProps.showMatchup(winLosePackage);
 			}
-			//Dialog Popup
-			this.props.gProps.showMatchup(
-				newPos,
-				this.props.gProps.playerA,
-				this.props.gProps.playerB,
-				byeRound,
-				this.props.gProps.gameNumber,
-				this.props.gProps.bracketSpots,
-				winner,
-				loser
-			);
+		} else {
+			if (this.props.gProps.playerA.seed >=1 && 
+				this.props.gProps.playerB.seed >=1 && 
+				this.props.gProps.playerC.seed >=1 && 
+				this.props.gProps.playerD.seed >=1 && 
+				this.props.gProps.status !== 'COMPLETE'){
+					
+				winLosePackage.newPos = StabilizeView(e);
+				
+				var pAcode = this.props.gProps.playerA.name == 'BYE' ? 1 : 0;
+				var pBcode = this.props.gProps.playerB.name == 'BYE' ? 1 : 0;
+				var pCcode = this.props.gProps.playerC.name == 'BYE' ? 1 : 0;
+				var pDcode = this.props.gProps.playerD.name == 'BYE' ? 1 : 0;
+				var WLcode = pAcode.toString()+pBcode.toString()+pCcode.toString()+pDcode.toString();
+
+				// decide winner or loser if (2) or more BYEs present
+				switch(WLcode){
+					case '1100' :
+						winLosePackage.winner1 = this.props.gProps.playerC;
+						winLosePackage.winner2 = this.props.gProps.playerD;
+						winLosePackage.loser1 = this.props.gProps.playerA;
+						winLosePackage.loser2 = this.props.gProps.playerB;
+						break;
+					case '1010' :
+						winLosePackage.winner1 = this.props.gProps.playerB;
+						winLosePackage.winner2 = this.props.gProps.playerD;
+						winLosePackage.loser1 = this.props.gProps.playerA;
+						winLosePackage.loser2 = this.props.gProps.playerC;
+						break;
+					case '1001' :
+						winLosePackage.winner1 = this.props.gProps.playerB;
+						winLosePackage.winner2 = this.props.gProps.playerC;
+						winLosePackage.loser1 = this.props.gProps.playerA;
+						winLosePackage.loser2 = this.props.gProps.playerD;
+						break;
+					case '0110' :
+						winLosePackage.winner1 = this.props.gProps.playerA;
+						winLosePackage.winner2 = this.props.gProps.playerD;
+						winLosePackage.loser1 = this.props.gProps.playerB;
+						winLosePackage.loser2 = this.props.gProps.playerC;
+						break;
+					case '0101' :
+						winLosePackage.winner1 = this.props.gProps.playerA;
+						winLosePackage.winner2 = this.props.gProps.playerC;
+						winLosePackage.loser1 = this.props.gProps.playerB;
+						winLosePackage.loser2 = this.props.gProps.playerD;
+						break;
+					case '0011' :
+						winLosePackage.winner1 = this.props.gProps.playerA;
+						winLosePackage.winner2 = this.props.gProps.playerB;
+						winLosePackage.loser1 = this.props.gProps.playerC;
+						winLosePackage.loser2 = this.props.gProps.playerD;
+						break;
+				}
+				//Dialog Popup
+				this.props.gProps.showMatchup(winLosePackage);
+			}
 		}
 	}
 	
@@ -101,15 +176,71 @@ export default class GameComponent extends React.Component {
 	}
 
 	render(){
-		var teamHeight = this.props.gProps.vizGeo.teamHeight;
-		var teamWidth = this.props.gProps.vizGeo.teamWidth;
-		var gameWidth = teamWidth + 2 * teamHeight;
-		var gameHeight = teamHeight * 3.5;
-		var gameFontSize = 16;
-		var pAavgTime = DetermineAvgTime(this.props.gProps.playerA.timeTrial, this.props.gProps.playerA.totalTime, this.props.gProps.playerA.wins, this.props.gProps.playerA.losses);
-		var pBavgTime = DetermineAvgTime(this.props.gProps.playerB.timeTrial, this.props.gProps.playerB.totalTime, this.props.gProps.playerB.wins, this.props.gProps.playerB.losses);
+		
+		var tileTeams = [];
+		
+		playerArr = [];
+		playerArr.push(this.props.gProps.playerA);
+		playerArr.push(this.props.gProps.playerB);
+		pAavgTime = DetermineAvgTime(this.props.gProps.playerA.timeTrial, this.props.gProps.playerA.totalTime, this.props.gProps.playerA.wins, this.props.gProps.playerA.losses);
+		pBavgTime = DetermineAvgTime(this.props.gProps.playerB.timeTrial, this.props.gProps.playerB.totalTime, this.props.gProps.playerB.wins, this.props.gProps.playerB.losses);
+		if(this.props.gProps.mode !== 'VS'){
+			pCavgTime = DetermineAvgTime(this.props.gProps.playerC.timeTrial, this.props.gProps.playerC.totalTime, this.props.gProps.playerC.wins, this.props.gProps.playerC.losses);
+			pDavgTime = DetermineAvgTime(this.props.gProps.playerD.timeTrial, this.props.gProps.playerD.totalTime, this.props.gProps.playerD.wins, this.props.gProps.playerD.losses);
+			playerArr.push(this.props.gProps.playerC);
+			playerArr.push(this.props.gProps.playerD);
+		}
+		
+		playerAvgTmArr = [pAavgTime,pBavgTime,pCavgTime,pDavgTime];
+
+		cap = this.props.gProps.mode == 'VS' ? 2 : 4;
 		
 		
+		if( this.props.gProps.mode == 'VS'){
+			for (var i = 0; i <cap; i++){
+				tileTeams.push(
+					<TileTeam
+						seed = {playerArr[i].seed}
+						country = {playerArr[i].country.name}
+						name = {playerArr[i].name}
+						time = {playerAvgTmArr[i]}
+						img = {playerArr[i].country.flagPathSVG}
+						height = {teamHeight}
+						width = {teamWidth}
+						globalX = {1.5*teamHeight}
+						globalY = {((1.5*(i+1))-1)*teamHeight}
+						hover = {this.state.hover}
+						losses = {playerArr[i].losses}
+						winChance = {DetermineWinChance(playerArr,playerAvgTmArr, i, this.props.gProps.mode)}
+						loser = {this.props.gProps.loser}
+						loserEliminated = {this.props.gProps.loserEliminated}
+					/>
+				);
+			}
+		} else {
+			for (var i = 0; i <cap; i++){
+				tileTeams.push(
+					<TileTeam
+						seed = {playerArr[i].seed}
+						country = {playerArr[i].country.name}
+						name = {playerArr[i].name}
+						time = {playerAvgTmArr[i]}
+						img = {playerArr[i].country.flagPathSVG}
+						height = {teamHeight}
+						width = {teamWidth}
+						globalX = {1.5*teamHeight}
+						globalY = {((1.5*(i+1))-1)*teamHeight}
+						hover = {this.state.hover}
+						losses = {playerArr[i].losses}
+						winChance = {DetermineWinChance(playerArr,playerAvgTmArr, i, this.props.gProps.mode)}
+						loser1 = {this.props.gProps.loser1}
+						loser2 = {this.props.gProps.loser2}
+						loserEliminated1 = {this.props.gProps.loserEliminated1}
+						loserEliminated2 = {this.props.gProps.loserEliminated2}
+					/>
+				);
+			}
+		}
 		
 		return(
 			<Group 
@@ -151,38 +282,7 @@ export default class GameComponent extends React.Component {
             		width = {18}
             		align = 'center'
             	/>
-				<TileTeam
-					seed = {this.props.gProps.playerA.seed}
-					country = {this.props.gProps.playerA.country.name}
-					name = {this.props.gProps.playerA.name}
-					time = {pAavgTime}
-					img = {this.props.gProps.playerA.country.flagPathSVG}
-					height = {teamHeight}
-					width = {teamWidth}
-					globalX = {1.5*teamHeight}
-					globalY = {0.5*teamHeight}
-					hover = {this.state.hover}
-					losses = {this.props.gProps.playerA.losses}
-					winChance = {DetermineWinChance(this.props.gProps.playerA.name, this.props.gProps.playerB.name, pAavgTime, pBavgTime)}
-					loser = {this.props.gProps.loser}
-					loserEliminated = {this.props.gProps.loserEliminated}
-				/>
-				<TileTeam
-					seed = {this.props.gProps.playerB.seed}
-					country = {this.props.gProps.playerB.country.name}
-					name = {this.props.gProps.playerB.name}
-					time = {pBavgTime}
-					img = {this.props.gProps.playerB.country.flagPathSVG}
-					height = {teamHeight}
-					width = {teamWidth}
-					globalX = {1.5*teamHeight}
-					globalY = {2*teamHeight}
-					hover = {this.state.hover}
-					losses = {this.props.gProps.playerB.losses}
-					winChance = {DetermineWinChance(this.props.gProps.playerB.name, this.props.gProps.playerA.name, pBavgTime, pAavgTime)}
-					loser = {this.props.gProps.loser}
-					loserEliminated = {this.props.gProps.loserEliminated}
-				/>
+				{tileTeams}
 			</Group>
 		);
 	}

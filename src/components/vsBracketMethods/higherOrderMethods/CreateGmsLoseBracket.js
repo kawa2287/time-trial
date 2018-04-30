@@ -1,5 +1,7 @@
 'use strict';
 
+//clear for VS & 4P Mode
+
 import React from 'react';
 import GameComponent from '../../GameComponent';
 import GameComponentProps from '../baseMethods/GameComponentProps';
@@ -13,7 +15,7 @@ var xLoc;
 var yLoc;
 
 
-export default function CreateGmsLoseBracket(gVars,gameCounter,masterGameObject ){
+export default function CreateGmsLoseBracket(gVars,gameCounter,masterGameObject, mode ){
     
     // unwrap
     var gameWidth = gVars.gameWidth;
@@ -32,7 +34,7 @@ export default function CreateGmsLoseBracket(gVars,gameCounter,masterGameObject 
 		for( i = 0; i < loserArr[k]; i++){
 			
 			moduleCCht = (gameHeight+vizGeo.vertSpace)*Math.pow(2,k%2==0?(k/2)+1:(k+1)/2);
-			xLoc = ((bracketPower-1)*2)*vizGeo.horizSpace + (((bracketPower-1)*2)-1)*gameWidth - k*(gameWidth+vizGeo.horizSpace);
+			xLoc = ((bracketPower-(mode == 'VS' ? 0 : 1)-1)*2)*vizGeo.horizSpace + (((bracketPower-(mode == 'VS' ? 0 : 1)-1)*2)-1)*gameWidth - k*(gameWidth+vizGeo.horizSpace);
 			yLoc = boardHeight-(loserArr[k]-i)*(gameHeight+vizGeo.vertSpace)*(Math.pow(2,(k%2==0?(k/2)+1:(k+1)/2))) - vizGeo.vertSpace + ((gameHeight+vizGeo.vertSpace)*(Math.pow(2,(k%2==0?(k/2)+1:(k+1)/2)))-vizGeo.vertSpace)/2 - gameHeight/2;
 			
 					
@@ -46,7 +48,8 @@ export default function CreateGmsLoseBracket(gVars,gameCounter,masterGameObject 
 							bracketSpots,
 							vizGeo,
 							xLoc,
-							yLoc
+							yLoc,
+							mode
 						)
 					}
 				/>
@@ -73,7 +76,6 @@ export default function CreateGmsLoseBracket(gVars,gameCounter,masterGameObject 
 						radius = {vizGeo.radius}
 						color = 'blue'
 						stroke = {4}
-						bracket = {masterGameObject[gameCounter].bracket + (k%2 == 0?'':2)}
 						direction = 'counter-clockwise'
 					/>
 				); 
@@ -86,7 +88,6 @@ export default function CreateGmsLoseBracket(gVars,gameCounter,masterGameObject 
 						ye = {ye}
 						color = 'blue'
 						stroke = {4}
-						bracket = {masterGameObject[gameCounter].bracket + (k%2 == 0?'':2)}
 					/>
 				); 
 			}

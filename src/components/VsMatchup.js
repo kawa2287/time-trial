@@ -90,7 +90,8 @@ function initTiles(initVarsObj){
 				initVarsObj.selectedPlayer,
 				initVarsObj.keyPress,
 				initVarsObj.stopHandler,
-				initVarsObj.keySeq
+				initVarsObj.keySeq,
+				initVarsObj.mode
 			)
 		);
 	}
@@ -115,6 +116,12 @@ class VsMatchup extends React.Component {
 			timeElapsed: 0,
 			keySeq : 0
 		};
+	}
+	
+	componentWillReceiveProps(newProps) {
+		if ({...newProps} !== {...this.props}){
+		    this.props = newProps;
+		}
 	}
 	
 	//for testing/////////////////////////////////////////
@@ -246,7 +253,6 @@ class VsMatchup extends React.Component {
 				
 			});
 			this.props.hideMatchup();
-			this.props.updateChart();
 		}
 	}
 	
@@ -258,35 +264,32 @@ class VsMatchup extends React.Component {
 	}
 	
 	winnerClick(player, winningTime) {
-		var winner;
-		var loser;
-		var winTime;
-		var loseTime;
+		
+		var winLosePackage = {
+			gameNumber : this.props.gameNumber,
+			bracketSpots : this.props.bracketSpots,
+			bracket : this.props.bracket,
+			byeRound : false,
+			mode : 'VS'
+		};
+		var resultTimePackage = {};
 		
 		if(Object.keys(this.props.players[0]).length !== 0 && this.props.players[0].constructor === Object ||Object.keys(this.props.players[1]).length !== 0 && this.props.players[1].constructor === Object ){
 			//hackish
 			if(player.name == this.props.players[0].name){
-				winner = this.props.players[0];
-				loser = this.props.players[1];
+				winLosePackage['winner1'] = this.props.players[0];
+				winLosePackage['loser1'] = this.props.players[1];
 			} else {
-				winner = this.props.players[1];
-				loser = this.props.players[0];
+				winLosePackage['winner1'] = this.props.players[1];
+				winLosePackage['loser1'] = this.props.players[0];
 			}
 			
-			winTime = winningTime;
-			loseTime = loser.timeTrial;
+			resultTimePackage['winner1time'] = winningTime;
+			resultTimePackage['loser1time'] = winLosePackage.loser1.timeTrial;
 			
-			this.props.WinnerLoserHandler(
-				this.props.gameNumber, 
-				this.props.bracketSpots,
-				winner, 
-				loser,
-				winTime,
-				loseTime, 
-				false
-			);
+			
+			this.props.WinnerLoserHandler(winLosePackage, resultTimePackage);
 		}
-		
 	}
 
    render() {
@@ -302,7 +305,8 @@ class VsMatchup extends React.Component {
 			selectedPlayer: this.state.selectedPlayer,
 			keyPress: this.state.keyPress,
 			stopHandler: this.handleStopMainTimer.bind(this),
-			keySeq: this.state.keySeq
+			keySeq: this.state.keySeq,
+			mode : this.props.mode
    		};
   
 		return (

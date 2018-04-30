@@ -12,15 +12,19 @@ const formattedSeconds = (sec) =>
 	Math.floor((sec % 0.1)*100);
 
 export default function StatsTile(Geo,players, dialogWidth, dialogHeight, winTime, keySeq, timeElapsed){
+
+    var playerAvgTmArr = [];
+    for (var p = 0;p < players.length; p++){
+        playerAvgTmArr.push(players[p].avgTime);
+    }
     
     var width = dialogWidth - (Geo.margin*3 + Geo.timeCircleRadius);
-    var pAavgTime = DetermineAvgTime(players[0].timeTrial, players[0].totalTime, players[0].wins, players[0].losses);
-    var pBavgTime = DetermineAvgTime(players[1].timeTrial, players[1].totalTime, players[1].wins, players[1].losses);
-    var pAwinChance = DetermineWinChance(players[0].name,players[1].name,pAavgTime, pBavgTime)/100;
-    var pBwinChance = DetermineWinChance(players[1].name,players[0].name,pBavgTime, pAavgTime)/100;
+    var pAwinChance = DetermineWinChance(players,playerAvgTmArr, 0,'VS');
+    var pBwinChance = DetermineWinChance(players,playerAvgTmArr, 1,'VS');
+    
     
     var percentFontSize = Geo.margin*1.5;
-    var circleFill 
+    var circleFill ;
     
     if (keySeq == 0){
         circleFill = 'white';  //set at 0
@@ -33,7 +37,7 @@ export default function StatsTile(Geo,players, dialogWidth, dialogHeight, winTim
     return(
         <Group x = {Geo.margin + Geo.timeCircleRadius} y = {dialogHeight/2 - 2.5*Geo.margin} >	
             <Rect //player A
-				width={width*pAwinChance}
+				width={width*pAwinChance/100}
     			height={Geo.margin*2}
                 fill= {Geo.colorArr[0]}
 				stroke= {Geo.borderColor}
@@ -43,7 +47,7 @@ export default function StatsTile(Geo,players, dialogWidth, dialogHeight, winTim
             />
             <Rect //player B
                 y = {Geo.margin*3}
-				width={width*pBwinChance}
+				width={width*pBwinChance/100}
     			height={Geo.margin*2}
                 fill= {Geo.colorArr[1]}
 				stroke= {Geo.borderColor}
@@ -62,8 +66,8 @@ export default function StatsTile(Geo,players, dialogWidth, dialogHeight, winTim
             />
             <Text //player A
                 y = {(Geo.margin*2 - percentFontSize)/2}
-                x = {width*pAwinChance + Geo.margin}
-                text = {Math.round(pAwinChance*100) + '%'}
+                x = {width*pAwinChance/100 + Geo.margin}
+                text = {pAwinChance + '%'}
     			align = 'left'
     			fill = 'white'
     			fontVariant = 'small-caps'
@@ -73,8 +77,8 @@ export default function StatsTile(Geo,players, dialogWidth, dialogHeight, winTim
             />
             <Text //player B
                 y = {Geo.margin * 3 + (Geo.margin*2 - percentFontSize)/2}
-                x = {width*pBwinChance + Geo.margin}
-                text = {Math.round(pBwinChance*100) + '%'}
+                x = {width*pBwinChance/100 + Geo.margin}
+                text = {pBwinChance + '%'}
     			align = 'left'
     			fill = 'white'
     			fontVariant = 'small-caps'

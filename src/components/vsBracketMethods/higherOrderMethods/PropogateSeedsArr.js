@@ -1,14 +1,14 @@
 'use strict';
 
-import DetermineBracketPower from '../baseMethods/DetermineBracketPower';
+//clear for VS & 4P Mode
+
 import PopMastArr from '../baseMethods/PopMastArr';
 import GetRootVal from '../baseMethods/GetRootVal';
 
 
-export default function PropogateSeedsArr(nTeams, mastArr){
+export default function PropogateSeedsArr(nTeams, mastArr, bracketPower){
 	var baseArr = [];
 	var nextOrderArr = [];
-	var bracketPower = DetermineBracketPower(nTeams);
 
 	for (var order = 1; order <= bracketPower; order++){
 		var eq = Math.pow(2,bracketPower-order+1)+1;

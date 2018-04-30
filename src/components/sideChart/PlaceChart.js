@@ -24,6 +24,8 @@ export default function PlaceChart(seededArray)  {
 			tempPlayerArr = [];
 		}
 	}
+	
+	console.log('tempArr',tempArr);
 		
 	//sort the array
 	tempArr.sort(function(a, b) {
@@ -36,14 +38,6 @@ export default function PlaceChart(seededArray)  {
 	        return 1;
 	    }
 	    
-	    //sort by wins
-	    if (a[1]  < b[1] ) {
-	    	return 1;
-	    }
-	    else if (a[1]  > b[1]) {
-	        return -1;
-	    }
-	    
 	    //sort by maxRound
 	    if (a[5]  < b[5] ) {
 	    	return 1;
@@ -51,6 +45,16 @@ export default function PlaceChart(seededArray)  {
 	    else if (a[5]  > b[5]) {
 	        return -1;
 	    }
+	    
+	    //sort by wins
+	    /*
+	    if (a[1]  < b[1] ) {
+	    	return 1;
+	    }
+	    else if (a[1]  > b[1]) {
+	        return -1;
+	    }
+	    */
 	    
 	    //sort by seed
 	    if (a[3] < b[3]) {

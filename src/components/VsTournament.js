@@ -57,6 +57,7 @@ var gameHeight;
 var boardHeight;
 
 var gVars = {};
+var mode;
 
 export default class VsTournament extends React.Component {
 	constructor(props){
@@ -68,11 +69,15 @@ export default class VsTournament extends React.Component {
 			posY:null,
 			matchupPlayerA :{},
 			matchupPlayerB :{},
+			matchupPlayerC :{},
+			matchupPlayerD :{},
 			matchupGameNumber : 1,
 			windowWidth : window.innerWidth,
 			windowHeight : window.innerHeight,
 			chartDisplay : 'timeTrial'
 		};
+		
+		mode = this.props.location.state.mode;
 		
 		
 		//DATABASE/////
@@ -93,10 +98,10 @@ export default class VsTournament extends React.Component {
 		teams = Object.keys(this.props.location.state.players).length;
 		bracketSpots = Math.pow(2,DetermineBracketPower(teams));
 		bracketPower = DetermineBracketPower(teams);
-		nGamesTotal = bracketSpots*2;
+		nGamesTotal = bracketSpots*2 * (mode == 'VS' ? 1 : 0.5);
 		gameWidth = vizGeo.teamWidth + 2*vizGeo.teamHeight;
-		gameHeight = vizGeo.teamHeight*3.5;
-		boardHeight = vizGeo.vertSpace*(3+(bracketSpots/2)) + bracketSpots*gameHeight/2;
+		gameHeight = vizGeo.teamHeight* (mode == 'VS' ? 3.5 : 6.5);
+		boardHeight = vizGeo.vertSpace*(3+(bracketSpots/(mode == 'VS' ? 2 : 4))) + bracketSpots*gameHeight/(mode == 'VS' ? 2 : 4);
 		
 		gVars = {
 			gameWidth : gameWidth,
@@ -113,10 +118,12 @@ export default class VsTournament extends React.Component {
 		var toggle = 0;
 		
 		//populate seeded array
-		PropogateSeedsArr(teams,mastArr);
+		PropogateSeedsArr(teams,mastArr, bracketPower);
 		
 		//Create Master Game Object
-		this.state.masterGameObject = CreateMasterGameObject(nGamesTotal, bracketSpots);
+		this.state.masterGameObject = CreateMasterGameObject(nGamesTotal, bracketSpots, mode);
+		
+		
 		
 		//Add Props to Seeded Array
 		for (var item in mastArr) {
@@ -143,22 +150,43 @@ export default class VsTournament extends React.Component {
 		}
 		
 		//Populate Start Round in Master Game Object
+		var sift = 1;
 		for (var k = 0; k < seededArray.length; k++){
-			if (k % 2 == 0){
-				this.state.masterGameObject[k/2 + 1].playerA = seededArray[k];
+			if (mode == 'VS'){
+				if (k % 2 == 0){
+					this.state.masterGameObject[k/2 + 1].playerA = seededArray[k];
+				} else {
+					this.state.masterGameObject[(k+1)/2].playerB = seededArray[k];
+				}
 			} else {
-				this.state.masterGameObject[(k+1)/2].playerB = seededArray[k];
+				if(sift == 1){
+					this.state.masterGameObject[Math.ceil((k+1)/4)].playerA = seededArray[k];
+					sift = sift + 1;
+				} else if (sift == 2) {
+					this.state.masterGameObject[Math.ceil((k+1)/4)].playerB = seededArray[k];
+					sift = sift + 1;
+				} else if (sift == 3) {
+					this.state.masterGameObject[Math.ceil((k+1)/4)].playerC = seededArray[k];
+					sift = sift + 1;
+				} else {
+					this.state.masterGameObject[Math.ceil((k+1)/4)].playerD = seededArray[k];
+					sift = 1;
+				}
 			}
 		}
 		
+		////////////////////////////////////////////
+		///UP TO THIS POINT IN CHECKING FOR 4P//////
+		////////////////////////////////////////////
+		
 		//create loserArr
-		for (k = 1; k <= 2*(bracketPower-1); k++){
-			loserArr.push(NgmsInRnd.loserBracket(bracketSpots,k));
+		for (k = 1; k <= 2*(bracketPower-(mode == 'VS' ? 0 : 1)-1); k++){
+			loserArr.push(NgmsInRnd.loserBracket(bracketSpots,k,mode));
 		}
 		
 		//create winnerArr
-		for (k = 0; k < bracketPower; k++){
-			winnerArr.push(NgmsInRnd.winnerBracket(bracketSpots,k));
+		for (k = 0; k < bracketPower-(mode == 'VS' ? 0 : 1); k++){
+			winnerArr.push(NgmsInRnd.winnerBracket(bracketSpots,k,mode));
 		}
 		
 		//protect against window reload
@@ -212,33 +240,30 @@ export default class VsTournament extends React.Component {
 		});
 	}
 	
-	showMatchup(
-		newPos,
-		playerA, 
-		playerB,
-		byeRound, 
-		gameNumber, 
-		bracketSpots,
-		winner,
-		loser
-		){
+	showMatchup(winLosePackage){
 		
-		if(byeRound !== true){
+		if(winLosePackage.byeRound !== true){
 			this.setState({
-				posX:newPos.x,
-	        	posY:newPos.y,
-				matchupPlayerA: playerA,
-				matchupPlayerB: playerB,
-				matchupGameNumber : gameNumber
+				posX:winLosePackage.newPos.x,
+	        	posY:winLosePackage.newPos.y,
+				matchupPlayerA: winLosePackage.playerA,
+				matchupPlayerB: winLosePackage.playerB,
+				matchupGameNumber : winLosePackage.gameNumber
 			}, function afterClick(){
 				this.customDialog.show();
 			});
 		} else {
 			this.setState({
-				posX:newPos.x,
-	        	posY:newPos.y
+				posX:winLosePackage.newPos.x,
+	        	posY:winLosePackage.newPos.y
 			});
-			this.WinnerLoserHandler(gameNumber,bracketSpots,winner,loser,0,0,byeRound);
+			var resultTimePackage = {
+				win1time : 0,
+				win2time : 0,
+				lose1time : 0,
+				lose2time : 0
+			};
+			this.WinnerLoserHandler(winLosePackage,resultTimePackage);
 		}
 	}
 	
@@ -273,23 +298,23 @@ export default class VsTournament extends React.Component {
 		var gameCounter = 1;
 		
 		// create Games in Winner Bracket (includes start round)
-		var createdWinGames = CreateGmsWinBracket(gVars,gameCounter,this.state.masterGameObject);
+		var createdWinGames = CreateGmsWinBracket(gVars,gameCounter,this.state.masterGameObject,mode);
 		winnerBracket.push(createdWinGames.winnerBracket);
 		createdWinGames.bezArr.map(element => bezArr.push(element));
 		gameCounter = createdWinGames.gameCounter;
 		
 		// create Games in Special Winner Bracket
-		winnerBracket.push(CreateGmsSpecialWinBracket(gVars,gameCounter,this.state.masterGameObject));
+		winnerBracket.push(CreateGmsSpecialWinBracket(gVars,gameCounter,this.state.masterGameObject, mode));
 		gameCounter = gameCounter +1;
 		
 		// create Games in Loser Bracket
-		var createdLoseGames = CreateGmsLoseBracket(gVars,gameCounter,this.state.masterGameObject);
+		var createdLoseGames = CreateGmsLoseBracket(gVars,gameCounter,this.state.masterGameObject, mode);
 		loserBracket = createdLoseGames.loserBracket;
 		createdLoseGames.bezArr.map(element => bezArr.push(element));
 		gameCounter = createdLoseGames.gameCounter;
 		
 		// create Games in Finals Bracket
-		var createdFinalsGames = CreateGmsFinalsBracket(gVars,gameCounter,this.state.masterGameObject);
+		var createdFinalsGames = CreateGmsFinalsBracket(gVars,gameCounter,this.state.masterGameObject,mode);
 		finalsBracket = createdFinalsGames.finalsBracket;
 		
 		bezArr.reverse();
@@ -301,6 +326,13 @@ export default class VsTournament extends React.Component {
 		
 		var chartTitle = this.ChartTitle(this.state.chartDisplay);
 		
+		var matchupPlayers = [];
+		if (mode == 'VS'){
+			matchupPlayers = [this.state.matchupPlayerA,this.state.matchupPlayerB];
+		} else {
+			matchupPlayers = [this.state.matchupPlayerA,this.state.matchupPlayerB,this.state.matchupPlayerC,this.state.matchupPlayerD];
+		}
+		
 		
 		return (
 			<div className={'tournament-container'}>
@@ -310,13 +342,14 @@ export default class VsTournament extends React.Component {
 					afterClose={this._executeAfterModalClose}
 				>
 					<VsMatchup
-						players = {[this.state.matchupPlayerA,this.state.matchupPlayerB]}
+						players = {matchupPlayers}
 						gameNumber = {this.state.matchupGameNumber}
 						dialogHeight = {matchupDialog.height}
 						dialogWidth = {matchupDialog.width}
 						WinnerLoserHandler = {this.WinnerLoserHandler.bind(this)}
 						bracketSpots = {bracketSpots}
 						hideMatchup = {this.hideMatchup.bind(this)}
+						mode = {mode}
 					/>
 				</SkyLight>
 				<Stage 

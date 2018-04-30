@@ -1,8 +1,10 @@
 'use strict';
 
+//clear for VS & 4P Mode... may need to adjust 4P variables
+
 import DetermineBracket from '../baseMethods/DetermineBracket';
 
-export default function CreateMasterGameObject(nGamesTotal,bracketSpots){
+export default function CreateMasterGameObject(nGamesTotal,bracketSpots, mode){
     var masterGameObj = {};
     var playerObj = {
 		name : '',
@@ -20,20 +22,39 @@ export default function CreateMasterGameObject(nGamesTotal,bracketSpots){
 	};
     
     for(var game = 1; game <= nGamesTotal; game++){
-		masterGameObj[game] = {
-			gameNumber : game,
-			playerA : playerObj,
-			playerB: playerObj,
-			bracket : DetermineBracket(game,bracketSpots),
-			status : '',
-			spotsFilled : 0,
-			winner: '',
-			loser: '',
-			loserEliminated : false
-		};
+    	if (mode == 'VS'){
+    		masterGameObj[game] = {
+				gameNumber : game,
+				playerA : playerObj,
+				playerB: playerObj,
+				bracket : DetermineBracket(game,bracketSpots, mode),
+				status : '',
+				spotsFilled : 0,
+				winner: '',
+				loser: '',
+				loserEliminated : false
+			};
+    	} else {
+    		masterGameObj[game] = {
+				gameNumber : game,
+				playerA : playerObj,
+				playerB: playerObj,
+				playerC: playerObj,
+				playerD: playerObj,
+				bracket : DetermineBracket(game,bracketSpots, mode),
+				status : '',
+				spotsFilled : 0,
+				winner1: '',
+				winner2: '',
+				loser1: '',
+				loser2: '',
+				loser1Eliminated : false,
+				loser2Eliminated : false
+			};
+    	}
+		
 	}
 	
-	console.log('mastGmObj', masterGameObj);
 	
 	return masterGameObj;
 	

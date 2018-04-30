@@ -55,6 +55,8 @@ export default function MatchupTile(Geo,player,globalY,position,posColor,dialogW
 			x={Geo.margin}
 			y={Geo.topPad + globalY}
 			onClick = {click}
+			scaleX = {.7}
+			scaleY = {.7}
 		>
 			{PositionTile(Geo,position,posColor,player, selectedDeco)}
 			{FlagClipShadow(Geo,selectedDeco)}

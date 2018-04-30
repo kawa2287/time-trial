@@ -1,5 +1,7 @@
 'use strict';
 
+//clear for VS & 4P Mode
+
 import React from 'react';
 import GameComponent from '../../GameComponent';
 import GameComponentProps from '../baseMethods/GameComponentProps';
@@ -9,7 +11,7 @@ var xLoc;
 var yLoc;
 
 
-export default function CreateGmsFinalsBracket(gVars,gameCounter,masterGameObject ){
+export default function CreateGmsFinalsBracket(gVars,gameCounter,masterGameObject,mode ){
     
     // unwrap
     var gameWidth = gVars.gameWidth;
@@ -38,7 +40,8 @@ export default function CreateGmsFinalsBracket(gVars,gameCounter,masterGameObjec
 						bracketSpots,
 						vizGeo,
 						xLoc,
-						yLoc
+						yLoc,
+						mode
 					)
 				}
 			/>

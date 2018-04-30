@@ -1,6 +1,9 @@
 'use strict';
 
-export default function DetermineBracket (gameNumber,bracketSpots){
+//clear for VS & 4P Mode
+
+export default function DetermineBracket (gameNumber,bracketSpots, mode){
+	bracketSpots = (mode == 'VS' ? bracketSpots : bracketSpots /2);
 	if(gameNumber <= bracketSpots/2){
 		return 'startBracket';
 	} else if (gameNumber < bracketSpots && gameNumber > bracketSpots/2){

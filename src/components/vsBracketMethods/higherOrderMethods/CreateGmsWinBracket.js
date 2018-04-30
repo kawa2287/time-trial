@@ -1,5 +1,7 @@
 'use strict';
 
+//clear for VS & 4P Mode
+
 import React from 'react';
 import GameComponent from '../../GameComponent';
 import GameComponentProps from '../baseMethods/GameComponentProps';
@@ -15,7 +17,7 @@ var xLoc;
 var yLoc;
 
 
-export default function CreateGmsWinBracket(gVars,gameCounter,masterGameObject ){
+export default function CreateGmsWinBracket(gVars,gameCounter,masterGameObject,mode ){
     
     // unwrap
     var gameWidth = gVars.gameWidth;
@@ -28,7 +30,7 @@ export default function CreateGmsWinBracket(gVars,gameCounter,masterGameObject )
 	
 	var winnerBracket = [];
 	var bezArr = [];
-    
+
     for (k = 0; k < winnerArr.length; k++){
 		for(i = 0; i < winnerArr[k]; i++){
 		    
@@ -36,7 +38,7 @@ export default function CreateGmsWinBracket(gVars,gameCounter,masterGameObject )
 			
 			moduleCCht = (gameHeight+vizGeo.vertSpace)*Math.pow(2,k);		
 			halfModuleHeight = ((gameHeight+vizGeo.vertSpace)*(Math.pow(2,k))-vizGeo.vertSpace)/2;
-			xLoc = (k+(bracketPower-1)*2)*(gameWidth+vizGeo.horizSpace) + vizGeo.horizSpace;
+			xLoc = (k+(bracketPower-(mode == 'VS' ? 0 : 1)-1)*2)*(gameWidth+vizGeo.horizSpace) + vizGeo.horizSpace;
 			yLoc = boardHeight-(winnerArr[k]-i)*(gameHeight+vizGeo.vertSpace)*(Math.pow(2,k)) - vizGeo.vertSpace + halfModuleHeight - gameHeight/2;
 			
 			winnerBracket.push(
@@ -49,7 +51,8 @@ export default function CreateGmsWinBracket(gVars,gameCounter,masterGameObject )
 							bracketSpots,
 							vizGeo,
 							xLoc,
-							yLoc
+							yLoc,
+							mode
 						)
 					}
 				/>
@@ -71,7 +74,6 @@ export default function CreateGmsWinBracket(gVars,gameCounter,masterGameObject )
 						ye = {ye}
 						color = 'red'
 						stroke = {2}
-						bracket = {masterGameObject[gameCounter].bracket + (k%2 == 0?'':2)}
 					/>
 				);
 			}
@@ -92,7 +94,6 @@ export default function CreateGmsWinBracket(gVars,gameCounter,masterGameObject )
 						radius = {vizGeo.radius}
 						color = {vizGeo.lColAr[k-1]}
 						stroke = {8*k}
-						bracket = {masterGameObject[gameCounter].bracket + (k%2 == 0?'':2)}
 						direction = 'clockwise'
 					/>
 				); 
