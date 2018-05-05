@@ -1,8 +1,10 @@
 import React from 'react';
 import { Stage, Group, Layer, Text, Rect } from "react-konva";
 import MatchupTile from './matchup/MatchupTile';
+import MatchupTile4P from './matchup/MatchupTile4P';
 import Colors from '../static/Colors';
 import WinChanceTile from './matchup/WinChanceTile';
+import WinChanceTile4P from './matchup/WinChanceTile4P';
 
 
 const formattedSeconds = (sec) =>
@@ -18,23 +20,30 @@ var simulateButtonWidth = 200;
 var simulateButtonHeight = 30;
 
 
-
 var Geo = {
 	flagHeight : flagHeight,
 	flagWidth : flagWidth,
+	margin4P: 16,
 	margin: 20,
 	tileHeight: tileHeight,
+	tileHeight4P: tileHeight*0.75,
 	topPad: 86,
 	positionFontSize: 30,
 	positionWidth : 64,
 	seedFontSize: 20,
 	nameSize: 28,
+	finishFontSize : 16,
 	borderColor: Colors.matchupBorder,
 	seedColor: Colors.seedColor,
 	statTileColor: Colors.tileColor,
 	statColor: Colors.smokeGray,
+	gold: Colors.gold,
+	silver: Colors.silver,
+	bronze: Colors.bronze,
 	statLabelSize:16,
 	timeCircleRadius: 64,
+	timeCircleRadius4P: 96,
+	finishBox : 36,
 	flagClip : {
 		xs : 0,
 		ys : 80,
@@ -73,28 +82,56 @@ var Geo = {
 function initTiles(initVarsObj){
 		
 	var arr = [];
+	var i;
 	
-	for(var i = 0; i < initVarsObj.players.length; i++){
-		arr.push(
-			MatchupTile(
-				initVarsObj.Geo,
-				initVarsObj.players[i],
-				initVarsObj.dialogHeight - initVarsObj.dialogHeight/(i+1),
-				initVarsObj.Geo.alphaArr[i], 
-				initVarsObj.Geo.colorArr[i], 
-				initVarsObj.dialogWidth,
-				initVarsObj.dialogHeight,
-				initVarsObj.winnerClick,
-				initVarsObj.winTime,
-				initVarsObj.winner,
-				initVarsObj.selectedPlayer,
-				initVarsObj.keyPress,
-				initVarsObj.stopHandler,
-				initVarsObj.keySeq,
-				initVarsObj.mode
-			)
-		);
+	if( initVarsObj.mode == 'VS'){
+		for(i = 0; i < initVarsObj.players.length; i++){
+			arr.push(
+				MatchupTile(
+					initVarsObj.Geo,
+					initVarsObj.players[i],
+					initVarsObj.dialogHeight - initVarsObj.dialogHeight/(i+1),
+					initVarsObj.Geo.alphaArr[i], 
+					initVarsObj.Geo.colorArr[i], 
+					initVarsObj.dialogWidth,
+					initVarsObj.dialogHeight,
+					initVarsObj.winnerClick,
+					initVarsObj.winTime1,
+					initVarsObj.winner1,
+					initVarsObj.selectedPlayer,
+					initVarsObj.keyPress,
+					initVarsObj.stopHandler,
+					initVarsObj.keySeq,
+					initVarsObj.mode
+				)
+			);
+		}
+	} else {
+		for(i = 0; i < initVarsObj.players.length; i++){
+			arr.push(
+				MatchupTile4P(
+					initVarsObj.Geo,
+					initVarsObj.players[i],
+					initVarsObj.Geo.topPad + i*(Geo.margin+Geo.tileHeight),
+					initVarsObj.Geo.alphaArr[i], 
+					initVarsObj.Geo.colorArr[i], 
+					initVarsObj.dialogWidth,
+					initVarsObj.dialogHeight,
+					initVarsObj.winner1,
+					initVarsObj.winner2,
+					initVarsObj.loser1,
+					initVarsObj.loser2,
+					initVarsObj.keyPress,
+					initVarsObj.stopHandler4P,
+					initVarsObj.keySeq,
+					initVarsObj.mode,
+					initVarsObj.handlePlacementSelect
+				)
+			);
+		}
 	}
+	
+	
 	return arr;
 }
 
@@ -107,14 +144,19 @@ class VsMatchup extends React.Component {
 		this.state = {
 			simHover : false,
 			subHover : false,
-			winner : null,
-			loser : null,
-			winTime : 0,
-			loseTime : 0,
+			winner1 : null,
+			winner2 : null,
+			loser1 : null,
+			loser2 : null,
+			winTime1 : 0,
+			winTime2 : 0,
+			loseTime1 : 0,
+			loseTime2 : 0,
 			selectedPlayer : null,
 			keyPress : null,
 			timeElapsed: 0,
-			keySeq : 0
+			keySeq : 0,
+			stopCount: 0
 		};
 	}
 	
@@ -184,8 +226,14 @@ class VsMatchup extends React.Component {
     			keySeq : 0,
     			keyPress : null,
     			timeElapsed : 0,
-    			winTime: 0,
-    			winner: null,
+    			winTime1: 0,
+    			winTime2: 0,
+    			loseTime1: 0,
+    			loseTime2: 0,
+    			winner1: null,
+    			winner2: null,
+    			loser1: null,
+    			loser2: null,
     			selectedPlayer: null
     		});
     	}
@@ -203,13 +251,46 @@ class VsMatchup extends React.Component {
     	}
     	
     	this.setState({
-    		winner: player,
+    		winner1: player,
     		selectedPlayer: player,
-    		loser: loser,
+    		loser1: loser,
     		winTime:Number(formattedSeconds(this.state.timeElapsed)),
     		keySeq:2,
     		keyPress: null
     	});
+    }
+    
+    handleStopTimer4P(player){
+		if (this.state.stopCount == 0){
+			console.log('shouldnt be clicked yet');
+    		this.setState({
+    			winner1 : player,
+    			winTime1 : formattedSeconds(this.state.timeElapsed),
+    			stopCount : 1,
+    			keyPress: null
+    		});
+    		return;
+    	} else if ( this.state.stopCount == 1){
+    		this.setState({
+    			winner2 : player,
+    			winTime2 : formattedSeconds(this.state.timeElapsed),
+    			stopCount : 2,
+    			keyPress: null
+    		});
+    		return;
+    	} else if (this.state.stopCount == 2){
+    		console.log('shouldnt be clicked yet');
+    		clearInterval(this.incrementer);
+    		this.setState({
+    			loser1 : player,
+    			loseTime1 : formattedSeconds(this.state.timeElapsed),
+    			keySeq:2,
+    			keyPress:null,
+    			stopCount : 0
+    		},() => this.callBackSetLast());
+    		
+    		return;
+    	}
     }
  
 	
@@ -217,79 +298,244 @@ class VsMatchup extends React.Component {
 		var pAtime = Math.round(100*(this.props.players[0].timeTrial + (this.randomIntFromInterval(-5,5))))/100;
 		var pBtime = Math.round(100*(this.props.players[1].timeTrial + (this.randomIntFromInterval(-5,5))))/100;
 		
-		// decide winner or loser
-		if (pAtime <= pBtime){
-			this.setState({
-				selectedPlayer : this.props.players[0],
-				winner : this.props.players[0],
-				loser : this.props.players[1],
-				winTime : pAtime,
-				loseTime : pBtime
-			});
+		if (this.props.mode == 'VS'){
+			// decide winner or loser
+			if (pAtime <= pBtime){
+				this.setState({
+					selectedPlayer : this.props.players[0],
+					winner1 : this.props.players[0],
+					loser1 : this.props.players[1],
+					winTime1 : pAtime,
+					loseTime1 : pBtime
+				});
+				
+			} else if (pAtime > pBtime) {
+				this.setState({
+					selectedPlayer : this.props.players[1],
+					winner1 : this.props.players[1],
+					loser1 : this.props.players[0],
+					winTime1 : pBtime,
+					loseTime1 : pAtime
+				});
+			}
+		}else {
+			var arr = [];
+			var pA = {};
+			var pB = {};
+			var pC = {};
+			var pD = {};
+			var pCtime = Math.round(100*(this.props.players[2].timeTrial + (this.randomIntFromInterval(-5,5))))/100;
+			var pDtime = Math.round(100*(this.props.players[3].timeTrial + (this.randomIntFromInterval(-5,5))))/100;
 			
-		} else if (pAtime > pBtime) {
+			pA = {player: this.props.players[0], time : this.props.players[0].name =='BYE'?999:pAtime};
+			pB = {player: this.props.players[1], time : this.props.players[1].name =='BYE'?999:pBtime};
+			pC = {player: this.props.players[2], time : this.props.players[2].name =='BYE'?999:pCtime};
+			pD = {player: this.props.players[3], time : this.props.players[3].name =='BYE'?999:pDtime};
+			arr = [pA,pB,pC,pD];
+			
+			//sort the array
+			arr.sort(function(a, b) {
+			    
+			    //sort by time
+			    if (a.time < b.time) {
+			    	return -1;
+			    }
+			    else if (a.time  > b.time) {
+			        return 1;
+			    }
+			    return 0;
+			});
 			this.setState({
-				selectedPlayer : this.props.players[1],
-				winner : this.props.players[1],
-				loser : this.props.players[0],
-				winTime : pBtime,
-				loseTime : pAtime
+				winner1 : arr[0].player,
+				winner2 : arr[1].player,
+				loser1 : arr[2].player,
+				loser2 : arr[3].player,
+				winTime1 : arr[0].time,
+				winTime2 : arr[1].time,
+				loseTime1 : arr[2].time,
+				loseTime2 : arr[3].time,
 			});
 		}
 	}
 	//////////////////////////////////////////////////////
 	
 	handleSubmitClick(){
-		if (this.state.winner !== null){
-			this.winnerClick(this.state.winner, this.state.winTime);
+		
+		console.log('im being clicked');
+		
+		if (this.state.winner1 !== null){
+			this.winnerClick(
+				this.state.winner1, 
+				this.state.winner2, 
+				this.state.loser1, 
+				this.state.loser2,
+				this.state.winTime1,
+				this.state.winTime2,
+				this.state.loseTime1,
+				this.state.loseTime2
+				);
 			this.setState({
-				winTime : 0,
-				winner : null,
-				loser : null,
+				winTime1 : 0,
+				winTime2 : 0,
+				loseTime1 : 0,
+				loseTime2 : 0,
+				winner1 : null,
+				winner2 : null,
+				loser1 : null,
+				loser2 : null,
 				selectedPlayer : null,
 				keySeq : 0,
     			keyPress : null,
     			timeElapsed : 0
-				
+			},function afterClick(){
+				this.props.hideMatchup();
 			});
-			this.props.hideMatchup();
 		}
 	}
 	
 	handlePlayerSelect(player){
+		var loser;
+		loser = this.props.players[0].name == player.name ? this.props.players[1] : this.props.players[0]; 
 		this.setState({
 			selectedPlayer : player,
-			winner : player
+			winner1 : player,
+			loser1 : loser
 		});
 	}
 	
-	winnerClick(player, winningTime) {
+	handlePlacementSelect(place,player){
+		//check if name is already set
+		var remove = 0;
+		var checkArray = [];
+		this.state.winner1 !== null ? checkArray.push(this.state.winner1) : checkArray.push({name:'pass'});
+		this.state.winner2 !== null ? checkArray.push(this.state.winner2) : checkArray.push({name:'pass'});
+		this.state.loser1 !== null ? checkArray.push(this.state.loser1) : checkArray.push({name:'pass'});
+		this.state.loser2 !== null ? checkArray.push(this.state.loser2) : checkArray.push({name:'pass'});
+		
+		for (var n = 1; n <= checkArray.length; n++){
+			if (checkArray[n-1].name == player.name){
+				remove = n;
+			}
+		}
+		
+		if (remove >= 1){
+			switch (remove) {
+				case 1:
+					this.setState({winner1 : null },
+					function afterClick(){
+						this.handlePlacementSelect(place,player);
+					});
+					break;
+				case 2:
+					this.setState({winner2 : null },
+					function afterClick(){
+						this.handlePlacementSelect(place,player);
+					});
+					break;
+				case 3:
+					this.setState({loser1 : null},
+					function afterClick(){
+						this.handlePlacementSelect(place,player);
+					});
+					break;
+				default:
+					this.setState({loser2 : null});
+			}
+		} else {
+			//set name if not set
+			switch (place) {
+				case '1':
+					this.setState({winner1 : player },() => this.callBackSetLast());
+					break;
+				case '2':
+					this.setState({winner2 : player },() => this.callBackSetLast());
+					break;
+				case '3':
+					this.setState({loser1 : player},() => this.callBackSetLast());
+					break;
+				default:
+					this.setState({loser2 : player}, () => this.callBackSetLast());
+			}
+		}
+		
+		
+		
+	}
+	
+	callBackSetLast (){
+		var CallBackArray = [];
+		this.state.winner1 !== null ? CallBackArray.push(this.state.winner1) : CallBackArray.push({name:'pass'});
+		this.state.winner2 !== null ? CallBackArray.push(this.state.winner2) : CallBackArray.push({name:'pass'});
+		this.state.loser1 !== null ? CallBackArray.push(this.state.loser1) : CallBackArray.push({name:'pass'});
+		this.state.loser2 !== null ? CallBackArray.push(this.state.loser2) : CallBackArray.push({name:'pass'});
+		var addLast = 0;
+		for (var x = 0; x <CallBackArray.length; x++){
+			console.log('callbackreq',CallBackArray[x]);
+			if(CallBackArray[x].name == 'pass'){
+				addLast = addLast+1;
+			}
+		}
+		if (addLast == 1){
+			for (var x = 0; x <this.props.players.length; x++){
+				if(this.props.players[x].name !== this.state.winner1.name &&
+				this.props.players[x].name !== this.state.winner2.name &&
+				this.props.players[x].name !== this.state.loser1.name){
+					console.log('settingL2',this.props.players[x]);
+					this.setState({loser2:this.props.players[x]});
+				}
+			}
+		}
+	}
+	
+	winnerClick(w1,w2,l1,l2,w1t,w2t,l1t,l2t) {
 		
 		var winLosePackage = {
 			gameNumber : this.props.gameNumber,
 			bracketSpots : this.props.bracketSpots,
-			bracket : this.props.bracket,
-			byeRound : false,
-			mode : 'VS'
+			byeRound : false
 		};
 		var resultTimePackage = {};
 		
-		if(Object.keys(this.props.players[0]).length !== 0 && this.props.players[0].constructor === Object ||Object.keys(this.props.players[1]).length !== 0 && this.props.players[1].constructor === Object ){
-			//hackish
-			if(player.name == this.props.players[0].name){
-				winLosePackage['winner1'] = this.props.players[0];
-				winLosePackage['loser1'] = this.props.players[1];
-			} else {
-				winLosePackage['winner1'] = this.props.players[1];
-				winLosePackage['loser1'] = this.props.players[0];
+		if (this.props.mode =='VS'){
+			winLosePackage['mode'] = 'VS';
+		
+			winLosePackage['winner1'] = w1;
+			winLosePackage['loser1'] = l1;
+				
+			resultTimePackage['winner1time'] = w1t;
+			resultTimePackage['loser1time'] = l1t || winLosePackage.loser1.timeTrial;
+		
+		} else {
+			winLosePackage['mode'] = '4P';
+			
+			winLosePackage['winner1'] = w1;
+			winLosePackage['winner2'] = w2;
+			winLosePackage['loser1'] = l1;
+			winLosePackage['loser2'] = l2;
+				
+			resultTimePackage['winner1time'] = w1t;
+			resultTimePackage['winner2time'] = w2t;
+			resultTimePackage['loser1time'] = l1t;
+			resultTimePackage['loser2time'] = l2t || winLosePackage.loser2.timeTrial;
+			
+			var pTmArr= ['playerAtime','playerBtime','playerCtime','playerDtime'];
+			
+			for (var n = 0; n<pTmArr.length; n++){
+					
+				if(this.props.players[n].name ==w1.name){
+					winLosePackage[pTmArr[n]]= w1t;
+				} else if(this.props.players[n].name == w2.name){
+					winLosePackage[pTmArr[n]]= w2t;
+				}else if(this.props.players[n].name == l1.name){
+					winLosePackage[pTmArr[n]]= l1t;
+				} else if(this.props.players[n].name == l2.name){
+					winLosePackage[pTmArr[n]]=l2t;
+				} else {
+					winLosePackage[pTmArr[n]]='-';
+				}
 			}
-			
-			resultTimePackage['winner1time'] = winningTime;
-			resultTimePackage['loser1time'] = winLosePackage.loser1.timeTrial;
-			
-			
-			this.props.WinnerLoserHandler(winLosePackage, resultTimePackage);
 		}
+		this.props.WinnerLoserHandler(winLosePackage, resultTimePackage);
 	}
 
    render() {
@@ -300,14 +546,49 @@ class VsMatchup extends React.Component {
 			dialogHeight : this.props.dialogHeight,
 			dialogWidth: this.props.dialogWidth,
 			winnerClick: this.handlePlayerSelect.bind(this),
-			winTime:this.state.winTime, 
-			winner: this.state.winner,
+			winTime1:this.state.winTime1, 
+			winTime2:this.state.winTime2, 
+			loseTime1:this.state.loseTime1, 
+			loseTime2:this.state.loseTime2, 
+			winner1: this.state.winner1,
+			winner2: this.state.winner2,
+			loser1: this.state.loser1,
+			loser2: this.state.loser2,
 			selectedPlayer: this.state.selectedPlayer,
 			keyPress: this.state.keyPress,
 			stopHandler: this.handleStopMainTimer.bind(this),
 			keySeq: this.state.keySeq,
-			mode : this.props.mode
+			mode : this.props.mode,
+			handlePlacementSelect : this.handlePlacementSelect.bind(this),
+			stopHandler4P : this.handleStopTimer4P.bind(this)
    		};
+   		
+   		var winChTl = null;
+   		
+   		if(this.props.mode=='VS'){
+   			winChTl = WinChanceTile(
+   				Geo, 
+   				this.props.players, 
+   				this.props.dialogWidth, 
+   				this.props.dialogHeight,
+   				this.state.winTime,
+   				this.state.keySeq, 
+   				this.state.timeElapsed, 
+   				this.props.mode
+   			);
+   		} else {
+   			winChTl = WinChanceTile4P(
+   				Geo, 
+   				this.props.players, 
+   				this.props.dialogWidth, 
+   				this.props.dialogHeight,
+   				this.state.winTime,
+   				this.state.keySeq, 
+   				this.state.timeElapsed, 
+   				this.props.mode
+   			);
+   		}
+   		
   
 		return (
 			<div>
@@ -319,11 +600,12 @@ class VsMatchup extends React.Component {
 					onKeyPress={this.handleStartClick.bind(this)}
 					value = {this.state.keyPress}
 				/>
+				<div>{this.state.timeElapsed}</div>
 				<Stage width={this.props.dialogWidth} height={this.props.dialogHeight}>
 					<Layer>
 						<Group>
 							{initTiles(initVars).map(element => element)}
-							{WinChanceTile(Geo, this.props.players, this.props.dialogWidth, this.props.dialogHeight,this.state.winTime,this.state.keySeq, this.state.timeElapsed)}
+							{winChTl}
 							<Group
 								onClick={this.simulateClick.bind(this)}
 								onmouseover={this.handleOnMouseOverSim.bind(this)}

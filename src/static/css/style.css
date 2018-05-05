@@ -418,7 +418,7 @@ footer p {
   white-space: nowrap;
   text-overflow: ellipsis;
   text-align: center;
-  font-size: small;
+  font-size: large;
   justify-content: space-around;
   align-items: center;
   padding: 5px;
@@ -434,7 +434,7 @@ footer p {
   text-overflow: ellipsis;
   text-align: center;
   border-collapse: collapse;
-  font-size: small;
+  font-size: large;
   justify-content: space-around;
   align-items: center;
   border-radius: 5px;

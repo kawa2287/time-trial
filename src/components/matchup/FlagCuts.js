@@ -7,20 +7,26 @@ import FlagImage from './FlagImage';
 
 
 
-export default function PositionTile(Geo,player){
+export default function PositionTile(Geo,player, mode){
     
 
     function FindFlagPath(player){
-        if(Object.keys(player).length === 0 && player.constructor === Object){
+        if((Object.keys(player).length === 0 && player.constructor === Object) || player.name =='BYE'){
             return "/img/flagsSVG/XX.svg";
         } else {
             return player.country.flagPathSVG;
         }
     }
+     var x;
+    if(mode == 'VS'){
+        x =Geo.margin + Geo.positionWidth;
+    } else {
+        x = Geo.margin + Geo.positionWidth + Geo.finishBox;
+    }
     
     return(
         <Group 
-            x={Geo.margin + Geo.positionWidth}
+            x={x}
             
             clipFunc= {function (ctx) {
 	             ctx.beginPath();

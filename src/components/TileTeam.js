@@ -18,37 +18,52 @@ var emptyColor = Colors.gameNotReadyColor;
 export default class TileTeam extends React.Component {
 	constructor(props){
 		super(props);
-		this.state = {
-			name : null,
-			seed : null,
-			timeTrial : null,
-			flag: null,
-			filter: Konva.Filters.Enhance
-		};
 	}
 	
-	BackgroundColor(name, hover){
+	BackgroundColor(name, hover, mode){
 		if (name === 'BYE'){
 			return byeColor;
-		} else if (name == this.props.loser && this.props.loserEliminated ){
-			return eliminatedColor;
-		} else if (name == this.props.loser) {
-			return loserColor;
-		} else if (name === '') {
-			return (emptyColor);
-		} else if (hover === true) {
-			return hoverColor;
-		} else {
-			return tileColor;
-		}
+		} else if (this.props.mode =='VS'){
+			if (name == this.props.loser && this.props.loserEliminated ){
+				return eliminatedColor;
+			} else if (name == this.props.loser) {
+				return loserColor;
+			} else if (name === '') {
+				return (emptyColor);
+			} else if (hover === true) {
+				return hoverColor;
+			} else {
+				return tileColor;
+			}
+		} else  {
+			if ((name == this.props.loser1 && this.props.loserEliminated1)||(name == this.props.loser2 && this.props.loserEliminated2) ){
+				return eliminatedColor;
+			} else if(name == this.props.loser1 || name == this.props.loser2){
+				return loserColor;
+			} else if (name === '') {
+				return (emptyColor);
+			} else if (hover === true) {
+				return hoverColor;
+			} else {
+				return tileColor;
+			}
+		} 
 	}
 	
-	TextDecoration(name) {
-		if( name == this.props.loser) {
-			return 'line-through';
-		} else {
-			return '';
-		}
+	TextDecoration(name,mode) {
+		 if (this.props.mode =='VS'){
+		 	if( name == this.props.loser) {
+				return 'line-through';
+			} else {
+				return '';
+			}
+		 } else {
+		 	if (name == this.props.loser1 || name == this.props.loser2){
+		 		return 'line-through';
+		 	} else {
+		 		return '';
+		 	}
+		 }
 	}
 	
 	
@@ -60,9 +75,11 @@ export default class TileTeam extends React.Component {
 		}
 	}
 	
-	timeDisplay(time,winChance,hover){
+	timeDisplay(time,winChance,hover, status, finishTime){
 		if (hover === true){
 			return winChance+'%';
+		} else if (status == 'COMPLETE'){
+			return finishTime == 0 ? '-' : '*'+finishTime;
 		} else {
 			return time;
 		}
@@ -82,7 +99,7 @@ export default class TileTeam extends React.Component {
 					<Rect 
 						width={teamWidth}
 	        			height={teamHeight}
-	                    fill= {this.BackgroundColor(this.props.name,this.props.hover)}
+	                    fill= {this.BackgroundColor(this.props.name,this.props.hover, this.props.mode)}
 						stroke= 'black'
 						strokeWidth= {0.5}
 						cornerRadius={5}
@@ -139,12 +156,12 @@ export default class TileTeam extends React.Component {
                 		width = {teamWidth - 2 * teamHeight}
                 		font-family = 'sans-serif'
                 		align = 'left'
-                		textDecoration = {this.TextDecoration(this.props.name)}
+                		textDecoration = {this.TextDecoration(this.props.name, this.props.mode)}
                 		ellipsis = 'true'
                 		wrap = 'none'
                 	/>
                 	<Text //player avg time
-                		text = {this.timeDisplay(this.props.time,this.props.winChance,this.props.hover)}
+                		text = {this.timeDisplay(this.props.time,this.props.winChance,this.props.hover,this.props.status,this.props.finishTime)}
                 		x = {teamWidth - clipWidth}
                 		y = {(teamHeight-fontSize)/2}
                 		fontSize = {fontSize}

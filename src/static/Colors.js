@@ -12,7 +12,10 @@ const Colors = {
     gameAvailColor : '#E6D9A4',
     gameNumberColor : '#323232',
     matchupBorder : '#666666',
-    smokeGray : '#E5E5E5'
+    smokeGray : '#E5E5E5',
+    gold : '#ffd700',
+    silver : '#c0c0c0',
+    bronze : '#cd7f32'
 };
 
 export default Colors;

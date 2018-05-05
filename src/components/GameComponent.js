@@ -57,11 +57,19 @@ export default class GameComponent extends React.Component {
 	BackgroundColor(status){
 		if (status === 'COMPLETE'){
 			return completeColor;
-		} else if (this.props.gProps.playerA.seed>=1 && this.props.gProps.playerB.seed >=1) {
-			return availableColor;
-		} else {
-			return defaultColor;
-		}
+		} else if (this.props.gProps.mode == 'VS'){
+			if (this.props.gProps.playerA.seed>=1 && this.props.gProps.playerB.seed >=1) {
+				return availableColor;
+			} else {
+				return defaultColor;
+			}
+		} else{
+			if ( this.props.gProps.playerA.seed>=1 && this.props.gProps.playerB.seed >=1 && this.props.gProps.playerC.seed>=1 && this.props.gProps.playerD.seed >=1) {
+				return availableColor;
+			} else {
+				return defaultColor;
+			}
+		} 
 	}
 	
 	handleOnclick (e){
@@ -125,36 +133,70 @@ export default class GameComponent extends React.Component {
 						winLosePackage.winner2 = this.props.gProps.playerD;
 						winLosePackage.loser1 = this.props.gProps.playerA;
 						winLosePackage.loser2 = this.props.gProps.playerB;
+						winLosePackage.byeRound = true;
 						break;
 					case '1010' :
 						winLosePackage.winner1 = this.props.gProps.playerB;
 						winLosePackage.winner2 = this.props.gProps.playerD;
 						winLosePackage.loser1 = this.props.gProps.playerA;
 						winLosePackage.loser2 = this.props.gProps.playerC;
+						winLosePackage.byeRound = true;
 						break;
 					case '1001' :
 						winLosePackage.winner1 = this.props.gProps.playerB;
 						winLosePackage.winner2 = this.props.gProps.playerC;
 						winLosePackage.loser1 = this.props.gProps.playerA;
 						winLosePackage.loser2 = this.props.gProps.playerD;
+						winLosePackage.byeRound = true;
 						break;
 					case '0110' :
 						winLosePackage.winner1 = this.props.gProps.playerA;
 						winLosePackage.winner2 = this.props.gProps.playerD;
 						winLosePackage.loser1 = this.props.gProps.playerB;
 						winLosePackage.loser2 = this.props.gProps.playerC;
+						winLosePackage.byeRound = true;
 						break;
 					case '0101' :
 						winLosePackage.winner1 = this.props.gProps.playerA;
 						winLosePackage.winner2 = this.props.gProps.playerC;
 						winLosePackage.loser1 = this.props.gProps.playerB;
 						winLosePackage.loser2 = this.props.gProps.playerD;
+						winLosePackage.byeRound = true;
 						break;
 					case '0011' :
 						winLosePackage.winner1 = this.props.gProps.playerA;
 						winLosePackage.winner2 = this.props.gProps.playerB;
 						winLosePackage.loser1 = this.props.gProps.playerC;
 						winLosePackage.loser2 = this.props.gProps.playerD;
+						winLosePackage.byeRound = true;
+						break;
+					case '0111' :
+						winLosePackage.winner1 = this.props.gProps.playerA;
+						winLosePackage.winner2 = this.props.gProps.playerB;
+						winLosePackage.loser1 = this.props.gProps.playerC;
+						winLosePackage.loser2 = this.props.gProps.playerD;
+						winLosePackage.byeRound = true;
+						break;
+					case '1011' :
+						winLosePackage.winner1 = this.props.gProps.playerB;
+						winLosePackage.winner2 = this.props.gProps.playerA;
+						winLosePackage.loser1 = this.props.gProps.playerC;
+						winLosePackage.loser2 = this.props.gProps.playerD;
+						winLosePackage.byeRound = true;
+						break;
+					case '1101' :
+						winLosePackage.winner1 = this.props.gProps.playerC;
+						winLosePackage.winner2 = this.props.gProps.playerB;
+						winLosePackage.loser1 = this.props.gProps.playerA;
+						winLosePackage.loser2 = this.props.gProps.playerD;
+						winLosePackage.byeRound = true;
+						break;
+					case '1110' :
+						winLosePackage.winner1 = this.props.gProps.playerD;
+						winLosePackage.winner2 = this.props.gProps.playerB;
+						winLosePackage.loser1 = this.props.gProps.playerC;
+						winLosePackage.loser2 = this.props.gProps.playerA;
+						winLosePackage.byeRound = true;
 						break;
 				}
 				//Dialog Popup
@@ -178,6 +220,7 @@ export default class GameComponent extends React.Component {
 	render(){
 		
 		var tileTeams = [];
+		var playerFinishTimeArr = [];
 		
 		playerArr = [];
 		playerArr.push(this.props.gProps.playerA);
@@ -192,6 +235,7 @@ export default class GameComponent extends React.Component {
 		}
 		
 		playerAvgTmArr = [pAavgTime,pBavgTime,pCavgTime,pDavgTime];
+		playerFinishTimeArr = [this.props.gProps.playerAtime,this.props.gProps.playerBtime,this.props.gProps.playerCtime,this.props.gProps.playerDtime];
 
 		cap = this.props.gProps.mode == 'VS' ? 2 : 4;
 		
@@ -214,6 +258,7 @@ export default class GameComponent extends React.Component {
 						winChance = {DetermineWinChance(playerArr,playerAvgTmArr, i, this.props.gProps.mode)}
 						loser = {this.props.gProps.loser}
 						loserEliminated = {this.props.gProps.loserEliminated}
+						mode={this.props.gProps.mode}
 					/>
 				);
 			}
@@ -237,6 +282,9 @@ export default class GameComponent extends React.Component {
 						loser2 = {this.props.gProps.loser2}
 						loserEliminated1 = {this.props.gProps.loserEliminated1}
 						loserEliminated2 = {this.props.gProps.loserEliminated2}
+						mode={this.props.gProps.mode}
+						finishTime = {playerFinishTimeArr[i]}
+						status = {this.props.gProps.status}
 					/>
 				);
 			}

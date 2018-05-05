@@ -11,9 +11,10 @@ const formattedSeconds = (sec) =>
 	(sec < 1 ? Math.round(Math.floor(sec*10)) : Math.round(10*( (Math.floor(sec*10)/10) % (Math.floor(sec)))) ) +
 	Math.floor((sec % 0.1)*100);
 
-export default function StatsTile(Geo,players, dialogWidth, dialogHeight, winTime, keySeq, timeElapsed){
+export default function WinChanceTile(Geo,players, dialogWidth, dialogHeight, winTime, keySeq, timeElapsed){
 
     var playerAvgTmArr = [];
+    console.log('playersNull', players[0]===null);
     for (var p = 0;p < players.length; p++){
         playerAvgTmArr.push(players[p].avgTime);
     }

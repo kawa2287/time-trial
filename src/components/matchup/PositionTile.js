@@ -5,8 +5,8 @@ import { Rect, Text, Group } from "react-konva";
 import React from 'react';
 
 
-export default function PositionTile(Geo,position,posColor, selectedDeco){
-    
+export default function PositionTile(Geo,position,posColor, selectedDeco,mode){
+
     return(
         <Group>	
             <Rect 

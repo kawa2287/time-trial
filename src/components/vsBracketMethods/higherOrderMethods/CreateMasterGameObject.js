@@ -49,7 +49,11 @@ export default function CreateMasterGameObject(nGamesTotal,bracketSpots, mode){
 				loser1: '',
 				loser2: '',
 				loser1Eliminated : false,
-				loser2Eliminated : false
+				loser2Eliminated : false,
+				playerAtime : 0,
+				playerBtime: 0,
+				playerCtime: 0,
+				playerDtime: 0,
 			};
     	}
 		

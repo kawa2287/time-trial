@@ -4,10 +4,18 @@ import React from 'react';
 import Konva from "konva";
 import { Line } from "react-konva";
 
-export default function FlagClipBorder(Geo)  {
+export default function FlagClipBorder(Geo, mode)  {
+
+    var x;
+    if(mode == 'VS'){
+        x =Geo.margin + Geo.positionWidth;
+    } else {
+        x = Geo.margin + Geo.positionWidth + Geo.finishBox;
+    }
+	
 	return(
 		<Line
-			x={Geo.margin + Geo.positionWidth}
+			x={x}
  			sceneFunc={function (ctx) {
 	             ctx.beginPath();
 	             ctx.moveTo(Geo.flagClip.xs, Geo.flagClip.ys);

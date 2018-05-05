@@ -13,7 +13,23 @@ import StatsTile from './StatsTile';
 
 
 
-export default function MatchupTile(Geo,player,globalY,position,posColor,dialogWidth,dialogHeight,selectedPlayerClick,winTime,winner, selectedPlayer, keyPress, stophandler, keySeq) {
+export default function MatchupTile(
+	Geo,
+	player,
+	globalY,
+	position,
+	posColor,
+	dialogWidth,
+	dialogHeight,
+	selectedPlayerClick,
+	winTime,
+	winner, 
+	selectedPlayer, 
+	keyPress, 
+	stophandler, 
+	keySeq, 
+	mode
+	) {
 	
 	var winTrig = false;
 	var selecPlayer;
@@ -55,15 +71,13 @@ export default function MatchupTile(Geo,player,globalY,position,posColor,dialogW
 			x={Geo.margin}
 			y={Geo.topPad + globalY}
 			onClick = {click}
-			scaleX = {.7}
-			scaleY = {.7}
 		>
-			{PositionTile(Geo,position,posColor,player, selectedDeco)}
-			{FlagClipShadow(Geo,selectedDeco)}
-			{FlagCuts(Geo,player)}
-			{FlagClipBorder(Geo)}
-			{SeedShape(Geo, player)}
-			{StatsTile(Geo,player,dialogWidth,selectedDeco)}
+			{PositionTile(Geo,position,posColor,player, selectedDeco,mode)}
+			{FlagClipShadow(Geo,selectedDeco,mode)}
+			{FlagCuts(Geo,player,mode)}
+			{FlagClipBorder(Geo,mode)}
+			{SeedShape(Geo, player,mode)}
+			{StatsTile(Geo,player,dialogWidth,selectedDeco,mode)}
 			{WinnerHighlight(Geo,player,dialogWidth,winner)}
 		</Group>
 	);

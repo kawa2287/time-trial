@@ -17,11 +17,17 @@ import DetermineBracketPower from './vsBracketMethods/baseMethods/DetermineBrack
 import * as NgmsInRnd from './vsBracketMethods/baseMethods/NgamesInRound';
 import WinnerLoserHandler from './outcomes/WinnerLoserHandler';
 import SetPlayerInDestGame from './outcomes/SetPlayerInDestGame';
+import SetPlayerInDestGame4P from './outcomes/SetPlayerInDestGame4P';
 import SendWinnerWinBracket from './outcomes/SendWinnerWinBracket';
+import SendWinnerWinBracket4P from './outcomes/SendWinnerWinBracket4P';
 import SendWinnerLoseBracket from './outcomes/SendWinnerLoseBracket';
+import SendWinnerLoseBracket4P from './outcomes/SendWinnerLoseBracket4P';
 import SendLoserWinBracket from './outcomes/SendLoserWinBracket';
+import SendLoserWinBracket4P from './outcomes/SendLoserWinBracket4P';
 import SendLoserStartBracket from './outcomes/SendLoserStartBracket';
+import SendLoserStartBracket4P from './outcomes/SendLoserStartBracket4P';
 import SendWinnerSpecialLoserBracket from './outcomes/SendWinnerSpecialLoserBracket';
+import SendWinnerSpecialLoserBracket4P from './outcomes/SendWinnerSpecialLoserBracket4P';
 import SendWinnerSpecialWinnerBracket from './outcomes/SendWinnerSpecialWinnerBracket';
 import ChartHeaders from './sideChart/ChartHeaders';
 import ChartTitle from './sideChart/ChartTitle';
@@ -87,11 +93,17 @@ export default class VsTournament extends React.Component {
 		this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
 		this.WinnerLoserHandler = WinnerLoserHandler.bind(this);
 		this.SetPlayerInDestGame = SetPlayerInDestGame.bind(this);
+		this.SetPlayerInDestGame4P = SetPlayerInDestGame4P.bind(this);
 		this.SendWinnerWinBracket = SendWinnerWinBracket.bind(this);
+		this.SendWinnerWinBracket4P = SendWinnerWinBracket4P.bind(this);
 		this.SendWinnerLoseBracket = SendWinnerLoseBracket.bind(this);
+		this.SendWinnerLoseBracket4P = SendWinnerLoseBracket4P.bind(this);
 		this.SendLoserWinBracket = SendLoserWinBracket.bind(this);
+		this.SendLoserWinBracket4P = SendLoserWinBracket4P.bind(this);
 		this.SendLoserStartBracket = SendLoserStartBracket.bind(this);
+		this.SendLoserStartBracket4P = SendLoserStartBracket4P.bind(this);
 		this.SendWinnerSpecialLoserBracket = SendWinnerSpecialLoserBracket.bind(this);
+		this.SendWinnerSpecialLoserBracket4P = SendWinnerSpecialLoserBracket4P.bind(this);
 		this.SendWinnerSpecialWinnerBracket = SendWinnerSpecialWinnerBracket.bind(this);
 		this.ChartTitle = ChartTitle.bind(this);
 		
@@ -139,8 +151,8 @@ export default class VsTournament extends React.Component {
 				    country : '',
 				    seed : mastArr[item],
 				    timeTrial : '-',
-				    wins : 0,
-				    losses : 0,
+				    wins : null,
+				    losses : null,
 				    totalTime : 0,
 				    avgTime : 0,
 				    splitTime : 0
@@ -248,6 +260,8 @@ export default class VsTournament extends React.Component {
 	        	posY:winLosePackage.newPos.y,
 				matchupPlayerA: winLosePackage.playerA,
 				matchupPlayerB: winLosePackage.playerB,
+				matchupPlayerC: winLosePackage.playerC,
+				matchupPlayerD: winLosePackage.playerD,
 				matchupGameNumber : winLosePackage.gameNumber
 			}, function afterClick(){
 				this.customDialog.show();
@@ -263,25 +277,36 @@ export default class VsTournament extends React.Component {
 				lose1time : 0,
 				lose2time : 0
 			};
+			 winLosePackage['playerAtime'] = '-';
+			 winLosePackage['playerBtime'] = '-';
+			 winLosePackage['playerCtime'] = '-';
+			 winLosePackage['playerDtime'] = '-';
+			
 			this.WinnerLoserHandler(winLosePackage,resultTimePackage);
 		}
 	}
 	
 	hideMatchup(){
 		this.customDialog.hide();
+		this.setState({
+			matchupPlayerA : {},
+			matchupPlayerB : {},
+			matchupPlayerC : {},
+			matchupPlayerD : {}
+		});
 	}
 	
 	
 	render() {
 		
 		var matchupDialog = {
-			width: '1000',
-		    height: '600',
+			width: mode=='VS'?'1000':'1400',
+		    height: mode=='VS'?'600':'800',
 		    position: 'fixed',
 		    top: '50%',
 		    left: '50%',
-		    marginTop: '-300',
-		    marginLeft: '-500',
+		    marginTop: mode=='VS'?'-300':'-400',
+		    marginLeft: mode=='VS'?'-500':'-700',
 			backgroundColor: Colors.gameNotReadyColor,
 			color: Colors.gameNotReadyColor,
 	    };
@@ -314,8 +339,11 @@ export default class VsTournament extends React.Component {
 		gameCounter = createdLoseGames.gameCounter;
 		
 		// create Games in Finals Bracket
-		var createdFinalsGames = CreateGmsFinalsBracket(gVars,gameCounter,this.state.masterGameObject,mode);
-		finalsBracket = createdFinalsGames.finalsBracket;
+		if (mode == 'VS'){
+			var createdFinalsGames = CreateGmsFinalsBracket(gVars,gameCounter,this.state.masterGameObject,mode);
+			finalsBracket = createdFinalsGames.finalsBracket;
+		}
+		
 		
 		bezArr.reverse();
 		
@@ -332,6 +360,8 @@ export default class VsTournament extends React.Component {
 		} else {
 			matchupPlayers = [this.state.matchupPlayerA,this.state.matchupPlayerB,this.state.matchupPlayerC,this.state.matchupPlayerD];
 		}
+		
+		console.log(seededArray);
 		
 		
 		return (

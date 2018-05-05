@@ -4,9 +4,19 @@ import React from 'react';
 import Konva from "konva";
 import { Shape, Group, Text } from "react-konva";
 
-export default function SeedShape(Geo, player)  {
+export default function SeedShape(Geo, player, mode)  {
+	
+	 var x;
+    if(mode == 'VS'){
+        x =Geo.margin + Geo.positionWidth;
+    } else {
+        x = Geo.margin + Geo.positionWidth +Geo.finishBox;
+    }
+
 	return(
-		<Group x={Geo.margin + Geo.positionWidth}>
+		<Group 
+			x={x}
+		>
 			<Shape
 			fill={Geo.seedColor}
 			stroke={Geo.borderColor}

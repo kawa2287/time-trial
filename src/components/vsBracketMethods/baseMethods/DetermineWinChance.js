@@ -34,6 +34,9 @@ export default function DetermineWinChance(playerArr,playerAvgTmArr, i, mode){
 		var opponentsTotalTime = 0;
 		var nOpp = 0;
 		
+		if(mainPayerName == 'BYE') {
+			return 0;
+		}
 		
 		for (var p = 0 ; p <4; p++){
 			if(playerArr[p].name !== mainPayerName  && playerArr[p].name !== 'BYE'){

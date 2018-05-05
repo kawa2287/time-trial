@@ -8,16 +8,20 @@ import Settings from '../../static/Settings';
 
 export default function WinnerLoserHandler (WLpkg,RTpkg){
 	
+	console.log('WLpkg',WLpkg);
+	console.log('RTpkg',RTpkg);
+	
 	//unPack vars
 	var currentGameNum = WLpkg.gameNumber;
 	var bracketSpots = WLpkg.bracketSpots;
-	var currentBracket = WLpkg.bracket || DetermineBracket(currentGameNum,bracketSpots,WLpkg.mode);
-	var roundNumber = DetermineRoundNumber(currentGameNum, bracketSpots, currentBracket);
+	var currentBracket =DetermineBracket(currentGameNum,bracketSpots,WLpkg.mode);
+	var roundNumber;
     var bracketPower = DetermineBracketPower(bracketSpots);
     var mode = WLpkg.mode;
     
     if (WLpkg.mode == 'VS'){
     	
+    	roundNumber = DetermineRoundNumber(currentGameNum, bracketSpots, currentBracket);
     	var winPlayer = WLpkg.winner1;
     	var losePlayer = WLpkg.loser1;
     	var winTime = RTpkg.winner1time;
@@ -83,7 +87,78 @@ export default function WinnerLoserHandler (WLpkg,RTpkg){
 			this.SendWinnerLoseBracket(currentGameNum, roundNumber, winPlayer, bracketSpots, mode);
 		}
     } else {
-    	// logic required for 4P mode
+    	
+    	roundNumber = DetermineRoundNumber(currentGameNum, bracketSpots/2, currentBracket);
+    	
+	    // update stats [GLOBAL]
+	    if(WLpkg.byeRound === false) {
+	    	var wlArray = ['winner1','winner2','loser1','loser2'];
+	    	var wltArray = ['winner1time','winner2time','loser1time','loser2time'];
+	    	
+	    	WLpkg.winner1.wins +=  1;
+	    	WLpkg.winner2.wins +=  1;
+	    	WLpkg.loser1.losses += 1;
+	    	WLpkg.loser2.losses += 1;
+	    	
+	    	for (var q = 0; q < wlArray.length; q++){
+	    		WLpkg[wlArray[q]].totalTime = Number(WLpkg[wlArray[q]].totalTime) + Number(RTpkg[wltArray[q]]);
+	    		WLpkg[wlArray[q]].bestTime = WLpkg[wlArray[q]].bestTime > RTpkg[wltArray[q]] ? RTpkg[wltArray[q]] : WLpkg[wlArray[q]].bestTime;
+	    		WLpkg[wlArray[q]].avgTime = DetermineAvgTime(WLpkg[wlArray[q]].timeTrial,WLpkg[wlArray[q]].totalTime,WLpkg[wlArray[q]].wins,WLpkg[wlArray[q]].losses);
+	    		WLpkg[wlArray[q]].index = Math.round(100*WLpkg[wlArray[q]].timeTrial / WLpkg[wlArray[q]].avgTime)/100;
+	    		WLpkg[wlArray[q]].avgCupTime = Math.round(100*WLpkg[wlArray[q]].avgTime/Settings.cupsPerPerson)/100;
+	    		WLpkg[wlArray[q]].avgPlacement = Math.round(100*((q+1)+(WLpkg[wlArray[q]].wins+WLpkg[wlArray[q]].losses-1)*(WLpkg[wlArray[q]].avgPlacement == '-'?0:WLpkg[wlArray[q]].avgPlacement))/(WLpkg[wlArray[q]].wins+WLpkg[wlArray[q]].losses))/100;
+	    	}
+
+	    	var loser1Eliminated = WLpkg.loser1.losses == 2 ? true : false;
+	    	var loser2Eliminated = WLpkg.loser2.losses == 2 ? true : false;
+	    	
+	    	if(currentBracket == 'loserBracket'){
+	    		WLpkg.loser1.maxRound = roundNumber;
+	    		WLpkg.loser2.maxRound = roundNumber;
+	    	} else if (currentBracket == 'specialBracket'){
+	    		if(currentGameNum == bracketSpots-2){
+	    			WLpkg.loser1.maxRound = 2*(bracketPower-1-1);
+	    			WLpkg.loser2.maxRound = 2*(bracketPower-1-1);
+	    		} else if (currentGameNum == bracketSpots/2) {
+	    			WLpkg.loser1.maxRound = 2*(bracketPower-1-1) +1 ;
+	    			WLpkg.loser2.maxRound = 2*(bracketPower-1-1) +1 ;
+	    		} 
+	    	}
+	    }
+	    
+	    // set game object with results
+	    console.log('playerAtime',WLpkg.playerAtime);
+	    this.setState({
+	    	masterGameObject : {
+	    		...this.state.masterGameObject,
+	    		[currentGameNum] : {
+	    			...this.state.masterGameObject[currentGameNum],
+	    			status : 'COMPLETE',
+	    			winner1 : WLpkg.winner1.name,
+	    			winner2 : WLpkg.winner2.name,
+	    			loser1 : WLpkg.loser1.name,
+	    			loser2 : WLpkg.loser2.name,
+	    			loserEliminated1 : loser1Eliminated,
+	    			loserEliminated2 : loser2Eliminated,
+	    			playerAtime : WLpkg.playerAtime,
+	    			playerBtime : WLpkg.playerBtime,
+	    			playerCtime : WLpkg.playerCtime,
+	    			playerDtime : WLpkg.playerDtime,
+	    		}
+	    	}
+	    });
+	    // send player based on bracket Location
+		if (currentBracket == "startBracket"){
+			this.SendWinnerWinBracket4P(currentGameNum, roundNumber, WLpkg.winner1,WLpkg.winner2, bracketSpots);
+			this.SendLoserStartBracket4P(currentGameNum, WLpkg.loser1, WLpkg.loser2, bracketSpots);
+		} else if (currentBracket == "winnerBracket"){
+			this.SendWinnerWinBracket4P(currentGameNum, roundNumber, WLpkg.winner1,WLpkg.winner2, bracketSpots);
+			this.SendLoserWinBracket4P(currentGameNum, roundNumber, WLpkg.loser1, WLpkg.loser2, bracketSpots, mode);
+		} else if (currentBracket == "specialBracket"){
+			this.SendWinnerSpecialLoserBracket4P(currentGameNum, WLpkg.winner1,WLpkg.winner2,bracketSpots);
+		} else {
+			this.SendWinnerLoseBracket4P(currentGameNum, roundNumber, WLpkg.winner1,WLpkg.winner2, bracketSpots, mode);
+		}
     }
     
     

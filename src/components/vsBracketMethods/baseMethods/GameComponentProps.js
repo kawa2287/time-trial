@@ -43,7 +43,11 @@ export default function GameComponentProps (gVars,gameCounter,masterGameObject,b
 			loserEliminated2 : masterGameObject[gameCounter].loserEliminated2,
 			showMatchup : gVars.showMatchup,
 			gVars,
-			mode
+			mode,
+			playerAtime : masterGameObject[gameCounter].playerAtime,
+			playerBtime : masterGameObject[gameCounter].playerBtime,
+			playerCtime : masterGameObject[gameCounter].playerCtime,
+			playerDtime : masterGameObject[gameCounter].playerDtime,
 		};
 	}
 	
