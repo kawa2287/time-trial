@@ -18,9 +18,11 @@ var flagHeight = 192;
 var flagWidth = 192;
 var simulateButtonWidth = 200;
 var simulateButtonHeight = 30;
+var timeElapsed;
 
 
 var Geo = {
+	mainFontfamily: 'Open Sans',
 	flagHeight : flagHeight,
 	flagWidth : flagWidth,
 	margin4P: 16,
@@ -33,6 +35,8 @@ var Geo = {
 	seedFontSize: 20,
 	nameSize: 28,
 	finishFontSize : 16,
+	paleAmber: Colors.paleAmber,
+	deSatOrng: Colors.deSatOrng,
 	borderColor: Colors.matchupBorder,
 	seedColor: Colors.seedColor,
 	statTileColor: Colors.tileColor,
@@ -42,7 +46,8 @@ var Geo = {
 	bronze: Colors.bronze,
 	statLabelSize:16,
 	timeCircleRadius: 64,
-	timeCircleRadius4P: 96,
+	timeCircleRadius4P: 64,
+	timeFont : 36,
 	finishBox : 36,
 	flagClip : {
 		xs : 0,
@@ -125,7 +130,13 @@ function initTiles(initVarsObj){
 					initVarsObj.stopHandler4P,
 					initVarsObj.keySeq,
 					initVarsObj.mode,
-					initVarsObj.handlePlacementSelect
+					initVarsObj.handlePlacementSelect,
+					initVarsObj.players,
+					i,
+					initVarsObj.winTime1,
+					initVarsObj.winTime2,
+					initVarsObj.loseTime1,
+					initVarsObj.loseTime2
 				)
 			);
 		}
@@ -166,6 +177,7 @@ class VsMatchup extends React.Component {
 		}
 	}
 	
+	
 	//for testing/////////////////////////////////////////
 	randomIntFromInterval(min,max)
 	{
@@ -195,7 +207,7 @@ class VsMatchup extends React.Component {
 			subHover : false
 		});
 	}
-	
+
 	handleStartClick(event) {
 		
     	this.setState({
@@ -262,7 +274,6 @@ class VsMatchup extends React.Component {
     
     handleStopTimer4P(player){
 		if (this.state.stopCount == 0){
-			console.log('shouldnt be clicked yet');
     		this.setState({
     			winner1 : player,
     			winTime1 : formattedSeconds(this.state.timeElapsed),
@@ -270,7 +281,7 @@ class VsMatchup extends React.Component {
     			keyPress: null
     		});
     		return;
-    	} else if ( this.state.stopCount == 1){
+    	} else if ( this.state.stopCount == 1 && player.name !== this.state.winner1.name){
     		this.setState({
     			winner2 : player,
     			winTime2 : formattedSeconds(this.state.timeElapsed),
@@ -278,8 +289,7 @@ class VsMatchup extends React.Component {
     			keyPress: null
     		});
     		return;
-    	} else if (this.state.stopCount == 2){
-    		console.log('shouldnt be clicked yet');
+    	} else if (this.state.stopCount == 2&& (player.name !== this.state.winner1.name && player.name !== this.state.winner2.name)){
     		clearInterval(this.incrementer);
     		this.setState({
     			loser1 : player,
@@ -292,7 +302,7 @@ class VsMatchup extends React.Component {
     		return;
     	}
     }
- 
+
 	
 	simulateClick(){
 		var pAtime = Math.round(100*(this.props.players[0].timeTrial + (this.randomIntFromInterval(-5,5))))/100;
@@ -327,17 +337,20 @@ class VsMatchup extends React.Component {
 			var pCtime = Math.round(100*(this.props.players[2].timeTrial + (this.randomIntFromInterval(-5,5))))/100;
 			var pDtime = Math.round(100*(this.props.players[3].timeTrial + (this.randomIntFromInterval(-5,5))))/100;
 			
-			pA = {player: this.props.players[0], time : this.props.players[0].name =='BYE'?999:pAtime};
-			pB = {player: this.props.players[1], time : this.props.players[1].name =='BYE'?999:pBtime};
-			pC = {player: this.props.players[2], time : this.props.players[2].name =='BYE'?999:pCtime};
-			pD = {player: this.props.players[3], time : this.props.players[3].name =='BYE'?999:pDtime};
+			pA = {player: this.props.players[0], time : this.props.players[0].name =='BYE'?'-':pAtime};
+			pB = {player: this.props.players[1], time : this.props.players[1].name =='BYE'?'-':pBtime};
+			pC = {player: this.props.players[2], time : this.props.players[2].name =='BYE'?'-':pCtime};
+			pD = {player: this.props.players[3], time : this.props.players[3].name =='BYE'?'-':pDtime};
 			arr = [pA,pB,pC,pD];
 			
 			//sort the array
 			arr.sort(function(a, b) {
 			    
 			    //sort by time
-			    if (a.time < b.time) {
+			    if (a.time == '-'){
+			    	return 1;
+			    }
+			    else if (a.time < b.time) {
 			    	return -1;
 			    }
 			    else if (a.time  > b.time) {
@@ -360,10 +373,9 @@ class VsMatchup extends React.Component {
 	//////////////////////////////////////////////////////
 	
 	handleSubmitClick(){
-		
-		console.log('im being clicked');
-		
+
 		if (this.state.winner1 !== null){
+			
 			this.winnerClick(
 				this.state.winner1, 
 				this.state.winner2, 
@@ -470,7 +482,6 @@ class VsMatchup extends React.Component {
 		this.state.loser2 !== null ? CallBackArray.push(this.state.loser2) : CallBackArray.push({name:'pass'});
 		var addLast = 0;
 		for (var x = 0; x <CallBackArray.length; x++){
-			console.log('callbackreq',CallBackArray[x]);
 			if(CallBackArray[x].name == 'pass'){
 				addLast = addLast+1;
 			}
@@ -480,7 +491,6 @@ class VsMatchup extends React.Component {
 				if(this.props.players[x].name !== this.state.winner1.name &&
 				this.props.players[x].name !== this.state.winner2.name &&
 				this.props.players[x].name !== this.state.loser1.name){
-					console.log('settingL2',this.props.players[x]);
 					this.setState({loser2:this.props.players[x]});
 				}
 			}
@@ -494,6 +504,7 @@ class VsMatchup extends React.Component {
 			bracketSpots : this.props.bracketSpots,
 			byeRound : false
 		};
+		
 		var resultTimePackage = {};
 		
 		if (this.props.mode =='VS'){
@@ -513,10 +524,11 @@ class VsMatchup extends React.Component {
 			winLosePackage['loser1'] = l1;
 			winLosePackage['loser2'] = l2;
 				
-			resultTimePackage['winner1time'] = w1t;
-			resultTimePackage['winner2time'] = w2t;
-			resultTimePackage['loser1time'] = l1t;
-			resultTimePackage['loser2time'] = l2t || winLosePackage.loser2.timeTrial;
+			resultTimePackage['winner1time'] = (w1t == 0 || w1t == null || w1t == '-') ? winLosePackage.winner1.timeTrial : w1t;
+			resultTimePackage['winner2time'] = (w2t == 0 || w2t == null || w2t == '-') ? winLosePackage.winner2.timeTrial : w2t;
+			resultTimePackage['loser1time'] = (l1t == 0 || l1t == null || l1t == '-') ? winLosePackage.loser1.timeTrial : l1t;
+			resultTimePackage['loser2time'] = (l2t == 0 || l2t == null || l2t == '-') ? winLosePackage.loser2.timeTrial : l2t;
+			
 			
 			var pTmArr= ['playerAtime','playerBtime','playerCtime','playerDtime'];
 			
@@ -600,7 +612,9 @@ class VsMatchup extends React.Component {
 					onKeyPress={this.handleStartClick.bind(this)}
 					value = {this.state.keyPress}
 				/>
-				<div>{this.state.timeElapsed}</div>
+				<div className ="matchup-timer ">{formattedSeconds(this.state.timeElapsed)}</div>
+				
+				
 				<Stage width={this.props.dialogWidth} height={this.props.dialogHeight}>
 					<Layer>
 						<Group>

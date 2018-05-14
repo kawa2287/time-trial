@@ -10,6 +10,7 @@ import FlagClipBorder from './FlagClipBorder';
 import WinnerHighlight4P from './WinnerHighlight4P';
 import FinishIndicator from './FinishIndicator';
 import StatsTile from './StatsTile';
+import Time from './Time';
 
 
 
@@ -30,17 +31,26 @@ export default function MatchupTile4P(
 	stophandler, 
 	keySeq, 
 	mode,
-	handlePlacementSelect
+	handlePlacementSelect,
+	players,
+	i,
+	winTime1,
+	winTime2,
+	loseTime1,
+	loseTime2
 	) {
 	
 	var winTrig = false;
 	var winner1Name;
 	var winner2Name;
+	var time;
+	
 	winner1Name = winner1 ==  null ? '' : winner1.name;
 	winner2Name = winner2 ==  null ? '' : winner2.name;
 
 	var selectedDeco;
 	
+	//handle winner highlight
 	if(winner1Name == player.name || winner2Name ==player.name || winTrig == true) {
 		selectedDeco = {
 			shadowBlur : 10,
@@ -56,8 +66,20 @@ export default function MatchupTile4P(
 		};
 	}
 	
-	if(keyPress == position && keySeq == 1){
+	//handle key press
+	if(keyPress == position && keySeq == 1 && player.name !== 'BYE'){
 		stophandler(player);
+	}
+	
+	//set Time
+	if(winner1 !== null && player == winner1 && player.name !== 'BYE'){
+		time = winTime1;
+	} else if(winner2 !== null && player == winner2 && player.name !== 'BYE'){
+		time = winTime2;
+	} else if(loser1 !== null && player == loser1 && player.name !== 'BYE'){
+		time = loseTime1;
+	} else if(loser2 !== null && player == loser2 && player.name !== 'BYE'){
+		time = loseTime2;
 	}
 	
 	return(
@@ -71,8 +93,9 @@ export default function MatchupTile4P(
 			{player.name == 'BYE'?null:FlagCuts(Geo,player,'4P')}
 			{player.name == 'BYE'?null:FlagClipBorder(Geo,'4P')}
 			{SeedShape(Geo, player,'4P')}
-			{StatsTile(Geo,player,dialogWidth,selectedDeco,'4P',winner1,winner2)}
+			{StatsTile(Geo,player,dialogWidth,selectedDeco,'4P',winner1,winner2,players,i)}
 			{WinnerHighlight4P(Geo,player,winner1,winner2,selectedDeco)}
+			{Time(Geo,dialogWidth, selectedDeco, time)}
 		</Group>
 	);
 }

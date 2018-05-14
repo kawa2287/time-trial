@@ -4,6 +4,7 @@ import Konva from "konva";
 import { Rect, Text, Group } from "react-konva";
 import React from 'react';
 import DetermineAvgTime from '../vsBracketMethods/baseMethods/DetermineAvgTime';
+import DetermineWinChance from '../vsBracketMethods/baseMethods/DetermineWinChance';
 import Settings from '../../static/Settings';
 
 var width ;
@@ -16,9 +17,10 @@ var avgCupTime;
 var index;
 
 
-export default function StatsTile (Geo,player,dialogWidth, selectedDeco, mode,winner1,winner2){
+export default function StatsTile (Geo,player,dialogWidth, selectedDeco, mode,winner1,winner2,players,i){
 	
     var x;
+    var winChance;
     
     if(mode == 'VS'){
         x =Geo.margin*2 + Geo.flagWidth + Geo.positionWidth;
@@ -26,6 +28,11 @@ export default function StatsTile (Geo,player,dialogWidth, selectedDeco, mode,wi
     } else {
         x = Geo.margin*2 + Geo.flagWidth + Geo.positionWidth + 1.5*Geo.finishBox;
         width = dialogWidth - (Geo.margin*7 + Geo.flagWidth + Geo.positionWidth + Geo.timeCircleRadius4P*2 + 1.5*Geo.finishBox);
+        var playerAvgTmArr = [];
+        for (var q=0; q <players.length;q++){
+    		playerAvgTmArr.push(DetermineAvgTime(players[q].timeTrial,players[q].totalTime,players[q].wins,players[q].losses));
+        }
+        winChance = DetermineWinChance(players,playerAvgTmArr,i,'4P')+'%';
     }
 
 	statHeight = Geo.tileHeight- Geo.margin*2.5;
@@ -38,7 +45,7 @@ export default function StatsTile (Geo,player,dialogWidth, selectedDeco, mode,wi
 	index = Math.round(100*player.timeTrial/avgTime)/100;
 	
 	var countryName = (player.country == null ? '' : player.country.name);
-	var textArray = ['wins','losses','avg cup time','avg time', 'best time', 'index', 'avg place'];
+	var textArray = ['wins','losses','avg cup time','avg time', 'best time', 'index', 'avg place','Win Chance'];
 	var labelArray = [];
 	var statsArray = [];
 	var valueArray = [
@@ -48,7 +55,8 @@ export default function StatsTile (Geo,player,dialogWidth, selectedDeco, mode,wi
 		avgTime,
 		player.bestTime,
 		index,
-		player.avgPlacement
+		player.avgPlacement,
+		winChance
 		];
 		
 	statHzDist = (width)/(textArray.length);
@@ -63,6 +71,7 @@ export default function StatsTile (Geo,player,dialogWidth, selectedDeco, mode,wi
 				width = {statHzDist}
 				fill = {Geo.statColor}
 				fontSize = {Geo.nameSize}
+				fontFamily = {Geo.mainFontfamily}
 				shadowBlur = {2}
 				shadowOpacity= {0.5}
 			/>
@@ -72,6 +81,7 @@ export default function StatsTile (Geo,player,dialogWidth, selectedDeco, mode,wi
 				x = {statHzDist * l}
 				y = {2*statSpace + Geo.nameSize}
 				text = {textArray[l]}
+				fontFamily = {Geo.mainFontfamily}
 				align = 'center'
 				width = {statHzDist}
 				fill = {Geo.borderColor}
@@ -103,8 +113,9 @@ export default function StatsTile (Geo,player,dialogWidth, selectedDeco, mode,wi
 				y = {Geo.tileHeight- (Geo.nameSize*2+Geo.margin/2)/2 }
 				text = {player.name}
 				align = 'left'
-				fill = 'white'
+				fill = {Geo.paleAmber}
 				fontSize = {Geo.nameSize}
+				fontFamily = {Geo.mainFontfamily}
 				shadowBlur = {2}
 				shadowOpacity= {0.5}
 			/>
@@ -114,11 +125,13 @@ export default function StatsTile (Geo,player,dialogWidth, selectedDeco, mode,wi
 				text = {countryName}
 				align = 'right'
 				width = {width}
-				fill = {Geo.borderColor}
+				fill = {Geo.deSatOrng}
 				fontSize = {Geo.seedFontSize}
 				shadowBlur = {selectedDeco.shadowBlur}
 				shadowOpacity= {selectedDeco.shadowOpacity}
 				shadowColor={selectedDeco.shadowColor}
+				fontFamily = {Geo.mainFontfamily}
+				fontStyle = 'bold'
 			/>
 			
 			{statsArray}

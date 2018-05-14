@@ -122,6 +122,10 @@ export default function WinnerLoserHandler (WLpkg,RTpkg){
 	    		} else if (currentGameNum == bracketSpots/2) {
 	    			WLpkg.loser1.maxRound = 2*(bracketPower-1-1) +1 ;
 	    			WLpkg.loser2.maxRound = 2*(bracketPower-1-1) +1 ;
+	    			WLpkg.winner1.final4Spot = 1;
+	    			WLpkg.winner2.final4Spot = 2;
+	    			WLpkg.loser1.final4Spot = 3;
+	    			WLpkg.loser2.final4Spot = 4;
 	    		} 
 	    	}
 	    }

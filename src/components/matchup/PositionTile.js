@@ -13,6 +13,7 @@ export default function PositionTile(Geo,position,posColor, selectedDeco,mode){
 				width={Geo.positionWidth}
     			height={Geo.tileHeight}
                 fill= {posColor}
+                opacity = {0.5}
 				stroke= {Geo.borderColor}
 				strokeWidth= {1}
 				shadowBlur = {selectedDeco.shadowBlur}

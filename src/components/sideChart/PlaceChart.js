@@ -19,6 +19,7 @@ export default function PlaceChart(seededArray)  {
 			tempPlayerArr.push(seededArray[player].seed);
 			tempPlayerArr.push(seededArray[player].name);
 			tempPlayerArr.push(seededArray[player].maxRound);
+			tempPlayerArr.push(seededArray[player].final4Spot);
 			
 			tempArr.push(tempPlayerArr);
 			tempPlayerArr = [];
@@ -29,6 +30,13 @@ export default function PlaceChart(seededArray)  {
 		
 	//sort the array
 	tempArr.sort(function(a, b) {
+		//sort by final4Spot
+	    if (a[6] < b[6]) {
+	    	return -1;
+	    }
+	    else if (a[6]  > b[6]) {
+	        return 1;
+	    }
 	    
 	    //sort by losses
 	    if (a[2] < b[2]) {

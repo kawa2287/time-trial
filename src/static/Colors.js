@@ -15,7 +15,10 @@ const Colors = {
     smokeGray : '#E5E5E5',
     gold : '#ffd700',
     silver : '#c0c0c0',
-    bronze : '#cd7f32'
+    bronze : '#cd7f32',
+    pebbleGray : '#646D6A',
+    deSatOrng : '#e8ba50',
+    paleAmber : '#F6E3B8'
 };
 
 export default Colors;

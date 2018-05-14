@@ -154,7 +154,8 @@ export default class TileTeam extends React.Component {
                 		fontSize = {fontSize}
                 		fill = 'black'
                 		width = {teamWidth - 2 * teamHeight}
-                		font-family = 'sans-serif'
+                		fontFamily = 'Open Sans'
+                		fontStyle = 'bold'
                 		align = 'left'
                 		textDecoration = {this.TextDecoration(this.props.name, this.props.mode)}
                 		ellipsis = 'true'
@@ -169,6 +170,8 @@ export default class TileTeam extends React.Component {
                 		width = {clipWidth}
                 		align = 'center'
                 		shadowBlur = {2}
+                		fontFamily = 'Open Sans'
+                		fontStyle = 'bold'
                 	/>
 					<TileFlag
 						img = {this.props.img}

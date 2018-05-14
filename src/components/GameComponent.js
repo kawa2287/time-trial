@@ -198,6 +198,13 @@ export default class GameComponent extends React.Component {
 						winLosePackage.loser2 = this.props.gProps.playerA;
 						winLosePackage.byeRound = true;
 						break;
+					case '1111' :
+						winLosePackage.winner1 = this.props.gProps.playerA;
+						winLosePackage.winner2 = this.props.gProps.playerB;
+						winLosePackage.loser1 = this.props.gProps.playerC;
+						winLosePackage.loser2 = this.props.gProps.playerD;
+						winLosePackage.byeRound = true;
+						break;
 				}
 				//Dialog Popup
 				this.props.gProps.showMatchup(winLosePackage);
