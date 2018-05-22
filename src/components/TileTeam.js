@@ -14,11 +14,16 @@ var timeColor = Colors.timeColor;
 var eliminatedColor = Colors.eliminatedColor;
 var loserColor = Colors.byeColor;
 var emptyColor = Colors.gameNotReadyColor;
+var firstColor = Colors.gold;
+var secondColor = Colors.silver;
+var thirdColor = Colors.bronze;
 
 export default class TileTeam extends React.Component {
 	constructor(props){
 		super(props);
 	}
+	
+
 	
 	BackgroundColor(name, hover, mode){
 		if (name === 'BYE'){
@@ -84,6 +89,22 @@ export default class TileTeam extends React.Component {
 			return time;
 		}
 	}
+	
+	displayPlace(name, winner1,winner2,loser1, mode){
+		if(mode == 'VS'){
+			return seedColor;
+		} else {
+			if (name == null || name == '' || name == 'BYE'){
+				return seedColor;
+			} else if (name == winner1){
+				return firstColor;
+			} else if (name == winner2){
+				return firstColor;
+			} else {
+				return seedColor;
+			}
+		}
+	}
 
 
 	render(){
@@ -94,7 +115,7 @@ export default class TileTeam extends React.Component {
 		var seedFontSize = 16;
 		
 		return(
-			<Group x={this.props.globalX} y={this.props.globalY}>
+			<Group x={this.props.globalX} y={this.props.globalY} ref={'group'}>
 				<Group>
 					<Rect 
 						width={teamWidth}
@@ -114,7 +135,7 @@ export default class TileTeam extends React.Component {
                     <Rect 
 						width={teamWidth}
 	        			height={teamHeight}
-	                    fill= {seedColor}
+	                    fill= {this.displayPlace(this.props.name, this.props.winner1, this.props.winner2, this.props.loser1, this.props.mode)}
 						stroke= 'black'
 						strokeWidth= {0.5}
 						cornerRadius={5}

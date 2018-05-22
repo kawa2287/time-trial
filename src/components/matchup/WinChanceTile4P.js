@@ -15,13 +15,17 @@ export default function StatsTile(Geo,players, dialogWidth, dialogHeight, winTim
 
     var percentFontSize = Geo.margin*1.5;
     var circleFill ;
+    var textSignal
     
     if (keySeq == 0){
         circleFill = 'white';  //set at 0
+        textSignal = 'Ready';
     } else if (keySeq == 1) {
         circleFill = 'green'; //running
+        textSignal = 'GO!';
     } else {
         circleFill = '#fdfd96'; //stopped
+        textSignal = 'Finish!';
     }
     
     return(
@@ -35,14 +39,14 @@ export default function StatsTile(Geo,players, dialogWidth, dialogHeight, winTim
 				shadowOpacity= {0.5}
             />
             <Text //winTime
-                y = {-Math.round(1.5*percentFontSize/2)}
+                y = {-Math.round(percentFontSize/2)}
                 x = {-Geo.timeCircleRadius}
-                text = {formattedSeconds(timeElapsed) || winTime}
+                text = {textSignal}
     			align = 'center'
     			fill = 'black'
     			width = {Geo.timeCircleRadius*2}
     			fontVariant = 'small-caps'
-    			fontSize = {Math.round(1.5*percentFontSize)}
+    			fontSize = {Math.round(percentFontSize)}
 				shadowBlur = {4}
 				shadowOpacity= {.5}
             />

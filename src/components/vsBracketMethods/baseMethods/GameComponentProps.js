@@ -48,6 +48,7 @@ export default function GameComponentProps (gVars,gameCounter,masterGameObject,b
 			playerBtime : masterGameObject[gameCounter].playerBtime,
 			playerCtime : masterGameObject[gameCounter].playerCtime,
 			playerDtime : masterGameObject[gameCounter].playerDtime,
+			
 		};
 	}
 	

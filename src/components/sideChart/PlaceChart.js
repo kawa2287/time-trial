@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-export default function PlaceChart(seededArray)  {
+export default function PlaceChart(seededArray, mode)  {
 
 
 	var tempArr = [];
@@ -20,13 +20,13 @@ export default function PlaceChart(seededArray)  {
 			tempPlayerArr.push(seededArray[player].name);
 			tempPlayerArr.push(seededArray[player].maxRound);
 			tempPlayerArr.push(seededArray[player].final4Spot);
+			if(mode !== 'VS'){tempPlayerArr.push(seededArray[player].avgPlacement)}
 			
 			tempArr.push(tempPlayerArr);
 			tempPlayerArr = [];
 		}
 	}
 	
-	console.log('tempArr',tempArr);
 		
 	//sort the array
 	tempArr.sort(function(a, b) {
@@ -54,15 +54,15 @@ export default function PlaceChart(seededArray)  {
 	        return -1;
 	    }
 	    
-	    //sort by wins
-	    /*
-	    if (a[1]  < b[1] ) {
-	    	return 1;
+	    //sort by avgPlace
+	    if(mode !== 'VS'){
+		    if (a[7]  < b[7] ) {
+		    	return -1;
+		    }
+		    else if (a[7]  > b[7]) {
+		        return 1;
+		    }
 	    }
-	    else if (a[1]  > b[1]) {
-	        return -1;
-	    }
-	    */
 	    
 	    //sort by seed
 	    if (a[3] < b[3]) {
@@ -77,17 +77,24 @@ export default function PlaceChart(seededArray)  {
 	
 	//pump html into final array
 	var tempHtmlArr = [];
-	var widthAdj = {
+	var widthAdjName = {
 			width: '60px'
 		};
+	var elimStyle = {
+		background : 'red'
+	};
+		
 	for (var i = 0; i < tempArr.length; i++) {
 		tempHtmlArr.push(<div className={"rank"}>{i + 1}</div>);
 		tempHtmlArr.push(<div className={"flag"}><img  src={tempArr[i][0].flagPathSVG} width={32} /></div>);
-		tempHtmlArr.push(<div className={"time"} style = {widthAdj}>{tempArr[i][4]}</div>);
+		tempHtmlArr.push(<div className={"seed"}>{tempArr[i][3]}</div>);
+		tempHtmlArr.push(<div className={"time"} style = {widthAdjName}>{tempArr[i][4]}</div>);
 		tempHtmlArr.push(<div className={"time"}>{tempArr[i][1]}</div>);
 		tempHtmlArr.push(<div className={"time"}>{tempArr[i][2]}</div>);
 		
-		packagedArray.push(<div className={"chart-row"}>{tempHtmlArr}</div>);
+		
+		
+		packagedArray.push(<div className={"chart-row"} style = {tempArr[i][2]==2?elimStyle:null}>{tempHtmlArr}</div>);
 		
 		tempHtmlArr = [];
 	}

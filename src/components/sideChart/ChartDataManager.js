@@ -24,7 +24,7 @@ export default class ChartDataManager extends React.Component {
 		
 		if (query == 'Place'){
 		    // send to PlaceChart
-    		packagedArray = this.PlaceChart(this.props.seededArray);
+    		packagedArray = this.PlaceChart(this.props.seededArray,this.props.mode);
     		
         } else if (query == '% Chance'){
             

@@ -15,6 +15,8 @@ export default function IndexChart(seededArray)  {
 			tempPlayerArr.push(seededArray[player].country);
 			tempPlayerArr.push(seededArray[player].name);
 			tempPlayerArr.push(seededArray[player].index);
+			tempPlayerArr.push(seededArray[player].seed);
+			tempPlayerArr.push(seededArray[player].losses);
 			
 			tempArr.push(tempPlayerArr);
 			tempPlayerArr = [];
@@ -38,13 +40,17 @@ export default function IndexChart(seededArray)  {
 	
 	//pump html into final array
 	var tempHtmlArr = [];
+	var elimStyle = {
+		background : 'red'
+	};
 	for (var i = 0; i < tempArr.length; i++) {
 		tempHtmlArr.push(<div className={"rank"}>{i + 1}</div>);
 		tempHtmlArr.push(<div className={"flag"}><img  src={tempArr[i][0].flagPathSVG} width={32} /></div>);
+		tempHtmlArr.push(<div className={"seed"}>{tempArr[i][3]}</div>);
 		tempHtmlArr.push(<div className={"player-name"}>{tempArr[i][1]}</div>);
 		tempHtmlArr.push(<div className={"time"}>{tempArr[i][2]}</div>);
 		
-		packagedArray.push(<div className={"chart-row"}>{tempHtmlArr}</div>);
+		packagedArray.push(<div className={"chart-row"} style = {tempArr[i][2]==2?elimStyle:null}>{tempHtmlArr}</div>);
 		
 		tempHtmlArr = [];
 	}

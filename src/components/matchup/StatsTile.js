@@ -45,7 +45,8 @@ export default function StatsTile (Geo,player,dialogWidth, selectedDeco, mode,wi
 	index = Math.round(100*player.timeTrial/avgTime)/100;
 	
 	var countryName = (player.country == null ? '' : player.country.name);
-	var textArray = ['wins','losses','avg cup time','avg time', 'best time', 'index', 'avg place','Win Chance'];
+	var textArray = ['wins','losses','avg cup time','avg time', 'best time', 'index'];
+
 	var labelArray = [];
 	var statsArray = [];
 	var valueArray = [
@@ -54,10 +55,15 @@ export default function StatsTile (Geo,player,dialogWidth, selectedDeco, mode,wi
 		avgCupTime,
 		avgTime,
 		player.bestTime,
-		index,
-		player.avgPlacement,
-		winChance
+		index
 		];
+		
+	if(mode != 'VS'){
+		textArray.push('avg place');
+		textArray.push('win chance');
+		valueArray.push(player.avgPlacement);
+		valueArray.push(winChance);
+	}
 		
 	statHzDist = (width)/(textArray.length);
 	

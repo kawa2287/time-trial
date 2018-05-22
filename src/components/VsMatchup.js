@@ -18,7 +18,7 @@ var flagHeight = 192;
 var flagWidth = 192;
 var simulateButtonWidth = 200;
 var simulateButtonHeight = 30;
-var timeElapsed;
+var timeElapsed = 0;
 
 
 var Geo = {
@@ -208,6 +208,7 @@ class VsMatchup extends React.Component {
 		});
 	}
 
+
 	handleStartClick(event) {
 		
     	this.setState({
@@ -215,17 +216,19 @@ class VsMatchup extends React.Component {
     	});
     		
 		if(event.key == ' ' && this.state.keySeq == 0){
-    		this.incrementer = setInterval( () =>
-		    	this.setState({
-					timeElapsed: this.state.timeElapsed + .01,
-					keySeq : 1
-		    	}, function afterClick() {
-		    		this.setState({
-		    			keyPress : null
-		    		});
-		    	}),10
-	    	);
+    		this.incrementer = setInterval( () => {
+	    			timeElapsed = timeElapsed + 0.01;
+    			}, 10);
+    			
+			this.setState({
+				keySeq : 1
+	    	}, function afterClick() {
+	    		this.setState({
+	    			keyPress : null
+	    		});
+	    	});
     	} else if (event.key == ' ' && this.state.keySeq == 1){
+    		console.log('timeElapsed',timeElapsed);
     		this.setState({
     			keySeq : 2,
     			keyPress : null
@@ -234,10 +237,10 @@ class VsMatchup extends React.Component {
     		});
     		
     	} else if (event.key == ' ' && this.state.keySeq == 2){
+    		timeElapsed = 0;
     		this.setState({
     			keySeq : 0,
     			keyPress : null,
-    			timeElapsed : 0,
     			winTime1: 0,
     			winTime2: 0,
     			loseTime1: 0,
@@ -250,6 +253,7 @@ class VsMatchup extends React.Component {
     		});
     	}
     }
+
     
     handleStopMainTimer(player){
     	clearInterval(this.incrementer);
@@ -266,7 +270,7 @@ class VsMatchup extends React.Component {
     		winner1: player,
     		selectedPlayer: player,
     		loser1: loser,
-    		winTime:Number(formattedSeconds(this.state.timeElapsed)),
+    		winTime:Number(formattedSeconds(timeElapsed)),
     		keySeq:2,
     		keyPress: null
     	});
@@ -276,7 +280,7 @@ class VsMatchup extends React.Component {
 		if (this.state.stopCount == 0){
     		this.setState({
     			winner1 : player,
-    			winTime1 : formattedSeconds(this.state.timeElapsed),
+    			winTime1 : formattedSeconds(timeElapsed),
     			stopCount : 1,
     			keyPress: null
     		});
@@ -284,7 +288,7 @@ class VsMatchup extends React.Component {
     	} else if ( this.state.stopCount == 1 && player.name !== this.state.winner1.name){
     		this.setState({
     			winner2 : player,
-    			winTime2 : formattedSeconds(this.state.timeElapsed),
+    			winTime2 : formattedSeconds(timeElapsed),
     			stopCount : 2,
     			keyPress: null
     		});
@@ -293,7 +297,7 @@ class VsMatchup extends React.Component {
     		clearInterval(this.incrementer);
     		this.setState({
     			loser1 : player,
-    			loseTime1 : formattedSeconds(this.state.timeElapsed),
+    			loseTime1 : formattedSeconds(timeElapsed),
     			keySeq:2,
     			keyPress:null,
     			stopCount : 0
@@ -386,6 +390,7 @@ class VsMatchup extends React.Component {
 				this.state.loseTime1,
 				this.state.loseTime2
 				);
+			timeElapsed = 0;
 			this.setState({
 				winTime1 : 0,
 				winTime2 : 0,
@@ -397,8 +402,7 @@ class VsMatchup extends React.Component {
 				loser2 : null,
 				selectedPlayer : null,
 				keySeq : 0,
-    			keyPress : null,
-    			timeElapsed : 0
+    			keyPress : null
 			},function afterClick(){
 				this.props.hideMatchup();
 			});
@@ -585,7 +589,7 @@ class VsMatchup extends React.Component {
    				this.props.dialogHeight,
    				this.state.winTime,
    				this.state.keySeq, 
-   				this.state.timeElapsed, 
+   				this.state.keySeq, 
    				this.props.mode
    			);
    		} else {
@@ -596,11 +600,10 @@ class VsMatchup extends React.Component {
    				this.props.dialogHeight,
    				this.state.winTime,
    				this.state.keySeq, 
-   				this.state.timeElapsed, 
+   				this.state.keySeq, 
    				this.props.mode
    			);
    		}
-   		
   
 		return (
 			<div>
@@ -612,8 +615,6 @@ class VsMatchup extends React.Component {
 					onKeyPress={this.handleStartClick.bind(this)}
 					value = {this.state.keyPress}
 				/>
-				<div className ="matchup-timer ">{formattedSeconds(this.state.timeElapsed)}</div>
-				
 				
 				<Stage width={this.props.dialogWidth} height={this.props.dialogHeight}>
 					<Layer>

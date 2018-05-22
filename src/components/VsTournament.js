@@ -2,10 +2,12 @@
 
 import React from 'react';
 import SkyLight from 'react-skylight';
-import { Stage, Group, Layer } from "react-konva";
+import { Stage, Group, Layer, Rect, Text } from "react-konva";
 import Colors from '../static/Colors';
+import divisionNames from '../data/divisionNames';
 
 import Button from './Button';
+import Settings from '../static/Settings';
 import VsMatchup from './VsMatchup';
 import PropogateSeedsArr from './vsBracketMethods/higherOrderMethods/PropogateSeedsArr';
 import CreateMasterGameObject from './vsBracketMethods/higherOrderMethods/CreateMasterGameObject';
@@ -39,10 +41,10 @@ import ChartDataManager from './sideChart/ChartDataManager';
 var vizGeo = {
 	teamHeight : 48,
 	teamWidth : 300,
-	horizSpace : 96,
+	horizSpace : 128,
 	vertSpace : 84,
 	radius: 100,
-	lColAr: ['yellow','red','pink','orange','white']
+	lColAr: []
 };
 
 //------------------------------------------------------------------
@@ -65,6 +67,41 @@ var boardHeight;
 var gVars = {};
 var mode;
 
+
+function shuffle(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}
+
+function pickRandomProperty(obj) {
+    var keys = Object.keys(obj);
+    return obj[keys[ keys.length * Math.random() << 0]];
+}
+
+function selectUnique(prop, obj){
+	var tempProp = pickRandomProperty(obj);
+	if (tempProp!== prop){
+		return tempProp;
+	} else {
+		return selectUnique(prop,obj);
+	}
+}
+
+
 export default class VsTournament extends React.Component {
 	constructor(props){
 		super(props);
@@ -80,13 +117,18 @@ export default class VsTournament extends React.Component {
 			matchupGameNumber : 1,
 			windowWidth : window.innerWidth,
 			windowHeight : window.innerHeight,
-			chartDisplay : 'timeTrial'
+			chartDisplay : 'Place'
 		};
-		
+		// set settings
 		mode = this.props.location.state.mode;
+		Settings.seedMode = this.props.location.state.seeding; 
 		
+		// init colors
+		for (var c = 0; c <30; c++){
+			vizGeo.lColAr.push("#"+((1<<24)*Math.random()|0).toString(16));
+		}
 		
-		//DATABASE/////
+		//TODO DATABASE/////
 	
 		
 		//bind imported state dependent functions
@@ -135,13 +177,37 @@ export default class VsTournament extends React.Component {
 		//Create Master Game Object
 		this.state.masterGameObject = CreateMasterGameObject(nGamesTotal, bracketSpots, mode);
 		
+		//place players into Temp array
+		var tempPlayerArr = [];
+		for (var p in this.props.location.state.players){
+			tempPlayerArr.push(this.props.location.state.players[p]);
+		}
+		if(this.props.location.state.order == 'random' ){
+			seededArray = shuffle(seededArray);
+			for (var q = 0; q < tempPlayerArr.length; q++){
+				tempPlayerArr[q].seed = q+1;
+			}
+		}
 		
-		
+		//assign teams to divisions
+		var divisionTrigger = 0;
+		var divisionCounter = 1;
+		var conference1 = pickRandomProperty(divisionNames);
+		var conference2 = selectUnique(conference1,divisionNames);
+		var div1 = pickRandomProperty(conference1);
+		var div2 = selectUnique(div1,conference1);
+		var div3 = pickRandomProperty(conference2);
+		var div4 = selectUnique(div3,conference2);
+		var divisions = [div1,div2,div3,div4];
+	
+	
+			
 		//Add Props to Seeded Array
 		for (var item in mastArr) {
-			for (var x in this.props.location.state.players){
-				if(mastArr[item] == this.props.location.state.players[x].seed){
-					seededArray.push(this.props.location.state.players[x]);
+			for (var y = 0; y < tempPlayerArr.length; y++){
+				if(mastArr[item] == tempPlayerArr[y].seed){
+					tempPlayerArr[y].mascot = divisions[divisionTrigger];
+					seededArray.push(tempPlayerArr[y]);
 					toggle = 1;
 				} 
 			}
@@ -159,7 +225,14 @@ export default class VsTournament extends React.Component {
 					});
 			}
 			toggle = 0;
+			if (divisionCounter % (bracketSpots/(mode=='VS'?2:4)) == 0 && divisionCounter !==0){
+				divisionTrigger += 1;
+				console.log('divisionTrigger',divisionTrigger);
+			}
+			divisionCounter +=1;
+			
 		}
+		console.log('seededArray',seededArray);
 		
 		//Populate Start Round in Master Game Object
 		var sift = 1;
@@ -187,10 +260,6 @@ export default class VsTournament extends React.Component {
 			}
 		}
 		
-		////////////////////////////////////////////
-		///UP TO THIS POINT IN CHECKING FOR 4P//////
-		////////////////////////////////////////////
-		
 		//create loserArr
 		for (k = 1; k <= 2*(bracketPower-(mode == 'VS' ? 0 : 1)-1); k++){
 			loserArr.push(NgmsInRnd.loserBracket(bracketSpots,k,mode));
@@ -200,6 +269,9 @@ export default class VsTournament extends React.Component {
 		for (k = 0; k < bracketPower-(mode == 'VS' ? 0 : 1); k++){
 			winnerArr.push(NgmsInRnd.winnerBracket(bracketSpots,k,mode));
 		}
+		
+		//create elimination round text
+		
 		
 		//protect against window reload
 		window.onbeforeunload = function() {
@@ -295,6 +367,7 @@ export default class VsTournament extends React.Component {
 			matchupPlayerD : {}
 		});
 	}
+
 	
 	
 	render() {
@@ -343,8 +416,6 @@ export default class VsTournament extends React.Component {
 			var createdFinalsGames = CreateGmsFinalsBracket(gVars,gameCounter,this.state.masterGameObject,mode);
 			finalsBracket = createdFinalsGames.finalsBracket;
 		}
-		
-		
 		bezArr.reverse();
 		
 		var renderHeight = Math.round(this.state.windowHeight*0.8);
@@ -361,7 +432,100 @@ export default class VsTournament extends React.Component {
 			matchupPlayers = [this.state.matchupPlayerA,this.state.matchupPlayerB,this.state.matchupPlayerC,this.state.matchupPlayerD];
 		}
 		
-		console.log(seededArray);
+		// create backround rectangles for elimination rounds
+		console.log('loserArr',loserArr);
+		var elimBackgrounds = [];
+		var winBackgrounds = [];
+		var elimText = [];
+		var winText = [];
+		var xLoc;
+		var winTextHeader;
+		
+		for(var r = -1; r >= -loserArr.length; r--){
+			xLoc = (r+(bracketPower-(mode == 'VS' ? 0 : 1)-1)*2)*(gameWidth+vizGeo.horizSpace) + vizGeo.horizSpace/2;
+			elimBackgrounds.push(
+				<Rect
+					x={xLoc}
+					width={gameWidth + vizGeo.horizSpace}
+					height={boardHeight}
+					fill={'#FF3B3B'}
+					opacity = {0.8*Math.abs(r)/loserArr.length}
+				/>
+			);
+			elimText.push(
+				<Text
+					text={'ELIMINATION ROUND ' + Math.abs(r)}
+					x={xLoc}
+					y={-vizGeo.vertSpace*2}
+					width={gameWidth + vizGeo.horizSpace}
+					fontSize = {30}
+            		fontStyle = 'bold'
+            		shadowBlur = {2}
+            		fill = {'#121212'}
+            		align = 'center'
+            		fontFamily = 'Open Sans'
+				/>
+			);
+		}
+		for (var w =0; w <=winnerArr.length;w++){
+			xLoc = (w+(bracketPower-(mode == 'VS' ? 0 : 1)-1)*2)*(gameWidth+vizGeo.horizSpace) + vizGeo.horizSpace/2;
+			if (w !== 0 ){
+				winBackgrounds.push(
+					<Rect
+						x={xLoc}
+						width={gameWidth + vizGeo.horizSpace}
+						height={boardHeight}
+						fill={'#8C69CE'}
+						opacity = {0.8*Math.abs(w)/winnerArr.length}
+					/>
+				);
+			}
+			if(w == 0 ){
+				winTextHeader = "ROUND OF " + Math.pow(2,bracketPower-w);
+			} else if (w == winnerArr.length){
+				winTextHeader = "CHAMPIONSHIP";
+			} else if (w ==winnerArr.length-1){
+				winTextHeader = "SEMI-FINAL";
+			} else if (w == winnerArr.length -2){
+				winTextHeader = "CONFERENCE FINAL";
+			} else if (w == winnerArr.length -3){
+				winTextHeader = "DIVISION FINAL";
+			} else {
+				winTextHeader = "ROUND OF " + Math.pow(2,bracketPower-w);
+			}
+			
+			winText.push(
+				<Text
+					text={winTextHeader}
+					x={xLoc}
+					y={-vizGeo.vertSpace*2}
+					width={gameWidth + vizGeo.horizSpace}
+					fontSize = {30}
+            		fontStyle = 'bold'
+            		shadowBlur = {2}
+            		fill = {'#121212'}
+            		align = 'center'
+            		fontFamily = 'Open Sans'
+				/>
+			);
+		}
+		
+		//create division rects
+		
+	var divisionRects= [];
+	for (var d = 0 ; d < 4; d++){
+		divisionRects.push(
+			<Rect
+				x={vizGeo.horizSpace/2}
+				y={vizGeo.vertSpace*1.5+ d*(gameHeight+vizGeo.vertSpace)*bracketSpots/(4*(mode=='VS'?2:4))}
+				width={(winnerArr.length+loserArr.length)*(gameWidth + vizGeo.horizSpace) +vizGeo.horizSpace*2.5 + gameWidth/2 }
+				height={(gameHeight+vizGeo.vertSpace)*bracketSpots/(4*(mode=='VS'?2:4))}
+				fill={d%2==0?'#121212':"yellow"}
+				opacity = {0.1}
+			/>
+		);
+	}	
+		
 		
 		
 		return (
@@ -396,10 +560,15 @@ export default class VsTournament extends React.Component {
 					>
 					<Layer>
 						<Group>
+							{divisionRects.map(element => element)}
+							{elimBackgrounds.map(element => element)}
+							{winBackgrounds.map(element => element)}
 							{bezArr.map(element => element)}
 							{loserBracket.map(element => element)}
 							{winnerBracket.map(element => element)}
 							{finalsBracket.map(element => element)}
+							{elimText.map(element => element)}
+							{winText.map(element => element)}
 						</Group>
 					</Layer>
 				</Stage>
@@ -412,6 +581,7 @@ export default class VsTournament extends React.Component {
 					    <ChartDataManager
 					    	seededArray = {seededArray}
 					    	query = {this.state.chartDisplay}
+					    	mode = {mode}
 					    />
 					</div>
 					<div className={'side-panel-selectors'}>
@@ -427,6 +597,7 @@ export default class VsTournament extends React.Component {
 						<div className={"row-of-buttons"}> 
 							<Button title='Cup Time' clickHandle={this.handleStatButtonClick.bind(this)}/>
 							<Button title='Index' clickHandle={this.handleStatButtonClick.bind(this)}/>
+							{mode=='VS'?null:<Button title='Avg Place' clickHandle={this.handleStatButtonClick.bind(this)}/>}
 						</div>
 					</div>
 				</div>

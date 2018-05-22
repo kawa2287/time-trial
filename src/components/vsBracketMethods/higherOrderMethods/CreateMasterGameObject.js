@@ -53,7 +53,7 @@ export default function CreateMasterGameObject(nGamesTotal,bracketSpots, mode){
 				playerAtime : 0,
 				playerBtime: 0,
 				playerCtime: 0,
-				playerDtime: 0,
+				playerDtime: 0
 			};
     	}
 		

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Konva from "konva";
-import { Line } from "react-konva";
+import { Line, Arrow } from "react-konva";
 
 
 export default class BezierCurves extends React.Component {
@@ -28,18 +28,29 @@ export default class BezierCurves extends React.Component {
 		
 		var color = this.props.color;
 		var stroke = this.props.stroke;
+		var dashEnabled = this.props.dashEnabled;
+		var dash = [10,10];
 
 		return(
-			<Line
-         		sceneFunc={function (ctx) {
-		             ctx.beginPath();
-		             ctx.moveTo(sx, sy);
-		             ctx.bezierCurveTo(x1,y1,x2,y2,x3,y3);
-		             ctx.setAttr('strokeStyle', color);
-		             ctx.setAttr('lineWidth', stroke);
-		             ctx.stroke();
-         		}}
+			
+     		<Arrow
+     			points={[
+     				sx,sy,
+     				x1,y1,
+     				x2,y2,
+     				x3,y3
+     			]}
+     			stroke={color}
+     			fill = {color}
+     			strokeWidth={stroke}
+     			pointerWidth={20}
+     			pointerLength={20}
+     			shadowBlur = {2}
+     			dashEnabled = {dashEnabled}
+     			dash ={dash}
+     			bezier
      		/>
 		);
 	}
 }
+

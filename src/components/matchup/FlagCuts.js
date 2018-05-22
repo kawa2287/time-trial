@@ -41,7 +41,7 @@ export default function PositionTile(Geo,player, mode){
         >	
             <FlagImage
 				img = {FindFlagPath(player)}
-				flagHeight = {Geo.flagHeight}
+				flagHeight = { Geo.flagHeight}
 				flagWidth = {Geo.flagWidth}
 			/>
         </Group>

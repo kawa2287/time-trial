@@ -13,6 +13,7 @@ var i;
 var moduleCCht;
 var xLoc;
 var yLoc;
+var dash =[10,10];
 
 
 export default function CreateGmsLoseBracket(gVars,gameCounter,masterGameObject, mode ){
@@ -63,6 +64,7 @@ export default function CreateGmsLoseBracket(gVars,gameCounter,masterGameObject,
 			
 			if (k==loserArr.length -1){
 				var xEnd = xLoc + (loserArr.length + winnerArr.length + 1)*(gameWidth + vizGeo.horizSpace) - vizGeo.horizSpace - gameWidth/2;
+				
 				bezArr.push(
 					<BracketLine
 						xs = {xLoc + gameWidth/2}
@@ -74,9 +76,18 @@ export default function CreateGmsLoseBracket(gVars,gameCounter,masterGameObject,
 						x3 = {xEnd}
 						y3 = {yLoc}
 						radius = {vizGeo.radius}
-						color = 'blue'
+						color = {'#121212'}
 						stroke = {4}
-						direction = 'counter-clockwise'
+						direction = 'clockwise'
+						arc1s = {Math.PI}
+						arc1e = {3/2*Math.PI}
+						arc2s = {3/2*Math.PI}
+						arc2e = {0}
+						gameCounter = {gameCounter}
+						bracketSpots = {bracketSpots}
+						mode = {mode}
+						class = 'final'
+						dashEnabled={false}
 					/>
 				); 
 			} else {
@@ -86,8 +97,9 @@ export default function CreateGmsLoseBracket(gVars,gameCounter,masterGameObject,
 						ys = {yLoc + gameHeight/2}
 						xe = {xLoc - vizGeo.horizSpace}
 						ye = {ye}
-						color = 'blue'
+						color = {'#121212'}
 						stroke = {4}
+						dashEnabled = {false}
 					/>
 				); 
 			}

@@ -11,6 +11,7 @@ import WinnerHighlight4P from './WinnerHighlight4P';
 import FinishIndicator from './FinishIndicator';
 import StatsTile from './StatsTile';
 import Time from './Time';
+import DivisionImage from './DivisionImage';
 
 
 
@@ -82,6 +83,8 @@ export default function MatchupTile4P(
 		time = loseTime2;
 	}
 	
+	var division = player.mascot;
+	
 	return(
 		<Group 
 			x={Geo.margin}
@@ -95,6 +98,7 @@ export default function MatchupTile4P(
 			{SeedShape(Geo, player,'4P')}
 			{StatsTile(Geo,player,dialogWidth,selectedDeco,'4P',winner1,winner2,players,i)}
 			{WinnerHighlight4P(Geo,player,winner1,winner2,selectedDeco)}
+			{player.name == 'BYE'?null:<DivisionImage dialogWidth = {dialogWidth}Geo = {Geo} img = {'/img/divisions/'+division+'.svg'}/>}
 			{Time(Geo,dialogWidth, selectedDeco, time)}
 		</Group>
 	);

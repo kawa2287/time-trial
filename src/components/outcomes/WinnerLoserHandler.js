@@ -8,8 +8,6 @@ import Settings from '../../static/Settings';
 
 export default function WinnerLoserHandler (WLpkg,RTpkg){
 	
-	console.log('WLpkg',WLpkg);
-	console.log('RTpkg',RTpkg);
 	
 	//unPack vars
 	var currentGameNum = WLpkg.gameNumber;
@@ -18,6 +16,9 @@ export default function WinnerLoserHandler (WLpkg,RTpkg){
 	var roundNumber;
     var bracketPower = DetermineBracketPower(bracketSpots);
     var mode = WLpkg.mode;
+    
+    console.log('seedMode',Settings.seedMode);
+    
     
     if (WLpkg.mode == 'VS'){
     	

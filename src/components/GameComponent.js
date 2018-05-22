@@ -285,6 +285,8 @@ export default class GameComponent extends React.Component {
 						hover = {this.state.hover}
 						losses = {playerArr[i].losses}
 						winChance = {DetermineWinChance(playerArr,playerAvgTmArr, i, this.props.gProps.mode)}
+						winner1 = {this.props.gProps.winner1}
+						winner2 = {this.props.gProps.winner2}
 						loser1 = {this.props.gProps.loser1}
 						loser2 = {this.props.gProps.loser2}
 						loserEliminated1 = {this.props.gProps.loserEliminated1}
@@ -296,6 +298,8 @@ export default class GameComponent extends React.Component {
 				);
 			}
 		}
+		
+		
 		
 		return(
 			<Group 

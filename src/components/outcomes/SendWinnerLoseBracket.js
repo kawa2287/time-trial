@@ -10,6 +10,7 @@ export default function SendWinnerLoseBracket(currentGameNum, roundNumber,winPla
 	} else {
 		destGame = currentGameNum + NgmsInRnd.loserBracket(bracketSpots,roundNumber,mode);
 	}
+	
 
 	var topGame;
 	var botGame;

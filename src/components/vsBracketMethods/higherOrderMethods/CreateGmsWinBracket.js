@@ -7,6 +7,7 @@ import GameComponent from '../../GameComponent';
 import GameComponentProps from '../baseMethods/GameComponentProps';
 import BezierCurves from '../../BezierCurves';
 import BracketLine from '../../BracketLine';
+import Settings from '../../../static/Settings';
 
 
 var k;
@@ -15,7 +16,7 @@ var moduleCCht;
 var halfModuleHeight;
 var xLoc;
 var yLoc;
-
+var colorInt = 0;
 
 export default function CreateGmsWinBracket(gVars,gameCounter,masterGameObject,mode ){
     
@@ -30,6 +31,7 @@ export default function CreateGmsWinBracket(gVars,gameCounter,masterGameObject,m
 	
 	var winnerBracket = [];
 	var bezArr = [];
+	
 
     for (k = 0; k < winnerArr.length; k++){
 		for(i = 0; i < winnerArr[k]; i++){
@@ -73,28 +75,77 @@ export default function CreateGmsWinBracket(gVars,gameCounter,masterGameObject,m
 						xe = {xLoc - vizGeo.horizSpace}
 						ye = {ye}
 						color = 'red'
-						stroke = {2}
+						stroke = {4}
+						dashEnabled = {true}
 					/>
 				);
 			}
 			
 			//push in loser lines of winner bracket
 			if(k!==0){
+				
+				var yStart;
+				var y1;
+				var y2;
+				var y3;
+				var direction;
+				var arc1s;
+				var arc1e;
+				var arc2s;
+				var arc2e;
+				if(Settings.seedMode !== 'blind' || gameCounter == (bracketSpots/(mode=='VS'?1:2))-1){
+					yStart = yLoc + gameHeight;
+					y1 = yLoc + (gameHeight + moduleCCht)/2;
+					y2 = yLoc + (gameHeight + moduleCCht)/2;
+					y3 = yLoc + gameHeight;
+					direction = 'clockwise';
+					arc1s = 0;
+					arc2s = 1/2 * Math.PI;
+					
+				} else {
+					if(gameCounter % 2 == 0){
+						yStart = yLoc;
+						y1 = yLoc + gameHeight/2 - moduleCCht/2;
+						y2 = yLoc + gameHeight/2 - moduleCCht/2;
+						y3 = yLoc + (gameHeight - moduleCCht);
+						direction = 'counter-clockwise';
+						arc1s = 3/2*Math.PI;
+						arc2s = 1/2 * Math.PI;
+					} else {
+						yStart = yLoc + gameHeight;
+						y1 = yLoc + (gameHeight + moduleCCht)/2;
+						y2 = yLoc + (gameHeight + moduleCCht)/2;
+						y3 = yLoc + moduleCCht;
+						direction = 'clockwise';
+						arc1s = 2*Math.PI;
+						arc2s = Math.PI;
+					}
+				}
+				
 				var xToLoser = xLoc - 3*k*(gameWidth+vizGeo.horizSpace) + gameWidth/2;
 				bezArr.push(
 					<BracketLine
 						xs = {xLoc + gameWidth/2}
-						ys = {yLoc + gameHeight}
+						ys = {yStart}
 						x1 = {xLoc + gameWidth/2}
-						y1 = {yLoc + (gameHeight + moduleCCht)/2}
+						y1 = {y1}
 						x2 = {xToLoser}
-						y2 = {yLoc + (gameHeight + moduleCCht)/2}
+						y2 = {y2}
 						x3 = {xToLoser}
-						y3 = {yLoc + gameHeight}
+						y3 = {y3}
 						radius = {vizGeo.radius}
-						color = {vizGeo.lColAr[k-1]}
+						color = {vizGeo.lColAr[colorInt]}
 						stroke = {8*k}
-						direction = 'clockwise'
+						direction = {direction}
+						arc1s = {arc1s}
+						arc1e = {arc1e}
+						arc2s = {arc2s}
+						arc2e = {arc2e}
+						gameCounter = {gameCounter}
+						bracketSpots = {bracketSpots}
+						mode = {mode}
+						class = 'non-final'
+						dashEnabled = {true}
 					/>
 				); 
 			}
@@ -105,14 +156,18 @@ export default function CreateGmsWinBracket(gVars,gameCounter,masterGameObject,m
 					ys = {yLoc + gameHeight/2}
 					xe = {xLoc + gameWidth + vizGeo.horizSpace}
 					ye = {ye}
-					color = 'blue'
+					color = {'#121212'}
 					stroke = {4}
 					bracket = {masterGameObject[gameCounter].bracket}
+					dashEnabled = {false}
 				/>
 			);
 			gameCounter = gameCounter + 1;
+			colorInt += 1;
 		}
 	}
+	
+	colorInt = 0;
 	
 	return  {
 	    winnerBracket : winnerBracket,

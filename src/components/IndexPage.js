@@ -48,7 +48,8 @@ export default class IndexPage extends React.Component {
 		    maxRound: 0,
 		    vsGroupAvg: 0,
 		    avgPlacement:'-',
-		    final4Spot:999
+		    final4Spot:999,
+		    mascot:null
 		};
 		
 		this.setState({
@@ -77,6 +78,10 @@ export default class IndexPage extends React.Component {
 		    }
 		}
 	}
+	
+	removePlayer(player){
+		
+	}
   
     componentDidMount() {
     	
@@ -84,7 +89,7 @@ export default class IndexPage extends React.Component {
 
   		//this section is to populate random number of teams... delete for production use
 	  	//---------------------------------------------------------------------------------
-	  	var nTeams = 18;
+	  	var nTeams = 13;
 	  	var countryArr = [];
 	  	for (var item in countries[0]){
 	  		countryArr.push(countries[0][item].name);
@@ -117,13 +122,13 @@ export default class IndexPage extends React.Component {
 		        		players={this.state.players}
 		        		addTimeTrial={this.addTimeTrial.bind(this)}/>
 		          
-		        	<Link to={{pathname:"/VsTournament", state:{players : this.state.players, mode : 'VS', seeding:'seeded'}}} >
+		        	<Link to={{pathname:"/VsTournament", state:{players : this.state.players, mode : 'VS', seeding:'seeded', order:'timeTrial'}}} >
 			        	<div className="task-preview">
 							<img src="./img/buttons/tournament.png"></img>
 							<h2 className="name">VS Tournament</h2>
 						</div>
 					</Link>
-					<Link to={{pathname:"/VsTournament", state:{players : this.state.players, mode : '4P', seeding:'seeded'}}} >
+					<Link to={{pathname:"/VsTournament", state:{players : this.state.players, mode : '4P', seeding:'blind', order:'random'}}} >
 			        	<div className="task-preview">
 							<img src="./img/buttons/4P.png"></img>
 							<h2 className="name">4P Tournament</h2>
@@ -136,6 +141,7 @@ export default class IndexPage extends React.Component {
 					      teamRows={this.state.nRows}
 					      players={this.state.players}
 					      bestTime={this.state.bestTime}
+					      removePlayer={this.removePlayer.bind(this)}
 				      />
 		        </div>     
     		</div>

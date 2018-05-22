@@ -447,12 +447,17 @@ footer p {
 .rank {
   flex: 1 1 auto;
   width: 30px;
-  font-weight: bold
 }
 
 .flag {
   flex: 1 1 auto;
   width: 30px;
+}
+
+.seed {
+	flex: 1 1 auto;
+  	width: 20px;
+  	font-size: 8px;
 }
 
 .player-name {
