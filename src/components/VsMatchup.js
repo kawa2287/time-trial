@@ -107,7 +107,8 @@ function initTiles(initVarsObj){
 					initVarsObj.keyPress,
 					initVarsObj.stopHandler,
 					initVarsObj.keySeq,
-					initVarsObj.mode
+					initVarsObj.mode,
+					initVarsObj.allAvgTime
 				)
 			);
 		}
@@ -136,7 +137,10 @@ function initTiles(initVarsObj){
 					initVarsObj.winTime1,
 					initVarsObj.winTime2,
 					initVarsObj.loseTime1,
-					initVarsObj.loseTime2
+					initVarsObj.loseTime2,
+					initVarsObj.gameNumber,
+					initVarsObj.bracketSpots,
+					initVarsObj.allAvgTime
 				)
 			);
 		}
@@ -228,7 +232,6 @@ class VsMatchup extends React.Component {
 	    		});
 	    	});
     	} else if (event.key == ' ' && this.state.keySeq == 1){
-    		console.log('timeElapsed',timeElapsed);
     		this.setState({
     			keySeq : 2,
     			keyPress : null
@@ -270,7 +273,7 @@ class VsMatchup extends React.Component {
     		winner1: player,
     		selectedPlayer: player,
     		loser1: loser,
-    		winTime:Number(formattedSeconds(timeElapsed)),
+    		winTime1:Number(formattedSeconds(timeElapsed)),
     		keySeq:2,
     		keyPress: null
     	});
@@ -516,9 +519,18 @@ class VsMatchup extends React.Component {
 		
 			winLosePackage['winner1'] = w1;
 			winLosePackage['loser1'] = l1;
+			
+ 			if(this.props.players[0].name ==w1.name){
+				winLosePackage['playerAtime'] = w1t;
+				winLosePackage['playerBtime'] = l1t;
+			}else {
+				winLosePackage['playerBtime'] = w1t;
+				winLosePackage['playerAtime'] = l1t;
+			}
+			
 				
 			resultTimePackage['winner1time'] = w1t;
-			resultTimePackage['loser1time'] = l1t || winLosePackage.loser1.timeTrial;
+			resultTimePackage['loser1time'] = l1t;
 		
 		} else {
 			winLosePackage['mode'] = '4P';
@@ -528,10 +540,10 @@ class VsMatchup extends React.Component {
 			winLosePackage['loser1'] = l1;
 			winLosePackage['loser2'] = l2;
 				
-			resultTimePackage['winner1time'] = (w1t == 0 || w1t == null || w1t == '-') ? winLosePackage.winner1.timeTrial : w1t;
-			resultTimePackage['winner2time'] = (w2t == 0 || w2t == null || w2t == '-') ? winLosePackage.winner2.timeTrial : w2t;
-			resultTimePackage['loser1time'] = (l1t == 0 || l1t == null || l1t == '-') ? winLosePackage.loser1.timeTrial : l1t;
-			resultTimePackage['loser2time'] = (l2t == 0 || l2t == null || l2t == '-') ? winLosePackage.loser2.timeTrial : l2t;
+			resultTimePackage['winner1time'] =  w1t;
+			resultTimePackage['winner2time'] = w2t;
+			resultTimePackage['loser1time'] = l1t;
+			resultTimePackage['loser2time'] =  l2t;
 			
 			
 			var pTmArr= ['playerAtime','playerBtime','playerCtime','playerDtime'];
@@ -576,7 +588,10 @@ class VsMatchup extends React.Component {
 			keySeq: this.state.keySeq,
 			mode : this.props.mode,
 			handlePlacementSelect : this.handlePlacementSelect.bind(this),
-			stopHandler4P : this.handleStopTimer4P.bind(this)
+			stopHandler4P : this.handleStopTimer4P.bind(this),
+			gameNumber : this.props.gameNumber,
+			bracketSpots : this.props.bracketSpots,
+			allAvgTime : this.props.allAvgTime
    		};
    		
    		var winChTl = null;
@@ -587,7 +602,7 @@ class VsMatchup extends React.Component {
    				this.props.players, 
    				this.props.dialogWidth, 
    				this.props.dialogHeight,
-   				this.state.winTime,
+   				this.state.winTime1,
    				this.state.keySeq, 
    				this.state.keySeq, 
    				this.props.mode
@@ -598,7 +613,7 @@ class VsMatchup extends React.Component {
    				this.props.players, 
    				this.props.dialogWidth, 
    				this.props.dialogHeight,
-   				this.state.winTime,
+   				this.state.winTime1,
    				this.state.keySeq, 
    				this.state.keySeq, 
    				this.props.mode
@@ -663,6 +678,7 @@ class VsMatchup extends React.Component {
 							</Group>
 							<Group
 								onClick={this.handleSubmitClick.bind(this)}
+								onTap={this.handleSubmitClick.bind(this)}
 								onmouseover={this.handleOnMouseOverSub.bind(this)}
 								onmouseout={this.handleOnMouseOutSub.bind(this)}
 							>

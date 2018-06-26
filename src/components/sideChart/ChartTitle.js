@@ -1,6 +1,6 @@
 'use strict';
 
-export default function ChartTitle(query){
+export default function ChartTitle(query, medianTime){
     switch(query){
 		case 'Seed' :
 			return 'Seed';
@@ -8,8 +8,8 @@ export default function ChartTitle(query){
 			return 'Time Trial';
 		case 'Best Times' :
 			return 'Best Times';
-		case 'Index' :
-			return 'Index';
+		case 'Median Time Split' :
+			return 'Median = '+ medianTime;
 		case 'Avg Times' : 
 			return 'Avg Times';
 		case 'Cup Time' :
@@ -18,8 +18,8 @@ export default function ChartTitle(query){
 		    return 'Wins & Losses';
 	    case 'Place' :
 	        return 'Place';
-        case '% Chance' :
-            return '% Chance of Winning';
+        case 'Avg Place' :
+            return 'Avg Place';
 		default:
 			return 'Time Trial';
 	}

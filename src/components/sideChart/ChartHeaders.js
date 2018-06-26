@@ -23,12 +23,12 @@ export default class ChartHeaders extends React.Component {
             	<div className={"player-name"}>Name</div>,
             	<div className={"time"}>Seed</div>
             ];
-        } else if (query == 'Index'){
+        } else if (query == 'Median Time Split'){
             packagedArray = [
                 <div className={"rank"}>Rank</div>,
             	<div className={"flag"}></div>,
             	<div className={"player-name"}>Name</div>,
-            	<div className={"time"}>Index</div>
+            	<div className={"time"}>Split</div>
             ];
         } else if (query == 'Seed'){
             packagedArray = [

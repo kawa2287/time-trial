@@ -14,13 +14,14 @@ var statHzDist;
 
 var avgTime;
 var avgCupTime;
-var index;
+var avgSplit;
 
 
-export default function StatsTile (Geo,player,dialogWidth, selectedDeco, mode,winner1,winner2,players,i){
+export default function StatsTile (Geo,player,dialogWidth, selectedDeco, mode,winner1,winner2,players,i,gameNumber, bracketSpots, allAvgTime){
 	
     var x;
     var winChance;
+    console.log('statTile player', allAvgTime);
     
     if(mode == 'VS'){
         x =Geo.margin*2 + Geo.flagWidth + Geo.positionWidth;
@@ -30,22 +31,26 @@ export default function StatsTile (Geo,player,dialogWidth, selectedDeco, mode,wi
         width = dialogWidth - (Geo.margin*7 + Geo.flagWidth + Geo.positionWidth + Geo.timeCircleRadius4P*2 + 1.5*Geo.finishBox);
         var playerAvgTmArr = [];
         for (var q=0; q <players.length;q++){
-    		playerAvgTmArr.push(DetermineAvgTime(players[q].timeTrial,players[q].totalTime,players[q].wins,players[q].losses));
+    		playerAvgTmArr.push(DetermineAvgTime(players[q].timeTrial,players[q].totalTime,players[q].wins,players[q].losses,players[q].nLastPlace));
         }
-        winChance = DetermineWinChance(players,playerAvgTmArr,i,'4P')+'%';
+        winChance = DetermineWinChance(players,playerAvgTmArr,i,'4P',(gameNumber==(bracketSpots/2)));
+        winChance == '-' ? '-' : winChance ;
     }
 
 	statHeight = Geo.tileHeight- Geo.margin*2.5;
 	statSpace = (statHeight-(Geo.nameSize + Geo.statLabelSize))/3;
 	
-	
-	
-	avgTime = DetermineAvgTime(player.timeTrial, player.totalTime, player.wins, player.losses);
+	avgTime = player.avgTime; //DetermineAvgTime(player.timeTrial, player.totalTime, player.wins, player.losses, player.avgTime);
 	avgCupTime = Math.round(100*avgTime/Settings.cupsPerPerson)/100;
-	index = Math.round(100*player.timeTrial/avgTime)/100;
+	avgSplit = Math.round(100*(avgTime-allAvgTime))/100;
+	if(isNaN(avgSplit)){
+		avgSplit = 0;
+	}
 	
 	var countryName = (player.country == null ? '' : player.country.name);
-	var textArray = ['wins','losses','avg cup time','avg time', 'best time', 'index'];
+	var textArray = ['wins','losses','avg cup time','avg time', 'best time', 'group avg'];
+	
+	console.log('avgSplit',avgSplit);
 
 	var labelArray = [];
 	var statsArray = [];
@@ -55,14 +60,14 @@ export default function StatsTile (Geo,player,dialogWidth, selectedDeco, mode,wi
 		avgCupTime,
 		avgTime,
 		player.bestTime,
-		index
+		(avgSplit >= 0)?('+'+(avgSplit===0?'0.00':avgSplit)):avgSplit
 		];
 		
 	if(mode != 'VS'){
 		textArray.push('avg place');
-		textArray.push('win chance');
+		textArray.push(gameNumber==(bracketSpots/2)?'win chance':'chance to adv');
 		valueArray.push(player.avgPlacement);
-		valueArray.push(winChance);
+		valueArray.push(winChance+'%');
 	}
 		
 	statHzDist = (width)/(textArray.length);

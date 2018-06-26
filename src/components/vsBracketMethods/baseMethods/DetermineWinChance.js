@@ -2,7 +2,7 @@
 
 import Settings from '../../../static/Settings';
 
-export default function DetermineWinChance(playerArr,playerAvgTmArr, i, mode){
+export default function DetermineWinChance(playerArr,playerAvgTmArr, i, mode,final4P){
 
 
 	var mainPayerName = playerArr[i].name;
@@ -46,9 +46,15 @@ export default function DetermineWinChance(playerArr,playerAvgTmArr, i, mode){
 		}
 		
 		var avgOpTime = opponentsTotalTime/nOpp;
+		var pct = final4P==true?75:50;
 		
+		var winChance = Math.min(99,Math.max(1,Math.round(100-pct*(Settings.timeToWinOutright -(avgOpTime - mainPlayerTime))/Settings.timeToWinOutright)));
 		
-		
-		return Math.min(99,Math.max(1,Math.round(100-50*(Settings.timeToWinOutright -(avgOpTime - mainPlayerTime))/Settings.timeToWinOutright)));
+		if(isNaN(winChance)){
+			return '-';
+		} else {
+			return winChance;
+		}
+			 
 	}
 }

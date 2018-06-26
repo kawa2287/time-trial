@@ -23,6 +23,7 @@
     "react-dom": "^15.3.2",
     "react-konva": "~1.1.6",
     "react-router": "^2.6.1",
+    "react-sidemenu": "0.0.14",
     "react-skylight": "^0.5.0",
     "realm": "^2.3.0",
     "sqlite": "^2.9.1",

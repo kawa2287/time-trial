@@ -9,13 +9,11 @@ var countryArr = [];
 
 var textProps = {
 	color : '#dfdfdf',
-	fontSize : '30',
 	textShadow : '0 0 3px #939393'
 };
 
 var inputStyle = {
-	color : '#dfdfdf',
-	fontSize : '25'
+	color : '#dfdfdf'
 };
 
 export default class TeamInputForm extends React.Component {
@@ -46,9 +44,22 @@ export default class TeamInputForm extends React.Component {
 		    this.setState({
 				name : "",
 				country : 'Select Country'
+		    }, function afterClick(){
+		    	this.props.hideInput();
 		    });
 		    document.getElementById("country").value = "";
+		    
     	}
+    }
+    
+    onCancelClick(){
+    	this.setState({
+				name : "",
+				country : 'Select Country'
+		    }, function afterClick(){
+		    	this.props.hideInput();
+		    });
+	    document.getElementById("country").value = "";
     }
     
     randomCountry() {
@@ -79,11 +90,10 @@ export default class TeamInputForm extends React.Component {
 	
 		return (
 			<div className='input-wrapper' style = {bgStyle}>
-				<img className='background-img' src={Background} width={860}/>
 				<div className='input-inner-wrapper' style={bgStyle}>
 					<div className='halfportion'>
 					
-						<div className='quad2'>
+						<div className='quad'>
 							<div className='sector'>
 								<div className='enter-text'>
 									<input 
@@ -98,6 +108,14 @@ export default class TeamInputForm extends React.Component {
 							</div>
 							<div className='sector'>
 								<div className='enter-text'>
+									<h1 className='maintext' style={textProps}>Enter Name</h1>
+								</div>
+							</div>
+						</div>
+						
+						<div className='quad'>
+							<div className='sector'>
+								<div className='enter-text'>
 									<input 
 										className='input-info'
 										style={inputStyle}
@@ -106,19 +124,11 @@ export default class TeamInputForm extends React.Component {
 										onChange={(e)=>{this.setState({country: e.target.value})}} 
 										type="text"
 										id="country" 
-										
 									/>
 									<datalist id="countryList">
 									    {countryNames.map((name, i) => <option data-id={i} value={name}/>)}
 									</datalist>
-								</div>
-							</div>
-						</div>
-						
-						<div className='quad1'>
-							<div className='sector'>
-								<div className='enter-text'>
-									<h1 className='maintext' style={textProps}>Enter Name</h1>
+								
 								</div>
 							</div>
 							<div className='sector'>
@@ -128,40 +138,41 @@ export default class TeamInputForm extends React.Component {
 							</div>
 						</div>
 					</div>
-					<div className='halfportion'>
+					<div className='halfportion2'>
 						<div className='quad2'>
-							<div className='sector'/>
-							<div className='sector'>
-								<div className='buttons'>
-									<button 
-										className='typical-button' 	
-										onClick={this.randomCountry.bind(this)}
-									>
-										Randomize Country
-									</button>
-								</div>
+							<div className='buttons'>
+								<button 
+									className='typical-button' 	
+									onClick={this.randomCountry.bind(this)}
+								>
+									Randomize Country
+								</button>
 							</div>
-							<div className='sector'>
-								<div className='buttons'>
-									<button 
-										className='typical-button'
-										onClick={this.onSubmitClick.bind(this)}
-									>
-										Submit
-									</button>
-								</div>
+							<div className='buttons'>
+								<button 
+									className='typical-button'
+									onClick={this.onSubmitClick.bind(this)}
+								>
+									Submit
+								</button>
 							</div>
-							<div className='sector'/>
+							<div className='buttons'>
+								<button 
+									className='typical-button'
+									onClick={this.onCancelClick.bind(this)}
+								>
+									Cancel
+								</button>
+							</div>
 						</div>
 						
-						<div className='quad1'>
-							<div className='sector'>
-								<div className='buttons'>
-									<img src={CountryKeyVal[this.state.country].flagPathSVG} width={300}/>
-								</div>
+						<div className='quad3'>
+							<div className='flag-team-input'>
+								<img src={CountryKeyVal[this.state.country].flagPathSVG}/>
 							</div>
 						</div>
-					</div>
+						
+					</div>	
 				</div>
 		    </div>
 		);

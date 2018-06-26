@@ -227,21 +227,23 @@ export default class GameComponent extends React.Component {
 	render(){
 		
 		var tileTeams = [];
+		var vsPlayerFinishTimeArr = [];
 		var playerFinishTimeArr = [];
 		
 		playerArr = [];
 		playerArr.push(this.props.gProps.playerA);
 		playerArr.push(this.props.gProps.playerB);
-		pAavgTime = DetermineAvgTime(this.props.gProps.playerA.timeTrial, this.props.gProps.playerA.totalTime, this.props.gProps.playerA.wins, this.props.gProps.playerA.losses);
-		pBavgTime = DetermineAvgTime(this.props.gProps.playerB.timeTrial, this.props.gProps.playerB.totalTime, this.props.gProps.playerB.wins, this.props.gProps.playerB.losses);
+		pAavgTime = DetermineAvgTime(this.props.gProps.playerA.timeTrial, this.props.gProps.playerA.totalTime, this.props.gProps.playerA.wins, this.props.gProps.playerA.losses, this.props.gProps.playerA.nLastPlace);
+		pBavgTime = DetermineAvgTime(this.props.gProps.playerB.timeTrial, this.props.gProps.playerB.totalTime, this.props.gProps.playerB.wins, this.props.gProps.playerB.losses, this.props.gProps.playerB.nLastPlace);
 		if(this.props.gProps.mode !== 'VS'){
-			pCavgTime = DetermineAvgTime(this.props.gProps.playerC.timeTrial, this.props.gProps.playerC.totalTime, this.props.gProps.playerC.wins, this.props.gProps.playerC.losses);
-			pDavgTime = DetermineAvgTime(this.props.gProps.playerD.timeTrial, this.props.gProps.playerD.totalTime, this.props.gProps.playerD.wins, this.props.gProps.playerD.losses);
+			pCavgTime = DetermineAvgTime(this.props.gProps.playerC.timeTrial, this.props.gProps.playerC.totalTime, this.props.gProps.playerC.wins, this.props.gProps.playerC.losses,  this.props.gProps.playerC.nLastPlace);
+			pDavgTime = DetermineAvgTime(this.props.gProps.playerD.timeTrial, this.props.gProps.playerD.totalTime, this.props.gProps.playerD.wins, this.props.gProps.playerD.losses,  this.props.gProps.playerD.nLastPlace);
 			playerArr.push(this.props.gProps.playerC);
 			playerArr.push(this.props.gProps.playerD);
 		}
 		
 		playerAvgTmArr = [pAavgTime,pBavgTime,pCavgTime,pDavgTime];
+		vsPlayerFinishTimeArr = [this.props.gProps.playerAtime,this.props.gProps.playerBtime];
 		playerFinishTimeArr = [this.props.gProps.playerAtime,this.props.gProps.playerBtime,this.props.gProps.playerCtime,this.props.gProps.playerDtime];
 
 		cap = this.props.gProps.mode == 'VS' ? 2 : 4;
@@ -262,10 +264,12 @@ export default class GameComponent extends React.Component {
 						globalY = {((1.5*(i+1))-1)*teamHeight}
 						hover = {this.state.hover}
 						losses = {playerArr[i].losses}
-						winChance = {DetermineWinChance(playerArr,playerAvgTmArr, i, this.props.gProps.mode)}
+						winChance = {DetermineWinChance(playerArr,playerAvgTmArr, i, this.props.gProps.mode,(this.props.gProps.gameNumber==(this.props.gProps.bracketSpots/2)))}
 						loser = {this.props.gProps.loser}
 						loserEliminated = {this.props.gProps.loserEliminated}
 						mode={this.props.gProps.mode}
+						finishTime = {vsPlayerFinishTimeArr[i]}
+						status = {this.props.gProps.status}
 					/>
 				);
 			}
@@ -284,7 +288,7 @@ export default class GameComponent extends React.Component {
 						globalY = {((1.5*(i+1))-1)*teamHeight}
 						hover = {this.state.hover}
 						losses = {playerArr[i].losses}
-						winChance = {DetermineWinChance(playerArr,playerAvgTmArr, i, this.props.gProps.mode)}
+						winChance = {DetermineWinChance(playerArr,playerAvgTmArr, i, this.props.gProps.mode,(this.props.gProps.gameNumber==(this.props.gProps.bracketSpots/2)))}
 						winner1 = {this.props.gProps.winner1}
 						winner2 = {this.props.gProps.winner2}
 						loser1 = {this.props.gProps.loser1}
@@ -308,6 +312,7 @@ export default class GameComponent extends React.Component {
 				width={gameWidth} 
 				height={gameHeight}
 				onClick={this.handleOnclick.bind(this)}
+				onTap={this.handleOnclick.bind(this)}
 				onmouseover={this.handleOnMouseOver.bind(this)}
 				onmouseout={this.handleOnMouseOut.bind(this)}
 				draggable={false}

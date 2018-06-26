@@ -1,5 +1,11 @@
 /*! CSS reset from benfrain/app-reset */
-*,:after,:before{box-sizing:inherit}html{box-sizing:border-box}
+*,:after,:before{box-sizing:inherit}
+
+html{
+	box-sizing:border-box;
+	font-size: 2vw;
+	
+}
 
 *{
   user-select:none;
@@ -52,6 +58,12 @@ body {
   	padding: 2em;
 }
 
+.home {
+	flex: 4;
+	justify-content: center;
+	display: flex;
+}
+
 .wrap {
   display: flex;
   flex-direction: column;
@@ -61,91 +73,69 @@ body {
 
 .timeTrialTop{
   width:100%;
-  height: 10%;
+  flex:1;
 }
 
 .switch-title {
-  margin-bottom: 6px;
+ 	margin-bottom: 6px;
 	text-align:center;
+	color: white;
 }
 
 .timeTrialMid{
   width:100%;
-  height:80%;
+  flex:8;
+  
 }
  
 .timeTrialBot{
   width:100%;
-  height:10%;
-}
-.timeTrialBot:before {      /* create a full-height inline block pseudo-element */
-	content: ' ';
-	display: inline-block;
-	vertical-align: middle; /* vertical alignment of the inline element */
-	height: 100%;
+  flex:1;
+  display: flex;
+  justify-content: center;
 }
 
+.ttSector{
+	flex:2;
+	display: flex;
+	flex-direction: column;
+}
 
-.q-a-playerIdLeft{
-  width:10%;
-  height:100%;
-  background-color: #423B56;
-  border-right: 1px solid black;
-  float: left;
-  font-size: x-large;
+.ttControlButton{
+	flex:1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
-.q-a-playerIdLeft:before {      /* create a full-height inline block pseudo-element */
-	content: ' ';
-	display: inline-block;
-	vertical-align: middle; /* vertical alignment of the inline element */
-	height: 100%;
+
+.ttInputName{
+	flex:1;
+	justify-content: center;
+	display: flex;
+	align-items: center;
 }
-.q-a-playerInfoRight{
-  width:90%;
-  height:100%;
-  float: left;
+
+.ttZone{
+	flex:3;
+	display: flex;
+	flex-direction: row;
 }
-.q-b-playerSelectTop{
-  width:100%;
-  height:20%;
-  background-color: #8478A5;
-  border-bottom: 1px solid black;
+
+.ttFlag{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex:2;
 }
-.q-b-infoBottom{
-  width:100%;
-  height:80%;
+
+.ttTime{
+	flex:1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: white;
 }
-.q-c-playerFlag{
-  float: left;
-  width:70%;
-  height:100%;
-}
-.q-c-playerFlag:before {      /* create a full-height inline block pseudo-element */
-	content: ' ';
-	display: inline-block;
-	vertical-align: middle; /* vertical alignment of the inline element */
-	height: 100%;
-}
-.q-c-playerTime{
-  float: left;
-  width:30%;
-  height:100%;
-}
-.q-d-timeTop{
-  width:100%;
-  height:80%;
-  font-size: x-large;
-}
-.q-d-timeTop:before {      /* create a full-height inline block pseudo-element */
-	content: ' ';
-	display: inline-block;
-	vertical-align: middle; /* vertical alignment of the inline element */
-	height: 100%;
-}
-.q-d-buttonBottom{
-  width:100%;
-  height:20%;
-}
+
 
 .icon {
   border: 0px solid black;
@@ -156,6 +146,8 @@ body {
 .ttWrap{
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .ttQuad {
@@ -163,6 +155,38 @@ body {
   height: 50%;
   float: left;
   border: 1px solid black;
+  display: flex;
+  flex-direction: row;
+}
+
+.ttButton {
+	background-color: #787878;
+	font-family: inherit;
+	color: #dfdfdf;
+	border-radius: 1em;
+	border: 2px solid #969696;
+	margin: 0.5em;
+	white-space: normal;
+	flex: 1;
+	max-width: 200px;
+}
+
+.ttControls{
+	flex: 1;
+	max-width: 200px;
+}
+
+.ttFinishButton {
+	background-color: #787878;
+	font-family: inherit;
+	color: #dfdfdf;
+	border-radius: 1em;
+	border: 2px solid #969696;
+	margin-top: 0.5em;
+	margin-bottom:  0.5em;
+	white-space: normal;
+	width: 90%;
+	height: 50%;
 }
 
 .input-line {
@@ -226,30 +250,17 @@ footer p {
   margin: 0 0 1em 0;
 }
 
-.home .buttons-selector {
-  clear: both;
-  padding: 2em;
-  text-align: center;
-}
-
 .home .country-chart {
-  clear: both;
   padding: 0.5em;
-  display: inline-table;
+  display: flex;
+  flex-direction: column;
+  min-width: 280px;
   max-width: 800px;
-  position: relative;
   width: 100%;
-  background-color: #e1f6fe;
+  margin-left: 20px;
+  background-color: #87C9E2;
   border: 1px solid #ccc;
   box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
-}
-
-.home .country-chart .cell {
-  text-align: center;
-}
-
-.home .country-chart .cellHeader {
-  text-align: center;
 }
 
 .home .buttons-selector .task-preview {
@@ -513,18 +524,32 @@ footer p {
 .skylight-dialog .input-wrapper .input-inner-wrapper .halfportion {
 	display: flex;
 	flex: 1;
+	flex-direction: column;
 }
 
-.skylight-dialog .input-wrapper .input-inner-wrapper .halfportion .quad2{
+.skylight-dialog .input-wrapper .input-inner-wrapper .halfportion2 {
 	display: flex;
+	flex: 1;
 	flex-direction: column;
-  	flex: 2;
+}
+
+.skylight-dialog .input-wrapper .input-inner-wrapper .halfportion .quad{
+	display: flex;
+	flex-direction: row;
+  	flex: 1;
   	justify-content: center;
 }
-.skylight-dialog .input-wrapper .input-inner-wrapper .halfportion .quad1{
+.skylight-dialog .input-wrapper .input-inner-wrapper .halfportion2 .quad2{
 	display: flex;
-	flex-direction: column;
-  	flex: 3;
+	flex-direction: row;
+  	flex: 1;
+  	justify-content: center;
+}
+.skylight-dialog .input-wrapper .input-inner-wrapper .halfportion2 .quad3{
+	display: flex;
+	flex-direction: row;
+  	flex: 1;
+  	justify-content: center;
 }
 
 .skylight-dialog .input-wrapper .input-inner-wrapper .halfportion .sector{
@@ -536,8 +561,8 @@ footer p {
 .skylight-dialog .input-wrapper .input-inner-wrapper .halfportion .sector .maintext{
 	animation-name: fadeIn;
     animation-duration: 10s;
+    font-size: 30px;
 }
-
 
 .skylight-dialog .input-wrapper .input-inner-wrapper .halfportion .quad1 .top .text{
 	flex: 1;
@@ -546,13 +571,17 @@ footer p {
 
 .skylight-dialog .input-wrapper .input-inner-wrapper .halfportion .sector .buttons{
 	flex: 1;
+	flex-direction: column;
+}
+
+.skylight-dialog .input-wrapper .input-inner-wrapper .halfportion2 .quad3 .flag-team-input{
+	width: 200px;
 }
 
 .skylight-dialog .input-wrapper .input-inner-wrapper .halfportion .sector .input-info{
 	background: #787878;
     border-radius: 2em;
     border: none;
-    margin: 2em;
     padding: 0.8em;
     
     overflow: hidden;
@@ -560,7 +589,7 @@ footer p {
   	text-overflow: ellipsis;
     
     color: #A2A2A2;
-    font-size: 1.1em;
+    font-size: 25px;
     padding-left: 1.5em;
     font-weight: bolder;
     
@@ -572,10 +601,14 @@ footer p {
 	background-color: #787878;
 	font-family: inherit;
 	color: #dfdfdf;
-	padding:1em;
 	width: 200px;
 	border-radius: 1em;
 	border: 2px solid #969696;
+	padding: 0.5em;
+	margin-left: 1.5em;
+	margin-top: 0.5em;
+	margin-bottom:  0.5em;
+	white-space: normal;
 }
 
 .controls {
@@ -598,3 +631,173 @@ footer p {
 		opacity: 1;
 	}
 }
+
+@keyframes bounceIn {
+  	0% {
+	    transform: scale(0.1);
+	    opacity: 0;
+  	}
+  	60% {
+	    transform: scale(1.05);
+	    opacity: 1;
+  	}
+  	100% {
+    	transform: scale(1);
+  	}
+}
+
+@keyframes scrollIn {
+  	0% {
+	    transform: translateX(-100px);
+	    opacity: 0;
+  	}
+  	100% {
+    	transform: translateX(0px);
+  	}
+}
+
+.main-page{
+	display: flex;
+}
+
+.main-page .menu{
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+}
+
+.main-page .menu .row {
+	animation-name: bounceIn;
+	animation-duration: 1s;
+	display: flex;
+	flex-direction: row;
+	height: 80px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	text-align: center;
+	border-collapse: collapse;
+	font-size: large;
+	justify-content: space-around;
+	align-items: center;
+	border-radius: 5px;
+	background: #786B9C;
+	margin: 5px;
+	color: white;
+	min-width: 280px;
+}
+
+.main-page .menu .secondary-row {
+	display: flex;
+	animation-name: scrollIn;
+	animation-duration: 2s;
+	animation-fill-mode: forwards;
+	flex-direction: row;
+	height: 40px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	text-align: left;
+	border-collapse: collapse;
+	font-size: small;
+	align-items: center;
+	border-radius: 5px;
+	background: #786B9C;
+	margin-left: 20px;
+	margin-top: 2px;
+	margin-bottom: 2px;
+	margin-right: 5px;
+	padding-left: 10px;
+	color: white;
+}
+
+.main-page .menu .row .picture {
+	margin: 10px;
+	width: 80px;
+}
+
+.main-page .menu .row .desc {
+  flex: 6;
+  text-align: left;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.cTile {
+	display: flex;
+	flex-direction: row;
+}
+
+.cSeed {
+	flex: 1;
+	display: flex;
+	justify-content:center;
+	align-self:center;
+	padding-left: 10px;
+	padding-right: 10px;
+	min-width: 40px;
+	font-weight: bolder;
+	font-family: sans-serif;
+}
+
+.cFlag{
+	display: flex;
+	justify-content:center;
+	flex: 2;
+	align-self:center;
+	max-height:50px;
+	padding-left: 10px;
+	padding-right: 10px;
+	min-width: 60px;
+}
+
+.cInfo {
+	display: flex;
+	flex-direction: row;
+	flex:20;
+	justify-content:center;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.cName {
+	display:flex;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	text-align: left;
+	flex: 2;
+	align-self:center;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.cTimes {
+	display:flex;
+	flex-direction: row;
+	flex: 1;
+	font-family: monospace;
+}
+
+.cTimeTrial{
+	flex:1;
+	display: flex;
+	text-align: left;
+	align-self:center;
+	min-width: 60px;
+	color: darkslateblue;
+	font-weight: bold;
+}
+
+.cSplit{
+	flex:1;
+	display: flex;
+	text-align: left;
+	align-self:center;
+	padding-right: 10px;
+	min-width: 60px;
+	color: firebrick;
+    font-style: italic;
+}
+

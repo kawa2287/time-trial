@@ -81,6 +81,7 @@ export default function FinishIndicator(
             />
             <Text //1st
                 onClick = {() => click('1',player)}
+                onTap = {() => click('1',player)}
         		text = {'1'}
         		y = {(Geo.finishBox-Geo.finishFontSize)/2}
         		fontSize = {Geo.finishFontSize}
@@ -105,6 +106,7 @@ export default function FinishIndicator(
             />
             <Text //2nd
                 onClick = {() => click('2',player)}
+                onTap = {() => click('2',player)}
         		text = {'2'}
         		y = {(Geo.finishBox+Geo.margin/2)+(Geo.finishBox-Geo.finishFontSize)/2}
         		fontSize = {Geo.finishFontSize}
@@ -129,6 +131,7 @@ export default function FinishIndicator(
             />
             <Text //3rd
                 onClick = {() => click('3',player)}
+                onTap = {() => click('3',player)}
         		text = {'3'}
         		y = {2*(Geo.finishBox+Geo.margin/2)+(Geo.finishBox-Geo.finishFontSize)/2}
         		fontSize = {Geo.finishFontSize}

@@ -5,6 +5,7 @@ import SkyLight from 'react-skylight';
 import { Stage, Group, Layer, Rect, Text } from "react-konva";
 import Colors from '../static/Colors';
 import divisionNames from '../data/divisionNames';
+import DivisionImage from './matchup/DivisionImage';
 
 import Button from './Button';
 import Settings from '../static/Settings';
@@ -41,7 +42,7 @@ import ChartDataManager from './sideChart/ChartDataManager';
 var vizGeo = {
 	teamHeight : 48,
 	teamWidth : 300,
-	horizSpace : 128,
+	horizSpace : 192,
 	vertSpace : 84,
 	radius: 100,
 	lColAr: []
@@ -66,6 +67,7 @@ var boardHeight;
 
 var gVars = {};
 var mode;
+var divisions=[];
 
 
 function shuffle(array) {
@@ -107,8 +109,8 @@ export default class VsTournament extends React.Component {
 		super(props);
 		this.state= {
 			masterGameObject:{},
-			scale:1,
-			posX:null,
+			scale:0.5,
+			posX:-1000,
 			posY:null,
 			matchupPlayerA :{},
 			matchupPlayerB :{},
@@ -171,11 +173,22 @@ export default class VsTournament extends React.Component {
 		
 		var toggle = 0;
 		
+		//create loserArr
+		for (k = 1; k <= 2*(bracketPower-(mode == 'VS' ? 0 : 1)-1); k++){
+			loserArr.push(NgmsInRnd.loserBracket(bracketSpots,k,mode));
+		}
+		
+		//create winnerArr
+		for (k = 0; k < bracketPower-(mode == 'VS' ? 0 : 1); k++){
+			winnerArr.push(NgmsInRnd.winnerBracket(bracketSpots,k,mode));
+		}
+		
 		//populate seeded array
 		PropogateSeedsArr(teams,mastArr, bracketPower);
 		
 		//Create Master Game Object
 		this.state.masterGameObject = CreateMasterGameObject(nGamesTotal, bracketSpots, mode);
+		console.log('masterGameObject',this.state.masterGameObject);
 		
 		//place players into Temp array
 		var tempPlayerArr = [];
@@ -198,7 +211,7 @@ export default class VsTournament extends React.Component {
 		var div2 = selectUnique(div1,conference1);
 		var div3 = pickRandomProperty(conference2);
 		var div4 = selectUnique(div3,conference2);
-		var divisions = [div1,div2,div3,div4];
+		divisions = [div1,div2,div3,div4];
 	
 	
 			
@@ -232,7 +245,6 @@ export default class VsTournament extends React.Component {
 			divisionCounter +=1;
 			
 		}
-		console.log('seededArray',seededArray);
 		
 		//Populate Start Round in Master Game Object
 		var sift = 1;
@@ -260,17 +272,6 @@ export default class VsTournament extends React.Component {
 			}
 		}
 		
-		//create loserArr
-		for (k = 1; k <= 2*(bracketPower-(mode == 'VS' ? 0 : 1)-1); k++){
-			loserArr.push(NgmsInRnd.loserBracket(bracketSpots,k,mode));
-		}
-		
-		//create winnerArr
-		for (k = 0; k < bracketPower-(mode == 'VS' ? 0 : 1); k++){
-			winnerArr.push(NgmsInRnd.winnerBracket(bracketSpots,k,mode));
-		}
-		
-		//create elimination round text
 		
 		
 		//protect against window reload
@@ -423,7 +424,7 @@ export default class VsTournament extends React.Component {
 	    	height: Math.round(renderHeight)
 		};
 		
-		var chartTitle = this.ChartTitle(this.state.chartDisplay);
+		
 		
 		var matchupPlayers = [];
 		if (mode == 'VS'){
@@ -433,7 +434,6 @@ export default class VsTournament extends React.Component {
 		}
 		
 		// create backround rectangles for elimination rounds
-		console.log('loserArr',loserArr);
 		var elimBackgrounds = [];
 		var winBackgrounds = [];
 		var elimText = [];
@@ -446,10 +446,11 @@ export default class VsTournament extends React.Component {
 			elimBackgrounds.push(
 				<Rect
 					x={xLoc}
+					y={vizGeo.vertSpace*1.5}
 					width={gameWidth + vizGeo.horizSpace}
-					height={boardHeight}
+					height={boardHeight - 3*vizGeo.vertSpace}
 					fill={'#FF3B3B'}
-					opacity = {0.8*Math.abs(r)/loserArr.length}
+					opacity = {0.8*(loserArr.length-(Math.abs(r)-1))/loserArr.length}
 				/>
 			);
 			elimText.push(
@@ -473,7 +474,7 @@ export default class VsTournament extends React.Component {
 				winBackgrounds.push(
 					<Rect
 						x={xLoc}
-						width={gameWidth + vizGeo.horizSpace}
+						width={((mode == 'VS' && w == winnerArr.length) ? 2 : 1)*(gameWidth + vizGeo.horizSpace)}
 						height={boardHeight}
 						fill={'#8C69CE'}
 						opacity = {0.8*Math.abs(w)/winnerArr.length}
@@ -510,23 +511,81 @@ export default class VsTournament extends React.Component {
 			);
 		}
 		
-		//create division rects
-		
+	//create division rects
 	var divisionRects= [];
+	var divImgArr = [];
 	for (var d = 0 ; d < 4; d++){
 		divisionRects.push(
 			<Rect
-				x={vizGeo.horizSpace/2}
+				x={vizGeo.horizSpace/2 + loserArr.length*(gameWidth + vizGeo.horizSpace)}
 				y={vizGeo.vertSpace*1.5+ d*(gameHeight+vizGeo.vertSpace)*bracketSpots/(4*(mode=='VS'?2:4))}
-				width={(winnerArr.length+loserArr.length)*(gameWidth + vizGeo.horizSpace) +vizGeo.horizSpace*2.5 + gameWidth/2 }
+				width={(winnerArr.length+(mode=='VS'?1:0))*(gameWidth + vizGeo.horizSpace) +vizGeo.horizSpace*(bracketSpots<=8?5:6) + gameWidth/2 }
 				height={(gameHeight+vizGeo.vertSpace)*bracketSpots/(4*(mode=='VS'?2:4))}
-				fill={d%2==0?'#121212':"yellow"}
-				opacity = {0.1}
+				fill={d%2==0?'#DFDFDF':"#CACACA"}
+				opacity = {0.5}
 			/>
 		);
-	}	
-		
-		
+		divImgArr.push(
+			<DivisionImage
+				x = {(loserArr.length+winnerArr.length+(mode=='VS'?1:0))*(gameWidth + vizGeo.horizSpace) +vizGeo.horizSpace*3.5 + gameWidth/2}
+				y = {vizGeo.vertSpace*1.5+  d*(gameHeight+vizGeo.vertSpace)*bracketSpots/(4*(mode=='VS'?2:4)) + (gameHeight+vizGeo.vertSpace)*bracketSpots/(4*(mode=='VS'?2:4))/2 - gameHeight*(mode=='VS'?2:1)*(bracketSpots<=8?0.5:1)/2}
+				imgHeight = {gameHeight*(mode=='VS'?2:1)*(bracketSpots<=8?0.5:1)}
+				img = {'/img/divisions/'+divisions[d]+'.svg'}
+				opacity={1.0}
+				
+			/>
+		);
+	}
+	
+	//create conference rects
+	var conferenceRects= [];
+	for (var w =0; w < 2;w++){
+		conferenceRects.push(
+			<Rect
+				x={vizGeo.horizSpace/2 + (loserArr.length + (winnerArr.length-2))*(gameWidth + vizGeo.horizSpace)}
+				y={vizGeo.vertSpace*1.5+ w*(gameHeight+vizGeo.vertSpace)*bracketSpots/(4*(mode=='VS'?1:2))}
+				width={(gameWidth + vizGeo.horizSpace) }
+				height={(gameHeight+vizGeo.vertSpace)*bracketSpots/(4*(mode=='VS'?1:2))}
+				fill={w%2==0?'#CBCBCB':"#B7B7B7"}
+				opacity = {1}
+			/>
+		);
+	}
+	
+	//create finals rect
+	var finalsRect= [];
+	finalsRect.push(
+		<Rect
+			x={vizGeo.horizSpace/2 + (loserArr.length + (winnerArr.length-1))*(gameWidth + vizGeo.horizSpace)}
+			y={vizGeo.vertSpace*1.5}
+			width={((mode=='VS'?3:2))*(gameWidth + vizGeo.horizSpace) }
+			height={(gameHeight+vizGeo.vertSpace)*bracketSpots/(2*(mode=='VS'?1:2))}
+			fill={'#A3A3A3'}
+			opacity = {1}
+		/>
+	);
+
+	
+	
+	//Determine median time
+	var tempAvgTime = [];
+	var half;
+	var allAvgTime = 0;
+	for (var a = 0; a < seededArray.length ; a++){
+		if(seededArray[a].avgTime!== '-' && seededArray[a].avgTime!== 0 && seededArray[a].avgTime!== null){
+			tempAvgTime.push(seededArray[a].avgTime);
+		}
+	}
+	tempAvgTime.sort( function(a,b) {return a - b;} );
+	half = Math.floor(tempAvgTime.length/2);
+	if(tempAvgTime.length % 2 ==0){
+		allAvgTime = tempAvgTime[half-1];
+	} else {
+		allAvgTime = tempAvgTime[half];
+	}
+	
+	var chartTitle = this.ChartTitle(this.state.chartDisplay,allAvgTime);
+
 		
 		return (
 			<div className={'tournament-container'}>
@@ -544,6 +603,7 @@ export default class VsTournament extends React.Component {
 						bracketSpots = {bracketSpots}
 						hideMatchup = {this.hideMatchup.bind(this)}
 						mode = {mode}
+						allAvgTime = {allAvgTime}
 					/>
 				</SkyLight>
 				<Stage 
@@ -562,13 +622,17 @@ export default class VsTournament extends React.Component {
 						<Group>
 							{divisionRects.map(element => element)}
 							{elimBackgrounds.map(element => element)}
-							{winBackgrounds.map(element => element)}
+							{conferenceRects.map(element => element)}
+							{finalsRect.map(element => element)}
+							{/*winBackgrounds.map(element => element)*/}
 							{bezArr.map(element => element)}
 							{loserBracket.map(element => element)}
 							{winnerBracket.map(element => element)}
 							{finalsBracket.map(element => element)}
 							{elimText.map(element => element)}
 							{winText.map(element => element)}
+							{divImgArr.map(element => element)}
+							
 						</Group>
 					</Layer>
 				</Stage>
@@ -582,6 +646,7 @@ export default class VsTournament extends React.Component {
 					    	seededArray = {seededArray}
 					    	query = {this.state.chartDisplay}
 					    	mode = {mode}
+					    	allAvgTime = {allAvgTime}
 					    />
 					</div>
 					<div className={'side-panel-selectors'}>
@@ -596,7 +661,7 @@ export default class VsTournament extends React.Component {
 						</div>
 						<div className={"row-of-buttons"}> 
 							<Button title='Cup Time' clickHandle={this.handleStatButtonClick.bind(this)}/>
-							<Button title='Index' clickHandle={this.handleStatButtonClick.bind(this)}/>
+							<Button title='Median Time Split' clickHandle={this.handleStatButtonClick.bind(this)}/>
 							{mode=='VS'?null:<Button title='Avg Place' clickHandle={this.handleStatButtonClick.bind(this)}/>}
 						</div>
 					</div>

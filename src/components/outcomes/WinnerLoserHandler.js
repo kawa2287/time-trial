@@ -17,9 +17,6 @@ export default function WinnerLoserHandler (WLpkg,RTpkg){
     var bracketPower = DetermineBracketPower(bracketSpots);
     var mode = WLpkg.mode;
     
-    console.log('seedMode',Settings.seedMode);
-    
-    
     if (WLpkg.mode == 'VS'){
     	
     	roundNumber = DetermineRoundNumber(currentGameNum, bracketSpots, currentBracket);
@@ -27,20 +24,35 @@ export default function WinnerLoserHandler (WLpkg,RTpkg){
     	var losePlayer = WLpkg.loser1;
     	var winTime = RTpkg.winner1time;
     	var loseTime = RTpkg.loser1time;
+
     	
-    	if (winTime == null || winTime == 0){
+    	if ((winTime == null || winTime == 0) && winPlayer.timeTrial!== '-'){
 	    	winTime = winPlayer.timeTrial;
 	    }
 	    
 	    // update stats [GLOBAL]
 	    if(WLpkg.byeRound === false) {
-	    	winPlayer.wins = winPlayer.wins + 1;
-	    	losePlayer.losses = losePlayer.losses + 1;
+	    	winPlayer.wins +=  1;
+	    	losePlayer.losses += 1;
 	    	winPlayer.totalTime = Number(winPlayer.totalTime) + Number(winTime);
 	    	losePlayer.totalTime = Number(losePlayer.totalTime) + Number(loseTime);
-	    	winPlayer.bestTime = winPlayer.bestTime > winTime ? winTime : winPlayer.bestTime;
-	    	winPlayer.avgTime = DetermineAvgTime(winPlayer.timeTrial,winPlayer.totalTime,winPlayer.wins,winPlayer.losses);
-	    	winPlayer.index = Math.round(100*winPlayer.timeTrial / winPlayer.avgTime)/100;
+	    	losePlayer.nLastPlace +=1;
+	    	
+	    	
+	    	if (winPlayer.bestTime == 0 && winPlayer.timeTrial == '-'){
+	    		winPlayer.bestTime = winTime;
+	    	} else {
+	    		winPlayer.bestTime = winPlayer.bestTime > winTime ? winTime : winPlayer.bestTime;
+	    	}
+	    	
+	    	if( winPlayer.timeTrial == '-' && (winPlayer.avgTime == 0 || winPlayer.avgTime == null || winPlayer.avgTime == '-')){
+	    		console.log('part 1');
+	    		winPlayer.avgTime = winTime;
+	    	} else {
+	    		console.log('part 2');
+	    		winPlayer.avgTime = DetermineAvgTime(winPlayer.timeTrial,winPlayer.totalTime,winPlayer.wins,winPlayer.losses, winPlayer.nLastPlace);
+	    	}
+	    	
 	    	winPlayer.avgCupTime = Math.round(100*winPlayer.avgTime/Settings.cupsPerPerson)/100;
 	    	var loserEliminated = losePlayer.losses == 2 ? true : false;
 	    	
@@ -66,7 +78,9 @@ export default function WinnerLoserHandler (WLpkg,RTpkg){
 	    			status : 'COMPLETE',
 	    			winner : winPlayer.name,
 	    			loser : losePlayer.name,
-	    			loserEliminated : loserEliminated
+	    			loserEliminated : loserEliminated,
+	    			playerAtime : WLpkg.playerAtime,
+	    			playerBtime : WLpkg.playerBtime
 	    		}
 	    	}
 	    });
@@ -100,12 +114,35 @@ export default function WinnerLoserHandler (WLpkg,RTpkg){
 	    	WLpkg.winner2.wins +=  1;
 	    	WLpkg.loser1.losses += 1;
 	    	WLpkg.loser2.losses += 1;
+	    	WLpkg.loser2.nLastPlace += 1;
 	    	
 	    	for (var q = 0; q < wlArray.length; q++){
-	    		WLpkg[wlArray[q]].totalTime = Number(WLpkg[wlArray[q]].totalTime) + Number(RTpkg[wltArray[q]]);
-	    		WLpkg[wlArray[q]].bestTime = WLpkg[wlArray[q]].bestTime > RTpkg[wltArray[q]] ? RTpkg[wltArray[q]] : WLpkg[wlArray[q]].bestTime;
-	    		WLpkg[wlArray[q]].avgTime = DetermineAvgTime(WLpkg[wlArray[q]].timeTrial,WLpkg[wlArray[q]].totalTime,WLpkg[wlArray[q]].wins,WLpkg[wlArray[q]].losses);
-	    		WLpkg[wlArray[q]].index = Math.round(100*WLpkg[wlArray[q]].timeTrial / WLpkg[wlArray[q]].avgTime)/100;
+	    		
+	    		if (RTpkg[wltArray[q]] == '-' || RTpkg[wltArray[q]] == null){
+	    			WLpkg[wlArray[q]].totalTime = WLpkg[wlArray[q]].totalTime;
+	    		} else {
+	    			WLpkg[wlArray[q]].totalTime = Number(WLpkg[wlArray[q]].totalTime) + Number(RTpkg[wltArray[q]]);
+	    		}
+	    		
+	    		if (WLpkg[wlArray[q]].bestTime == 0 && WLpkg[wlArray[q]].timeTrial == '-'  ){
+	    			if(RTpkg[wltArray[q]] !== null && RTpkg[wltArray[q]] !== '-'){
+	    				WLpkg[wlArray[q]].bestTime = RTpkg[wltArray[q]];
+	    			} 
+	    		} else {
+	    			if(RTpkg[wltArray[q]] !== null && RTpkg[wltArray[q]] !== '-' && RTpkg[wltArray[q]] !== 0){
+	    				WLpkg[wlArray[q]].bestTime = WLpkg[wlArray[q]].bestTime > RTpkg[wltArray[q]] ? RTpkg[wltArray[q]] : WLpkg[wlArray[q]].bestTime;
+	    			}
+	    		}
+	    		
+	    		if (WLpkg[wlArray[q]].avgTime == 0 || WLpkg[wlArray[q]].avgTime == null || WLpkg[wlArray[q]].avgTime == '-'){
+	    			if(RTpkg[wltArray[q]] !== null && RTpkg[wltArray[q]] !== '-' && RTpkg[wltArray[q]] !== 0 ){
+	    				WLpkg[wlArray[q]].avgTime = RTpkg[wltArray[q]];
+	    			} 
+	    		} else {
+		    		WLpkg[wlArray[q]].avgTime = DetermineAvgTime(WLpkg[wlArray[q]].timeTrial,WLpkg[wlArray[q]].totalTime,WLpkg[wlArray[q]].wins,WLpkg[wlArray[q]].losses, WLpkg[wlArray[q]].nLastPlace);
+	    		}
+	    		
+	    		WLpkg[wlArray[q]].index = Math.round(100*(WLpkg[wlArray[q]].timeTrial=='-'?0:WLpkg[wlArray[q]].timeTrial) / WLpkg[wlArray[q]].avgTime)/100;
 	    		WLpkg[wlArray[q]].avgCupTime = Math.round(100*WLpkg[wlArray[q]].avgTime/Settings.cupsPerPerson)/100;
 	    		WLpkg[wlArray[q]].avgPlacement = Math.round(100*((q+1)+(WLpkg[wlArray[q]].wins+WLpkg[wlArray[q]].losses-1)*(WLpkg[wlArray[q]].avgPlacement == '-'?0:WLpkg[wlArray[q]].avgPlacement))/(WLpkg[wlArray[q]].wins+WLpkg[wlArray[q]].losses))/100;
 	    	}
@@ -132,7 +169,6 @@ export default function WinnerLoserHandler (WLpkg,RTpkg){
 	    }
 	    
 	    // set game object with results
-	    console.log('playerAtime',WLpkg.playerAtime);
 	    this.setState({
 	    	masterGameObject : {
 	    		...this.state.masterGameObject,

@@ -6,6 +6,10 @@ class AddTeamPopUp extends React.Component {
 	constructor(props){
 		super(props);
 	}
+	
+	hideInput(){
+		this.customDialog.hide();
+	}
 
     render() {
     	
@@ -13,23 +17,28 @@ class AddTeamPopUp extends React.Component {
 		var addTeamDialog = {
 		    backgroundColor: '#303030',
 		    color: '#494949',
-		    width: '860',
-		    height: '560',
+		    width: '90%',
+		    height: '90%',
 		    position: 'fixed',
-		    top: '50%',
+		    top: '0%',
 		    left: '50%',
-		    marginTop: '-300',
-		    marginLeft: '-500'
+		    marginTop: '25px',
+		    marginLeft: '-45%'
 		};
 
 		return (
-		    <div className="task-preview">
-			    <img src="./img/buttons/addUser.png" onClick={() => this.customDialog.show()}></img>
-			    <h2 className="name">Add Team</h2>
+		    <div className="row"  onClick={() => this.customDialog.show()}>
+		    	<div className = "picture">
+			    	<img src="./img/buttons/addUser.png" ></img>
+		    	</div>
+		    	<div className = "desc">
+	    					Add Team
+    					</div>
 			    <SkyLight dialogStyles={addTeamDialog} hideOnOverlayClicked ref={ref => this.customDialog = ref} >
 				    <TeamInputForm 
 				    	addTeamClick={this.props.addTeamClick}
 				    	geo={addTeamDialog}
+				    	hideInput={this.hideInput.bind(this)}
 			    	/>
 			    </SkyLight>
 		    </div>

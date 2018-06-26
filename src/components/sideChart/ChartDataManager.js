@@ -3,7 +3,7 @@
 import React from 'react';
 import StackChartData from './StackChartData';
 import PlaceChart from './PlaceChart';
-import IndexChart from './IndexChart';
+import AvgTimeSplitChart from './AvgTimeSplitChart';
 import SeedChart from './SeedChart';
 
 var panelStats = [];
@@ -15,7 +15,7 @@ export default class ChartDataManager extends React.Component {
 		
 		this.StackChartData = StackChartData.bind(this);
 		this.PlaceChart = PlaceChart.bind(this);
-		this.IndexChart = IndexChart.bind(this);
+		this.AvgTimeSplitChart = AvgTimeSplitChart.bind(this);
 		this.SeedChart = SeedChart.bind(this);
 	}
 	
@@ -30,10 +30,10 @@ export default class ChartDataManager extends React.Component {
             
             // send to PctChanceChart
             
-        } else if (query == 'Index'){
+        } else if (query == 'Median Time Split'){
            
-           // send to IndexChart
-           packagedArray = this.IndexChart(this.props.seededArray);
+           // send to AvgTimeSplitChart
+           packagedArray = this.AvgTimeSplitChart(this.props.seededArray,this.props.allAvgTime);
            
         } else if (query == 'Seed'){
             // send to SeedChart

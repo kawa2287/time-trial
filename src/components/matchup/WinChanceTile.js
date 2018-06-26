@@ -4,7 +4,6 @@ import Konva from "konva";
 import { Rect, Text, Group, Circle } from "react-konva";
 import React from 'react';
 import DetermineWinChance from '../vsBracketMethods/baseMethods/DetermineWinChance';
-import DetermineAvgTime from '../vsBracketMethods/baseMethods/DetermineAvgTime';
 
 const formattedSeconds = (sec) =>
 	Math.floor(sec) + '.' + 
@@ -26,13 +25,17 @@ export default function WinChanceTile(Geo,players, dialogWidth, dialogHeight, wi
     
     var percentFontSize = Geo.margin*1.5;
     var circleFill ;
+    var textSignal;
     
     if (keySeq == 0){
         circleFill = 'white';  //set at 0
+        textSignal = 'Ready';
     } else if (keySeq == 1) {
         circleFill = 'green'; //running
+        textSignal = 'GO!';
     } else {
         circleFill = '#fdfd96'; //stopped
+        textSignal = winTime;
     }
     
     return(
@@ -90,7 +93,7 @@ export default function WinChanceTile(Geo,players, dialogWidth, dialogHeight, wi
             <Text //winTime
                 y = {Geo.margin*2.5 - percentFontSize/2}
                 x = {-Geo.timeCircleRadius}
-                text = {formattedSeconds(timeElapsed) || winTime}
+                text = {textSignal}
     			align = 'center'
     			fill = 'black'
     			width = {Geo.timeCircleRadius*2}

@@ -15,15 +15,11 @@ var eliminatedColor = Colors.eliminatedColor;
 var loserColor = Colors.byeColor;
 var emptyColor = Colors.gameNotReadyColor;
 var firstColor = Colors.gold;
-var secondColor = Colors.silver;
-var thirdColor = Colors.bronze;
 
 export default class TileTeam extends React.Component {
 	constructor(props){
 		super(props);
 	}
-	
-
 	
 	BackgroundColor(name, hover, mode){
 		if (name === 'BYE'){
@@ -81,10 +77,10 @@ export default class TileTeam extends React.Component {
 	}
 	
 	timeDisplay(time,winChance,hover, status, finishTime){
-		if (hover === true){
-			return winChance+'%';
-		} else if (status == 'COMPLETE'){
+		if (status == 'COMPLETE'){
 			return finishTime == 0 ? '-' : '*'+finishTime;
+		} else if (hover === true){
+			return winChance+'%';
 		} else {
 			return time;
 		}
@@ -187,7 +183,7 @@ export default class TileTeam extends React.Component {
                 		x = {teamWidth - clipWidth}
                 		y = {(teamHeight-fontSize)/2}
                 		fontSize = {fontSize}
-                		fill = 'white'
+                		fill = {this.props.status == 'COMPLETE' ? firstColor : 'white'}
                 		width = {clipWidth}
                 		align = 'center'
                 		shadowBlur = {2}

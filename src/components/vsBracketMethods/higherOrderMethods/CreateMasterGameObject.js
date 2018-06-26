@@ -32,7 +32,10 @@ export default function CreateMasterGameObject(nGamesTotal,bracketSpots, mode){
 				spotsFilled : 0,
 				winner: '',
 				loser: '',
-				loserEliminated : false
+				loserEliminated : false,
+				playerAtime : 0,
+				playerBtime : 0,
+				gameTitle:null
 			};
     	} else {
     		masterGameObj[game] = {
@@ -53,7 +56,8 @@ export default function CreateMasterGameObject(nGamesTotal,bracketSpots, mode){
 				playerAtime : 0,
 				playerBtime: 0,
 				playerCtime: 0,
-				playerDtime: 0
+				playerDtime: 0,
+				gameTitle:null
 			};
     	}
 		

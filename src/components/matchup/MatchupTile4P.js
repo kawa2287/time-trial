@@ -38,7 +38,10 @@ export default function MatchupTile4P(
 	winTime1,
 	winTime2,
 	loseTime1,
-	loseTime2
+	loseTime2,
+	gameNumber,
+	bracketSpots,
+	allAvgTime
 	) {
 	
 	var winTrig = false;
@@ -96,9 +99,9 @@ export default function MatchupTile4P(
 			{player.name == 'BYE'?null:FlagCuts(Geo,player,'4P')}
 			{player.name == 'BYE'?null:FlagClipBorder(Geo,'4P')}
 			{SeedShape(Geo, player,'4P')}
-			{StatsTile(Geo,player,dialogWidth,selectedDeco,'4P',winner1,winner2,players,i)}
+			{StatsTile(Geo,player,dialogWidth,selectedDeco,'4P',winner1,winner2,players,i,gameNumber, bracketSpots, allAvgTime)}
 			{WinnerHighlight4P(Geo,player,winner1,winner2,selectedDeco)}
-			{player.name == 'BYE'?null:<DivisionImage dialogWidth = {dialogWidth}Geo = {Geo} img = {'/img/divisions/'+division+'.svg'}/>}
+			{player.name == 'BYE'?null:<DivisionImage x={dialogWidth - (Geo.margin*5 + Geo.timeCircleRadius4P*2 - Geo.tileHeight*0.75/2)} y={-Geo.tileHeight*.75/6} opacity={0.5} imgHeight ={Geo.tileHeight*0.75} img = {'/img/divisions/'+division+'.svg'}/>}
 			{Time(Geo,dialogWidth, selectedDeco, time)}
 		</Group>
 	);

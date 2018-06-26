@@ -23,6 +23,7 @@ export default class TimeTrialTemplate extends React.Component {
 		};
     }
 
+	// handle controller support
     handleStopClick() {
 		if(this.state.finish != 1 && this.props.position == this.props.stopTime) {
 	    	this.setState({ 
@@ -32,7 +33,23 @@ export default class TimeTrialTemplate extends React.Component {
 	    		function afterClick () {
 					this.props.addTimeTrial(this.state.name, formattedSeconds(this.state.stopTime));
 					this.props.finishHandle();
-					console.log('finish = ' + this.state.finish);
+				}
+			);
+		} else {
+			console.log("ALREADY INPUT");
+		}
+    }
+    
+    // handle tap support
+    handleStopTap() {
+		if(this.state.finish != 1 ) {
+	    	this.setState({ 
+	    		stopSwitch : 1, 
+	    		stopTime : this.props.timeElapsed, 
+	    		finish:1 }, 
+	    		function afterClick () {
+					this.props.addTimeTrial(this.state.name, formattedSeconds(this.state.stopTime));
+					this.props.finishHandle();
 				}
 			);
 		} else {
@@ -57,15 +74,11 @@ export default class TimeTrialTemplate extends React.Component {
 			});
 		}
 		
-		console.log('keyPress',this.props.stopTime);
 	
 		return (
 		    <div className ="ttQuad" background-color={this.state.finish == 0 ? '#584E72' : '#FFD700'}>
-				<div className="q-a-playerIdLeft">
-			    	<label className="string">{this.props.position}</label>
-				</div>
-				<div className="q-a-playerInfoRight">
-					<div className="q-b-playerSelectTop">
+				<div className="ttSector">
+					<div className="ttInputName">
 						<input  
 					    	list="playerList" 
 					    	placeholder="Select Player" 
@@ -77,17 +90,19 @@ export default class TimeTrialTemplate extends React.Component {
 						    {playerNames.map((element, i) => <option data-id={i} value={element.name} label={element.timeTrial}/>)}
 						</datalist>
 					</div>
-					<div className="q-b-infoBottom">
-						<div className="q-c-playerFlag">
-					    	<Flag icon={typeof(this.state.players[this.state.name]) != "undefined" ? this.state.players[this.state.name].country.flagPathXL :"/img/flagsXL/XX.png"}/>
+					<div className="ttZone">
+						<div className="ttFlag">
+							<img width={'50%'} src={typeof(this.state.players[this.state.name]) != "undefined" ? this.state.players[this.state.name].country.flagPathXL :"/img/flagsXL/XX.png"} />
 						</div>
-						<div className="q-c-playerTime">
-							<div className="q-d-timeTop">
-								{this.state.stopSwitch == null ? formattedSeconds(this.props.timeElapsed) : formattedSeconds(this.state.stopTime)}
-					    	</div>
-							
+						<div className="ttTime">
+							{this.state.stopSwitch == null ? formattedSeconds(this.props.timeElapsed) : formattedSeconds(this.state.stopTime)}
 						</div>
 					</div>
+				</div>
+				<div className="ttControlButton">
+					<button className="ttFinishButton" onClick={this.handleStopTap.bind(this)}>
+						Finish
+					</button>
 				</div>
 		    </div>
 		);

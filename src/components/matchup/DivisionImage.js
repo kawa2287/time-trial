@@ -35,16 +35,19 @@ export default class DivisionImage extends React.Component {
 	}
 
     render() {
-  		var imgHeight = this.props.Geo.tileHeight;
+  		var imgHeight = this.props.imgHeight;
 
     	return <Image 
-    	    y={-imgHeight/6}
-    	    x={ this.props.dialogWidth - (this.props.Geo.margin*4 + this.props.Geo.timeCircleRadius4P*2 )}
+    	    y={this.props.y}
+    	    x={this.props.x}
     		image={this.state.image} 
     		height={imgHeight}
     		width={imgHeight}
-    		opacity = {0.2}
+    		opacity = {this.props.opacity}
     		ref={node => this.imageNode = node}
+    		shadowBlur = {5}
+			shadowOpacity = {0.8}
+			shadowColor = 'black'
     	/>;
     }
 }
