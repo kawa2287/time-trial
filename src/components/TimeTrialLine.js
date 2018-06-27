@@ -4,10 +4,18 @@ import React, { Component } from 'react';
 
 export default class TimeTrialLine extends Component{
 	
+	clickHandle(){
+		this.props.clickHandle(this.props.name,this.props.country,this.props.timeTrial);
+	}
+	
 	render(){
 	
 		return(
-		    <div className="cTile">
+		    <div 
+		    	className="cTile" 
+	    		onClick={this.clickHandle.bind(this)}
+	    		onTap={this.clickHandle.bind(this)}
+    		>
 		    	<div className="cSeed">
 		    		{this.props.seed}
 		    	</div>

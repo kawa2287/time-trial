@@ -4,6 +4,7 @@
 import React, { Component } from 'react';
 import TimeTrialLine from './TimeTrialLine';
 import TimeTrialHeaderLine from './TimeTrialHeaderLine';
+import TeamAdjustForm from './TeamInputForm';
 
 
 export default class Table extends Component {
@@ -22,8 +23,26 @@ export default class Table extends Component {
 		    }
 		}
 	}
+	
+	clickHandle(name,country,time){
+		console.log('name',name);
+		console.log('country',country);
+		console.log('time',time);
+	}
 
 	render(){
+		
+		var adjTeamDialog = {
+		    backgroundColor: '#303030',
+		    color: '#494949',
+		    width: '90%',
+		    height: '90%',
+		    position: 'fixed',
+		    top: '0%',
+		    left: '50%',
+		    marginTop: '25px',
+		    marginLeft: '-45%'
+		};
 
 		function compare(a, b){
 		    if(a.timeTrial == '-'){
@@ -55,10 +74,12 @@ export default class Table extends Component {
 			chartLines.push(
 				<TimeTrialLine
 					seed={playersArray[i].seed}
+					country={playersArray[i].country.name}
 					flagPath={playersArray[i].country.flagPathSVG}
 					name={playersArray[i].name}
 					timeTrial={playersArray[i].timeTrial}
 					splitTime={playersArray[i].splitTime}
+					clickHandle={this.clickHandle.bind(this)}
 				/>
 			);
 			
