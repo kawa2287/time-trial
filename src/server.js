@@ -10,11 +10,12 @@ import routes from './routes';
 import NotFoundPage from './components/NotFoundPage';
 
 // initialize database
+/*
 var sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.Database('./src/db/playerDB.sqlite');
 
 
-/*
+
 db.run('CREATE TABLE IF NOT EXISTS players(name)');
  
   db.run(`INSERT INTO players(name) VALUES(?)`, ['Canada'], function(err) {

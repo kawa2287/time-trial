@@ -96,9 +96,9 @@ body {
 }
 
 .ttSector{
-	flex:2;
+	flex:4;
 	display: flex;
-	flex-direction: column;
+	flex-direction: row;
 }
 
 .ttControlButton{
@@ -113,6 +113,25 @@ body {
 	justify-content: center;
 	display: flex;
 	align-items: center;
+}
+
+.ttInputBoxStyle{
+	background: #787878;
+    border-radius: 2em;
+    border: none;
+    padding: 0.2em;
+    width: 50%;
+    
+    overflow: hidden;
+  	white-space: nowrap;
+  	text-overflow: ellipsis;
+    
+    color: white;
+    font-size: small;
+    font-weight: bolder;
+    
+    outline: none;
+    box-shadow: 0 4px 6px -5px hsl(0, 0%, 40%), inset 0px 4px 6px -5px hsl(0, 0%, 2%)
 }
 
 .ttZone{
@@ -134,6 +153,7 @@ body {
 	align-items: center;
 	justify-content: center;
 	color: white;
+	font-size: xx-large;
 }
 
 
@@ -156,7 +176,7 @@ body {
   float: left;
   border: 1px solid black;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
 }
 
 .ttButton {
@@ -543,22 +563,41 @@ footer p {
 	display: flex;
 	flex-direction: row;
   	flex: 1;
-  	justify-content: center;
+  	justify-content: space-evenly;
+  	align-items: center;
 }
 .skylight-dialog .input-wrapper .input-inner-wrapper .halfportion2 .quad3{
 	display: flex;
 	flex-direction: row;
   	flex: 1;
   	justify-content: center;
+    align-items: center;
 }
 
-.skylight-dialog .input-wrapper .input-inner-wrapper .halfportion .sector{
+.TeamSectorInput{
 	display: flex;
 	flex: 1;
 	align-items: center;
+	justify-content: flex-end;
 }
 
-.skylight-dialog .input-wrapper .input-inner-wrapper .halfportion .sector .maintext{
+.TeamSectorText{
+	display: flex;
+	flex: 1;
+	align-items: center;
+	justify-content: flex-start;
+}
+
+.TeamButtons{
+	height: 100%;
+	max-height: 80px;
+	min-height: 40px;
+    flex: 1;
+    margin: 5px;
+}
+
+
+.skylight-dialog .input-wrapper .input-inner-wrapper .halfportion .maintext{
 	animation-name: fadeIn;
     animation-duration: 10s;
     font-size: 30px;
@@ -569,7 +608,7 @@ footer p {
 	text-align: left;
 }
 
-.skylight-dialog .input-wrapper .input-inner-wrapper .halfportion .sector .buttons{
+.skylight-dialog .input-wrapper .input-inner-wrapper .halfportion .buttons{
 	flex: 1;
 	flex-direction: column;
 }
@@ -578,11 +617,15 @@ footer p {
 	width: 200px;
 }
 
-.skylight-dialog .input-wrapper .input-inner-wrapper .halfportion .sector .input-info{
+.enter-text{
+	margin-left: 20px;
+}
+
+.skylight-dialog .input-wrapper .input-inner-wrapper .halfportion .input-info{
 	background: #787878;
     border-radius: 2em;
     border: none;
-    padding: 0.8em;
+    padding: 1vh;
     
     overflow: hidden;
   	white-space: nowrap;
@@ -590,7 +633,6 @@ footer p {
     
     color: #A2A2A2;
     font-size: 25px;
-    padding-left: 1.5em;
     font-weight: bolder;
     
     outline: none;
@@ -601,14 +643,11 @@ footer p {
 	background-color: #787878;
 	font-family: inherit;
 	color: #dfdfdf;
-	width: 200px;
+	width: 180px;
 	border-radius: 1em;
 	border: 2px solid #969696;
-	padding: 0.5em;
-	margin-left: 1.5em;
-	margin-top: 0.5em;
-	margin-bottom:  0.5em;
 	white-space: normal;
+	height: 100%
 }
 
 .controls {
@@ -799,5 +838,26 @@ footer p {
 	min-width: 60px;
 	color: firebrick;
     font-style: italic;
+}
+
+.cDelete{
+	flex:1;
+	display: flex;
+	align-self:center;
+	min-width: 60px;
+	max-height: 20px;
+	padding-right: 10px;
+}
+
+.cMain{
+	display: flex;
+	flex-direction: row;
+	flex:20;
+}
+
+hr.style14 { 
+  height: 1px; 
+  margin-top: -0.5px;
+  margin-bottom: -0.5px;
 }
 

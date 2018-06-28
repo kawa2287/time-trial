@@ -17,13 +17,18 @@ class AddTeamPopUp extends React.Component {
 		var addTeamDialog = {
 		    backgroundColor: '#303030',
 		    color: '#494949',
-		    width: '90%',
-		    height: '90%',
+		    width: '100%',
+		    height: '100%',
 		    position: 'fixed',
 		    top: '0%',
 		    left: '50%',
-		    marginTop: '25px',
-		    marginLeft: '-45%'
+		    marginTop: '0px',
+		    marginLeft: '-50%',
+		    padding: '0px'
+		};
+		
+		var closeButtonStyle ={
+			fontSize: '0em'
 		};
 
 		return (
@@ -34,11 +39,19 @@ class AddTeamPopUp extends React.Component {
 		    	<div className = "desc">
 	    					Add Team
     					</div>
-			    <SkyLight dialogStyles={addTeamDialog} hideOnOverlayClicked ref={ref => this.customDialog = ref} >
+			    <SkyLight 
+			    	closeButtonStyle={closeButtonStyle}
+			    	dialogStyles={addTeamDialog} hideOnOverlayClicked 
+			    	ref={ref => this.customDialog = ref} 
+		    	>
 				    <TeamInputForm 
 				    	addTeamClick={this.props.addTeamClick}
 				    	geo={addTeamDialog}
 				    	hideInput={this.hideInput.bind(this)}
+				    	name=""
+				    	country={null}
+				    	editPlayer={this.props.editPlayer}
+				    	mode='add'
 			    	/>
 			    </SkyLight>
 		    </div>

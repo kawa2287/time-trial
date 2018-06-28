@@ -79,7 +79,29 @@ export default class IndexPage extends React.Component {
 	}
 	
 	removePlayer(player){
+		for (var k in this.state.players){
+			if (this.state.players[k].name == player){
+				delete this.state.players[k];
+			}
+		}
+		this.forceUpdate();
+	}
+	
+	editPlayer(oldName,newName,oldCountry,newCountry){
 		
+		if(oldName !== newName || oldCountry !== newCountry){
+			for (var k in this.state.players){
+				if(this.state.players[k].name == oldName){
+					if(oldName!== newName){
+						this.state.players[k].name = newName;
+					}
+					if(oldCountry !==newCountry){
+						this.state.players[k].country = CountryKeyVal[newCountry];
+					}
+				}
+			}
+		}
+		this.forceUpdate();
 	}
   
     componentDidMount() {
@@ -245,6 +267,7 @@ export default class IndexPage extends React.Component {
 	    		<div className = "menu">
 	    			<AddTeamPopUp 
 	        			addTeamClick={this.addTeam.bind(this)}
+	        			editPlayer={this.editPlayer.bind(this)}
 		            />
 	    			<TimeTrialPopUp
 		        		players={this.state.players}
@@ -280,6 +303,8 @@ export default class IndexPage extends React.Component {
 					      teamRows={this.state.nRows}
 					      players={this.state.players}
 					      bestTime={this.state.bestTime}
+					      removePlayer={this.removePlayer.bind(this)}
+					      editPlayer={this.editPlayer.bind(this)}
 					      removePlayer={this.removePlayer.bind(this)}
 				      />
 	    		</div>

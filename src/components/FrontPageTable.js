@@ -4,13 +4,19 @@
 import React, { Component } from 'react';
 import TimeTrialLine from './TimeTrialLine';
 import TimeTrialHeaderLine from './TimeTrialHeaderLine';
-import TeamAdjustForm from './TeamInputForm';
+import TeamInputForm from './TeamInputForm';
+import SkyLight from 'react-skylight';
 
 
 export default class Table extends Component {
 	constructor(props){
 		super(props);
 		this.setSplitTimes = this.setSplitTimes.bind(this);
+		this.state={
+			name : "",
+			country : null,
+			time : ""
+		};
 	}
 	
 	setSplitTimes(playersArray){
@@ -25,23 +31,39 @@ export default class Table extends Component {
 	}
 	
 	clickHandle(name,country,time){
-		console.log('name',name);
-		console.log('country',country);
-		console.log('time',time);
+		this.setState({
+			name : name,
+			country : country,
+			time : time
+		});
+		this.customDialog.show();
+	}
+	
+	hideInput(){
+		this.customDialog.hide();
+	}
+	
+	handleRemovePlayer(name){
+		this.props.removePlayer(name);
 	}
 
 	render(){
 		
-		var adjTeamDialog = {
+		var dialogStyles = {
 		    backgroundColor: '#303030',
 		    color: '#494949',
-		    width: '90%',
-		    height: '90%',
+		    width: '100%',
+		    height: '100%',
 		    position: 'fixed',
 		    top: '0%',
 		    left: '50%',
-		    marginTop: '25px',
-		    marginLeft: '-45%'
+		    marginTop: '0px',
+		    marginLeft: '-50%',
+		    padding: '0px'
+		};
+		
+		var closeButtonStyle ={
+			fontSize: '0em'
 		};
 
 		function compare(a, b){
@@ -70,7 +92,7 @@ export default class Table extends Component {
 		chartLines.push(<TimeTrialHeaderLine/>);
 		
 		for (var i in playersArray){
-			chartLines.push(<hr width={'100%'}/>);
+			chartLines.push(<hr className="style14" width={'100%'}/>);
 			chartLines.push(
 				<TimeTrialLine
 					seed={playersArray[i].seed}
@@ -80,6 +102,7 @@ export default class Table extends Component {
 					timeTrial={playersArray[i].timeTrial}
 					splitTime={playersArray[i].splitTime}
 					clickHandle={this.clickHandle.bind(this)}
+					handleRemovePlayer={this.handleRemovePlayer.bind(this)}
 				/>
 			);
 			
@@ -88,6 +111,23 @@ export default class Table extends Component {
 		return(
 		    <div className="country-chart">
 				{chartLines.map(lineItem => lineItem)}
+				<SkyLight 
+			    	closeButtonStyle={closeButtonStyle}
+			    	dialogStyles={dialogStyles} hideOnOverlayClicked 
+			    	ref={ref => this.customDialog = ref} 
+		    	>
+		    		<TeamInputForm 
+				    	addTeamClick={this.props.addTeamClick}
+				    	geo={dialogStyles}
+				    	hideInput={this.hideInput.bind(this)}
+				    	name={this.state.name}
+				    	country={this.state.country}
+				    	time={this.state.time}
+				    	editPlayer={this.props.editPlayer}
+				    	mode='edit'
+			    	/>
+				    
+			    </SkyLight>
 		    </div>
 		);
     }

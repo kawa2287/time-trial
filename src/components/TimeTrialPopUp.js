@@ -61,6 +61,7 @@ class TimeTrialPopUp extends React.Component {
     }
   
     handleReset(){
+    	clearInterval(this.incrementer);
 		this.setState({
 	    	nTeams:0,
 	    	timeElapsed:0,
@@ -78,6 +79,11 @@ class TimeTrialPopUp extends React.Component {
     		this.customDialog.hide();
     	});
 	}
+	
+	cancelGroup(){
+		this.handleReset();
+		this.hideInput();
+	}
 
 
 
@@ -86,14 +92,19 @@ class TimeTrialPopUp extends React.Component {
 	var timeTrialDialog = {
 		    backgroundColor: '#303030',
 		    color: 'white',
-		    width: '90%',
-		    height: '90%',
+		    width: '100%',
+		    height: '100%',
 		    position: 'fixed',
 		    top: '0%',
 		    left: '50%',
-		    marginTop: '25px',
-		    marginLeft: '-45%'
+		    marginTop: '0px',
+		    marginLeft: '-50%',
+		    padding: '0px'
 		};
+	
+	var closeButtonStyle ={
+		fontSize: '0em'
+	};
 	
 	var buttonText = {
 		color : this.state.timeSwitch == 0 ? 'grey' : 'black'
@@ -124,7 +135,11 @@ class TimeTrialPopUp extends React.Component {
 				Timetrial
 			</div>
 	
-			 <SkyLight dialogStyles={timeTrialDialog} hideOnOverlayClicked ref={ref => this.customDialog = ref} >
+			<SkyLight 
+				closeButtonStyle={closeButtonStyle}
+				dialogStyles={timeTrialDialog} 
+				hideOnOverlayClicked ref={ref => this.customDialog = ref} 
+			>
 				<div className ="ttWrap">
 					<div className ="timeTrialTop">
 						
@@ -197,7 +212,7 @@ class TimeTrialPopUp extends React.Component {
 						</button>
 						<button 
 							className='ttButton' 
-							onClick={this.hideInput.bind(this)}
+							onClick={this.cancelGroup.bind(this)}
 						>
 						  Cancel
 						</button>

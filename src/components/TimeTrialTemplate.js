@@ -77,19 +77,21 @@ export default class TimeTrialTemplate extends React.Component {
 	
 		return (
 		    <div className ="ttQuad" background-color={this.state.finish == 0 ? '#584E72' : '#FFD700'}>
+				
+				<div className="ttInputName">
+					<input  
+						className="ttInputBoxStyle"
+				    	list="playerList" 
+				    	placeholder="Select Player" 
+						value={this.props.name}
+						onChange={(e)=>{this.setState({name: e.target.value})}} 
+				    	type="text" id="name" 
+					/>
+					<datalist id="playerList">
+					    {playerNames.map((element, i) => <option data-id={i} value={element.name} label={element.timeTrial}/>)}
+					</datalist>
+				</div>
 				<div className="ttSector">
-					<div className="ttInputName">
-						<input  
-					    	list="playerList" 
-					    	placeholder="Select Player" 
-							value={this.props.name}
-							onChange={(e)=>{this.setState({name: e.target.value})}} 
-					    	type="text" id="name" 
-						/>
-						<datalist id="playerList">
-						    {playerNames.map((element, i) => <option data-id={i} value={element.name} label={element.timeTrial}/>)}
-						</datalist>
-					</div>
 					<div className="ttZone">
 						<div className="ttFlag">
 							<img width={'50%'} src={typeof(this.state.players[this.state.name]) != "undefined" ? this.state.players[this.state.name].country.flagPathXL :"/img/flagsXL/XX.png"} />
@@ -98,11 +100,13 @@ export default class TimeTrialTemplate extends React.Component {
 							{this.state.stopSwitch == null ? formattedSeconds(this.props.timeElapsed) : formattedSeconds(this.state.stopTime)}
 						</div>
 					</div>
-				</div>
-				<div className="ttControlButton">
-					<button className="ttFinishButton" onClick={this.handleStopTap.bind(this)}>
-						Finish
-					</button>
+			
+			
+					<div className="ttControlButton">
+						<button className="ttFinishButton" onClick={this.handleStopTap.bind(this)}>
+							Finish
+						</button>
+					</div>
 				</div>
 		    </div>
 		);

@@ -32,6 +32,8 @@ export default class TimeTrialHeaderLine extends Component{
 		    			</div>
 		    		</div>
 		    	</div>
+		    	<div className="cDelete">
+	    		</div>
 		    </div>
 		);
 	}
