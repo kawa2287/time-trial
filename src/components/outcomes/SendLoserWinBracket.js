@@ -4,7 +4,7 @@ import * as NgmsInRnd from '../vsBracketMethods/baseMethods/NgamesInRound';
 import DetermineRoundNumber from '../vsBracketMethods/higherOrderMethods/DetermineRoundNumber';
 import Settings from '../../static/Settings';
 
-export default function SendLoserWinBracket(currentGameNum, roundNumber,losePlayer, bracketSpots, mode){
+export default function SendLoserWinBracket(currentGameNum, roundNumber,losePlayer, bracketSpots, mode,beginConstruction){
 	var coeff;
 	if(Settings.seedMode !== 'blind' || currentGameNum == bracketSpots - 1) {
 	 	coeff = 0;
@@ -26,6 +26,6 @@ export default function SendLoserWinBracket(currentGameNum, roundNumber,losePlay
 		botGame = 2 * (destGame - bracketSpots + NgmsInRnd.loserBracket(bracketSpots,destGameRnd, mode));
 	}
 
-	this.SetPlayerInDestGame(currentGameNum, destGame, topGame, botGame, losePlayer);
+	this.SetPlayerInDestGame(currentGameNum, destGame, topGame, botGame, losePlayer,beginConstruction);
 
 }

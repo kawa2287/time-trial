@@ -29,7 +29,7 @@ export default class TileTeam extends React.Component {
 				return eliminatedColor;
 			} else if (name == this.props.loser) {
 				return loserColor;
-			} else if (name === '') {
+			} else if (name === '' || name.slice(0, 5) == 'Winne' || name.slice(0, 5) == 'Loser') {
 				return (emptyColor);
 			} else if (hover === true) {
 				return hoverColor;
@@ -41,7 +41,7 @@ export default class TileTeam extends React.Component {
 				return eliminatedColor;
 			} else if(name == this.props.loser1 || name == this.props.loser2){
 				return loserColor;
-			} else if (name === '') {
+			} else if (name === '' || name.slice(0, 5) == 'Winne' || name.slice(0, 5) == 'Loser') {
 				return (emptyColor);
 			} else if (hover === true) {
 				return hoverColor;

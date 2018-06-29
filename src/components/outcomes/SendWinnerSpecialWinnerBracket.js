@@ -1,6 +1,6 @@
 'use strict';
 
-export default function SendWinnerSpecialLoserBracket(currentGameNum, winPlayer,losePlayer, bracketSpots){
+export default function SendWinnerSpecialLoserBracket(currentGameNum, winPlayer,losePlayer, bracketSpots,beginConstruction){
 	var destGame = bracketSpots*2 - 1;
 	var loserEliminated = losePlayer.losses == 2 ? true : false;
 

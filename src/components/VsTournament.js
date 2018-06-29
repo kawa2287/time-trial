@@ -6,6 +6,7 @@ import { Stage, Group, Layer, Rect, Text } from "react-konva";
 import Colors from '../static/Colors';
 import divisionNames from '../data/divisionNames';
 import DivisionImage from './matchup/DivisionImage';
+import Firebase from '../firebase';
 
 import Button from './Button';
 import Settings from '../static/Settings';
@@ -19,6 +20,7 @@ import CreateGmsFinalsBracket from './vsBracketMethods/higherOrderMethods/Create
 import DetermineBracketPower from './vsBracketMethods/baseMethods/DetermineBracketPower';
 import * as NgmsInRnd from './vsBracketMethods/baseMethods/NgamesInRound';
 import WinnerLoserHandler from './outcomes/WinnerLoserHandler';
+import StartOutcomes from './outcomes/StartOutcomes';
 import SetPlayerInDestGame from './outcomes/SetPlayerInDestGame';
 import SetPlayerInDestGame4P from './outcomes/SetPlayerInDestGame4P';
 import SendWinnerWinBracket from './outcomes/SendWinnerWinBracket';
@@ -68,6 +70,8 @@ var boardHeight;
 var gVars = {};
 var mode;
 var divisions=[];
+
+var beginConstruction = true;
 
 
 function shuffle(array) {
@@ -136,6 +140,7 @@ export default class VsTournament extends React.Component {
 		//bind imported state dependent functions
 		this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
 		this.WinnerLoserHandler = WinnerLoserHandler.bind(this);
+		this.StartOutcomes = StartOutcomes.bind(this);
 		this.SetPlayerInDestGame = SetPlayerInDestGame.bind(this);
 		this.SetPlayerInDestGame4P = SetPlayerInDestGame4P.bind(this);
 		this.SendWinnerWinBracket = SendWinnerWinBracket.bind(this);
@@ -246,6 +251,13 @@ export default class VsTournament extends React.Component {
 			
 		}
 		
+		//try adding data to firebase
+		const playersRef = Firebase.database().ref('players');
+		console.log('seededArray',seededArray);
+		for (var p = 0; p < seededArray.length; p++){
+			playersRef.push(seededArray[p]);
+		}
+		
 		//Populate Start Round in Master Game Object
 		var sift = 1;
 		for (var k = 0; k < seededArray.length; k++){
@@ -272,12 +284,27 @@ export default class VsTournament extends React.Component {
 			}
 		}
 		
+		//Populate rest of games in Master Game Object
+		for (var k in this.state.masterGameObject){
+		
+			this.StartOutcomes(
+				this.state.masterGameObject[k].gameNumber,
+				bracketSpots,
+				this.state.masterGameObject[k].bracket,
+				bracketPower,
+				mode,
+				beginConstruction
+			);
+			
+		}
 		
 		
 		//protect against window reload
 		window.onbeforeunload = function() {
 		    return "Data will be lost if you leave the page, are you sure?";
 		};
+		
+		beginConstruction = false;
 	}
 	
 	componentDidMount() {
@@ -372,6 +399,8 @@ export default class VsTournament extends React.Component {
 	
 	
 	render() {
+		
+		console.log('masterGameObject',this.state.masterGameObject);
 		
 		var matchupDialog = {
 			width: mode=='VS'?'1000':'1400',

@@ -3,7 +3,7 @@
 import * as NgmsInRnd from '../vsBracketMethods/baseMethods/NgamesInRound';
 import DetermineRoundNumber from '../vsBracketMethods/higherOrderMethods/DetermineRoundNumber';
 
-export default function SendWinnerLoseBracket4P(currentGameNum, roundNumber,w1,w2, bracketSpots, mode){
+export default function SendWinnerLoseBracket4P(currentGameNum, roundNumber,w1,w2, bracketSpots, mode,beginConstruction){
 	var destGame;
 	if (roundNumber % 2 == 0) {
 		destGame = (currentGameNum % 2 == 0 ? currentGameNum : currentGameNum + 1)*0.5 + bracketSpots/2 - NgmsInRnd.loserBracket(bracketSpots,roundNumber,mode)/2;
@@ -23,5 +23,5 @@ export default function SendWinnerLoseBracket4P(currentGameNum, roundNumber,w1,w
 		botGame = 2 * (destGame - bracketSpots/2 + NgmsInRnd.loserBracket(bracketSpots,destGameRnd,mode));
 	}
 
-	this.SetPlayerInDestGame4P(currentGameNum, destGame, topGame, botGame, w1,w2);
+	this.SetPlayerInDestGame4P(currentGameNum, destGame, topGame, botGame, w1,w2,beginConstruction);
 }
