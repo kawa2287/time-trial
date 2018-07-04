@@ -38,3 +38,5 @@ jspm_packages
 
 # Babel cache directory
 babel_cachesrc/firebase
+
+babel_cache
