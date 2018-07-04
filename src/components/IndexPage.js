@@ -126,7 +126,7 @@ export default class IndexPage extends React.Component {
 	  	}
 	  	this.getBestTime(this.state.players);
 	  	// --------------------------------------------------------------------------------
-		*/
+		*
 
     }
   
