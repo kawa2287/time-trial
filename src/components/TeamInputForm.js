@@ -114,12 +114,6 @@ export default class TeamInputForm extends React.Component {
     }
   
     render() {
-    	
-    	console.log('this.state.name=',this.state.name);
-    	console.log('this.state.country=',this.state.country);
-    	console.log('this.props.name=',this.props.name);
-    	console.log('this.props.country=',this.props.country);
-    	console.log('-----------------------------');
 	
 		var countryNames = [];
 	

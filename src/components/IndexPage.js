@@ -107,10 +107,10 @@ export default class IndexPage extends React.Component {
     componentDidMount() {
     	
   	
-
+		/*
   		//this section is to populate random number of teams... delete for production use
 	  	//---------------------------------------------------------------------------------
-	  	var nTeams = 16;
+	  	var nTeams = 14;
 	  	var countryArr = [];
 	  	for (var item in countries[0]){
 	  		countryArr.push(countries[0][item].name);
@@ -122,11 +122,11 @@ export default class IndexPage extends React.Component {
 	  			
 	  		this.addTeam(name, countryArr[this.randomIntFromInterval(0,countryArr.length)], 0);
 	  		
-	  		this.addTimeTrial(name, Math.round(this.randomIntFromInterval(1500,2500))/100);
+	  		this.addTimeTrial(name, Math.round(this.randomIntFromInterval(1500,4500))/100);
 	  	}
 	  	this.getBestTime(this.state.players);
 	  	// --------------------------------------------------------------------------------
- 
+		*/
 
     }
   
@@ -136,6 +136,7 @@ export default class IndexPage extends React.Component {
     	var seededButtonColorsVS;
     	var blindButtonColors4P;
     	var seededButtonColors4P;
+    	var vsBlindMobilePath;
     	var vsBlindJumblePath;
     	var vsSeededJumblePath;
     	var vsSeededDivPath;
@@ -159,6 +160,15 @@ export default class IndexPage extends React.Component {
     		};
     		vsBlindJumblePath= {
     			pathname:"/VsTournament", 
+    			state:{
+    				players : this.state.players, 
+    				mode : 'VS', 
+    				seeding:'blind', 
+    				order:'random'
+    			}
+    		};
+    		vsBlindMobilePath= {
+    			pathname:"/VsMobile", 
     			state:{
     				players : this.state.players, 
     				mode : 'VS', 
@@ -281,6 +291,7 @@ export default class IndexPage extends React.Component {
 	    					VS Tournament
     					</div>
 					</div>
+					<Link className="secondary-row" style={blindButtonColorsVS} to={vsBlindMobilePath}>Blind Draw - For Mobile</Link>
 					<Link className="secondary-row" style={blindButtonColorsVS} to={vsBlindJumblePath}>Blind Draw - Loser Jumble</Link>
 					<Link className="secondary-row" style={seededButtonColorsVS} to={vsSeededJumblePath}>Seeded Draw - Loser Jumble</Link>
 					<Link className="secondary-row" style={seededButtonColorsVS} to={vsSeededDivPath}>Seeded Draw - Division Structured</Link>

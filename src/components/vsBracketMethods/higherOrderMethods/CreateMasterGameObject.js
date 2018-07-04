@@ -35,7 +35,8 @@ export default function CreateMasterGameObject(nGamesTotal,bracketSpots, mode){
 				loserEliminated : false,
 				playerAtime : 0,
 				playerBtime : 0,
-				gameTitle:null
+				gameTitle:null,
+				filledGmNum: 0
 			};
     	} else {
     		masterGameObj[game] = {

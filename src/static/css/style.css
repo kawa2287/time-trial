@@ -861,3 +861,296 @@ hr.style14 {
   margin-bottom: -0.5px;
 }
 
+.moblieMainContainer{
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	height: 100%;
+}
+
+.mobileTopBand{
+	display: flex;
+	flex-direction: row;
+	height: 50px;
+	width: 100%;
+}
+
+.mobileMid{
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	width: 100%;
+}
+
+.mobileBottom{
+	display: flex;
+	flex-direction: row;
+	height: 50px;
+	width: 100%;
+}
+
+.gLTile{
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+	height: 60px;
+	animation-name: scrollIn;
+	animation-duration: 2s;
+	animation-fill-mode: forwards;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	border-collapse: collapse;
+	border-radius: 5px;
+	background: #786B9C;
+	margin-top: 1px;
+	margin-bottom: 1px;
+	color: white;
+}
+
+.gLtitleContainer{
+	display: flex;
+	flex-direction:row;
+	height: 16px;
+	width: 100%;
+	align-items: center;
+    justify-content: center;
+    font-size: xx-small;
+    background: lightslategray;
+}
+
+.gLTitle{
+	display: flex;
+    flex: 5;
+    align-items: center;
+    justify-content: center;
+    font-size: small;
+}
+
+.gLsymbol{
+	display: flex;
+	flex: 1;
+    max-height: 100%;
+}
+
+.gLinfo{
+	display: flex;
+	flex-direction: column;
+	flex: 20;
+}
+
+.gLgameNum{
+	display: flex;
+	flex: 1;
+	min-width: 30px;
+	align-items: center;
+    justify-content: center;
+    background: dimgrey;
+}
+
+.gLplayer{
+	display: flex;
+	flex: 20;
+	font-size: x-small;
+}
+
+.gLvs{
+	display: flex;
+	flex: 1;
+    min-width: 10px;
+    color: lightgrey;
+	align-items: center;
+    justify-content: center;
+    font-size: xx-small;
+}
+
+.gLmatchup{
+	display: flex;
+	flex:1;
+}
+
+.gLname{
+	display: flex;
+	flex:5;
+	overflow: hidden;
+    white-space: initial;
+    text-overflow: ellipsis;
+    align-items: center;
+    margin-left: 5px;
+    margin-right: 5px;
+    justify-content: center;
+    text-align: center;
+}
+
+.gLflag{
+	display: flex;
+	flex:3;
+}
+
+.gLseed{
+	display: flex;
+	flex:1;
+    align-items: center;
+    justify-content: center;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.mmContainer{
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	height: 100%;
+}
+
+.mmTitle{
+	color: antiquewhite;
+    display: flex;
+    flex: 2;
+    height: 20px;
+    font-size: x-large;
+    font-variant: small-caps;
+    align-items: center;
+    justify-content: center;
+}
+
+.mmSubText{
+	color: lightslategrey;
+    display: flex;
+    flex: 1;
+    font-size: small;
+    font-variant: small-caps;
+    align-items: center;
+    justify-content: center;
+}
+
+.mmPlayerNameContainer{
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    align-items: center;
+}
+
+.mmPlayerName{
+    display: flex;
+    flex: 1;
+    height: 16px;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: medium;
+}
+.mmCountryName{
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: xx-small;
+}
+
+.mmFlagContainer{
+	display: flex;
+	flex:3;
+	flex-direction:row;
+}
+
+.mmFlag{
+    display: flex;
+    flex: 2;
+    justify-content: center;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.mmWinChanceBackground{
+	display: flex;
+	max-height: 20px;
+	flex:1;
+	background-color: dimgrey;
+	margin: 20px
+}
+
+.mmWinChance{
+	height: 30px; 
+	position: relative;
+	background: dimgrey;
+	box-shadow: inset 0 -1px 1px rgba(255,255,255,0.3);
+    margin: 20px;
+}
+
+.mmWinChance > span {
+	animation-name: expandWidth;
+	animation-duration: 1s;
+    display: block;
+    height: 100%;
+    background-image: linear-gradient(
+	    center bottom,
+	    rgb(43,194,83) 37%,
+	    rgb(84,240,84) 69%
+	  );
+    box-shadow: 
+    	inset 0 2px 9px  rgba(255,255,255,0.3),
+    	inset 0 -2px 6px rgba(0,0,0,0.4);
+    position: relative;
+    overflow: hidden;
+}
+
+.mmStatsContainer{
+	display: flex;
+	flex:6;
+	flex-direction:row;
+}
+
+.mmPlayerContainer{
+	display: flex;
+	flex:20;
+	flex-direction:column;
+	color: white;
+}
+
+.mmTextContainer{
+	display: flex;
+	flex:1;
+	flex-direction:column;
+}
+
+.mmTextHeadlines{
+    display: flex;
+    flex: 1;
+    color: antiquewhite;
+    font-variant: small-caps;
+    align-items: center;
+    justify-content: center;
+}
+
+.mmTextStats{
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+}
+
+.mmButtonContainer{
+	display: flex;
+	flex-direction: row;;
+	flex: 2;
+}
+
+.mmButton{
+    display: flex;
+    flex: 1;
+    border: 2px solid #969696;
+    margin: 0.5em;
+    border-radius: 1em;
+    align-items: center;
+    justify-content: center;
+    background-color: #787878;
+    color: #dfdfdf;
+    font-variant: small-caps;
+}
+
+@keyframes expandWidth {
+   0% { width: 0; }
+}
+

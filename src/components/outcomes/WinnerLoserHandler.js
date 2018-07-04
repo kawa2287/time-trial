@@ -6,6 +6,14 @@ import DetermineBracket from '../vsBracketMethods/baseMethods/DetermineBracket';
 import DetermineBracketPower from '../vsBracketMethods/baseMethods/DetermineBracketPower';
 import Settings from '../../static/Settings';
 
+function sendTwo(f1,f2) {
+  setTimeout(function() {
+    f1;
+    f2;
+  }, 3000);
+}
+
+
 export default function WinnerLoserHandler (WLpkg,RTpkg){
 	
 	
@@ -46,10 +54,8 @@ export default function WinnerLoserHandler (WLpkg,RTpkg){
 	    	}
 	    	
 	    	if( winPlayer.timeTrial == '-' && (winPlayer.avgTime == 0 || winPlayer.avgTime == null || winPlayer.avgTime == '-')){
-	    		console.log('part 1');
 	    		winPlayer.avgTime = winTime;
 	    	} else {
-	    		console.log('part 2');
 	    		winPlayer.avgTime = DetermineAvgTime(winPlayer.timeTrial,winPlayer.totalTime,winPlayer.wins,winPlayer.losses, winPlayer.nLastPlace);
 	    	}
 	    	
@@ -69,9 +75,12 @@ export default function WinnerLoserHandler (WLpkg,RTpkg){
 	    	}
 	    }
 	    
+	    console.log('currentGameNum',currentGameNum);
+	    console.log('winPlayer.name',winPlayer.name);
+	    console.log('losePlayer.name',losePlayer.name);
+	    
 	    // set game object with results
-	    this.setState({
-	    	masterGameObject : {
+	    this.state.masterGameObject = {
 	    		...this.state.masterGameObject,
 	    		[currentGameNum] : {
 	    			...this.state.masterGameObject[currentGameNum],
@@ -82,13 +91,14 @@ export default function WinnerLoserHandler (WLpkg,RTpkg){
 	    			playerAtime : WLpkg.playerAtime,
 	    			playerBtime : WLpkg.playerBtime
 	    		}
-	    	}
-	    });
+	    	};
 	
 		// send player based on bracket Location
 		if (currentBracket == "startBracket"){
+			
 			this.SendWinnerWinBracket(currentGameNum, roundNumber, winPlayer, bracketSpots);
 			this.SendLoserStartBracket(currentGameNum, losePlayer, bracketSpots);
+		
 		} else if (currentBracket == "winnerBracket"){
 			this.SendWinnerWinBracket(currentGameNum, roundNumber, winPlayer, bracketSpots);
 			this.SendLoserWinBracket(currentGameNum, roundNumber,losePlayer, bracketSpots, mode);

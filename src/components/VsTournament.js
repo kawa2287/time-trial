@@ -6,7 +6,7 @@ import { Stage, Group, Layer, Rect, Text } from "react-konva";
 import Colors from '../static/Colors';
 import divisionNames from '../data/divisionNames';
 import DivisionImage from './matchup/DivisionImage';
-import Firebase from '../firebase';
+//import Firebase from '../firebase';
 
 import Button from './Button';
 import Settings from '../static/Settings';
@@ -251,12 +251,14 @@ export default class VsTournament extends React.Component {
 			
 		}
 		
+		/*
 		//try adding data to firebase
 		const playersRef = Firebase.database().ref('players');
 		console.log('seededArray',seededArray);
 		for (var p = 0; p < seededArray.length; p++){
 			playersRef.push(seededArray[p]);
 		}
+		*/
 		
 		//Populate Start Round in Master Game Object
 		var sift = 1;
