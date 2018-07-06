@@ -35,6 +35,7 @@
     "babel-loader": "^6.2.10",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "http-server": "^0.9.0",
+    "svg-react-loader": "^0.4.5",
     "webpack": "^1.13.3"
   }
 }

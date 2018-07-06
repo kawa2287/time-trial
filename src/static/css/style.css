@@ -985,6 +985,8 @@ hr.style14 {
 .gLflag{
 	display: flex;
 	flex:3;
+    align-items: center;
+    justify-content: center;
 }
 
 .gLseed{

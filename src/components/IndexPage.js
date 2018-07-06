@@ -107,14 +107,16 @@ export default class IndexPage extends React.Component {
     componentDidMount() {
     	
   	
-		/*
+		
   		//this section is to populate random number of teams... delete for production use
 	  	//---------------------------------------------------------------------------------
 	  	var nTeams = 14;
+	  	
 	  	var countryArr = [];
 	  	for (var item in countries[0]){
 	  		countryArr.push(countries[0][item].name);
 	  	}
+	  	
 	  	
 	  	for (var i = 0 ; i <nTeams; i++){
 	  		var name = demoNames[this.randomIntFromInterval(0,demoNames.length)] + 
@@ -126,7 +128,7 @@ export default class IndexPage extends React.Component {
 	  	}
 	  	this.getBestTime(this.state.players);
 	  	// --------------------------------------------------------------------------------
-		*/
+		
 
     }
   
@@ -139,7 +141,9 @@ export default class IndexPage extends React.Component {
     	var vsBlindMobilePath;
     	var vsBlindJumblePath;
     	var vsSeededJumblePath;
+    	var vsSeededJumbleMobilePath;
     	var vsSeededDivPath;
+    	var vsSeededDivMobilePath;
     	var Blind4PJumblePath;
     	var Seeded4PJumblePath;
     	var Seeded4PDivPath;
@@ -220,8 +224,28 @@ export default class IndexPage extends React.Component {
     				order:'timeTrial'
     			}
     		};
+    		vsSeededJumbleMobilePath= {
+    			pathname:"/VsMobile", 
+    			state:{
+    				players : this.state.players, 
+    				mode : 'VS', 
+    				seeding:'blind', 
+    				order:'timeTrial'
+    			}
+    		};
+    		
+    		
     		vsSeededDivPath= {
     			pathname:"/VsTournament", 
+    			state:{
+    				players : this.state.players, 
+    				mode : 'VS', 
+    				seeding:'seeded', 
+    				order:'timeTrial'
+    			}
+    		};
+    		vsSeededDivMobilePath= {
+    			pathname:"/VsMobile", 
     			state:{
     				players : this.state.players, 
     				mode : 'VS', 
@@ -292,6 +316,8 @@ export default class IndexPage extends React.Component {
     					</div>
 					</div>
 					<Link className="secondary-row" style={blindButtonColorsVS} to={vsBlindMobilePath}>Blind Draw - For Mobile</Link>
+					<Link className="secondary-row" style={seededButtonColorsVS} to={vsSeededJumbleMobilePath}>Seeded Jumble - For Mobile</Link>
+					<Link className="secondary-row" style={seededButtonColorsVS} to={vsSeededDivMobilePath}>Seeded Division - For Mobile</Link>
 					<Link className="secondary-row" style={blindButtonColorsVS} to={vsBlindJumblePath}>Blind Draw - Loser Jumble</Link>
 					<Link className="secondary-row" style={seededButtonColorsVS} to={vsSeededJumblePath}>Seeded Draw - Loser Jumble</Link>
 					<Link className="secondary-row" style={seededButtonColorsVS} to={vsSeededDivPath}>Seeded Draw - Division Structured</Link>

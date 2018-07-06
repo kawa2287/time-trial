@@ -66,6 +66,7 @@ export default class MobileMatchup extends React.Component {
 			this.state.loser,
 			this.props.playerA.name=='BYE'||this.props.playerB.name=='BYE'?true:false
 		);
+		this.handleCancel();
 	}
 	
 	handleWinnerClickA(){

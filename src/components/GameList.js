@@ -1,5 +1,6 @@
 import React from 'react';
 
+
 var winnerStyle ={
     color: 'yellow',
     fontWeight: 'bold'	
@@ -10,9 +11,6 @@ var loserStyle = {
     textDecoration: 'line-through'
 };
 
-var gameComplete={
-	backgroundColor:'darkslateblue'
-};
 
 var gameWaiting={
 	backgroundColor:'darkslategrey',
@@ -27,7 +25,7 @@ export default class GameList extends React.Component {
 	
 	BackgroundColor(status){
 		if(status == 'COMPLETE'){
-			return gameComplete;
+			return {backgroundColor:'#303030'};
 		} else {
 			if (this.props.playerA == null || this.props.playerB==null){
 				return gameWaiting;
@@ -42,7 +40,7 @@ export default class GameList extends React.Component {
 	
 	BackgroundSeedColor(status){
 		if(status == 'COMPLETE'){
-			return null;
+			return {backgroundColor:'#303030'};
 		} else {
 			if (this.props.playerA == null || this.props.playerB==null){
 				return null;
@@ -65,12 +63,24 @@ export default class GameList extends React.Component {
 		}
 	}
 	
+	
 	TextStyle(status,player,winner,loser){
 		
 		if(status == 'COMPLETE' && player == winner){
 			return winnerStyle;
 		} else if ( status =='COMPLETE' && player == loser) {
 			return loserStyle;
+		} else {
+			return null;
+		}
+	}
+	
+	FlagStyle(status,player,winner,loser){
+		
+		if(status == 'COMPLETE' && player == winner){
+			return null;
+		} else if ( status =='COMPLETE' && player == loser) {
+			return {grayscale:'1',opacity:'0.4'};
 		} else {
 			return null;
 		}
@@ -129,6 +139,7 @@ export default class GameList extends React.Component {
 						<div className="gLsymbol">
 							<img src={this.DetermineSymbol()}/>
 						</div>
+						
 						<h1 className="gLTitle">
 							{this.props.gameTitle}
 						</h1>
@@ -154,7 +165,17 @@ export default class GameList extends React.Component {
 							>
 								{this.props.playerA==null?null:this.props.playerA.name}
 							</div>
-							<div className="gLflag">
+							<div 
+								className="gLflag"
+								style={
+									this.FlagStyle(
+										this.props.gameStatus,
+										this.props.playerA==null?null:this.props.playerA.name,
+										this.props.winner,
+										this.props.loser
+									)
+								}
+							>
 								<img src={this.props.playerA==null?null:this.props.playerA.country.flagPathSVG}/>
 							</div>
 							<div className="gLseed"							>
@@ -168,7 +189,17 @@ export default class GameList extends React.Component {
 							<div className="gLseed">
 								{this.props.playerB==null?null:this.props.playerB.seed}
 							</div>
-							<div className="gLflag">
+							<div 
+								className="gLflag"
+								style={
+									this.FlagStyle(
+										this.props.gameStatus,
+										this.props.playerB==null?null:this.props.playerB.name,
+										this.props.winner,
+										this.props.loser
+									)
+								}
+							>
 								<img src={this.props.playerB==null?null:this.props.playerB.country.flagPathSVG}/>
 							</div>
 							<div 
