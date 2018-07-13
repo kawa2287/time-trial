@@ -80,7 +80,8 @@ export default class GameList extends React.Component {
 		if(status == 'COMPLETE' && player == winner){
 			return null;
 		} else if ( status =='COMPLETE' && player == loser) {
-			return {grayscale:'1',opacity:'0.4'};
+			return {
+				filter:'grayscale(1)',opacity:'0.4'};
 		} else {
 			return null;
 		}

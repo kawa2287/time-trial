@@ -2,12 +2,12 @@
 
 import React from 'react';
 import SkyLight from 'react-skylight';
-import { Stage, Group, Layer, Rect, Text } from "react-konva";
 import Colors from '../static/Colors';
 import divisionNames from '../data/divisionNames';
-import DivisionImage from './matchup/DivisionImage';
-//import Firebase from '../firebase';
-import GameList from './GameList';
+import Firebase from '../firebase';
+import GameListReceiver from './GameListReceiver';
+import StatsMobileReceiver from './StatsMobileReceiver';
+import BracketReceiver from './BracketReceiver';
 import MobileMatchup from './MobileMatchup';
 
 import Settings from '../static/Settings';
@@ -59,12 +59,17 @@ var closeButtonStyle ={
 //------------------------------------------------------------------
 //declare global variables here
 //------------------------------------------------------------------
+var GamesDB;
+
 var loserArr = [];
 var winnerArr = [];
 var mastArr = [];
 var seededArray = [];
 var elimRoundsArr = [];
 var winRoundsArr = [];
+var tempRoundNamesArray = [];
+var roundNamesArray = [];
+var cleanRoundNamesArray = [];
 
 
 var teams;
@@ -77,9 +82,6 @@ var mode;
 var divisions=[];
 
 var beginConstruction = true;
-
-var filledGmNum;
-
 
 function shuffle(array) {
   var currentIndex = array.length, temporaryValue, randomIndex;
@@ -123,7 +125,8 @@ export default class VsMobile extends React.Component {
 			playerA:null,
 			playerB:null,
 			gameTitle:null,
-			gameNumber:null
+			gameNumber:null,
+			render:'Stats'
 		};
 		
 		// set settings
@@ -135,7 +138,9 @@ export default class VsMobile extends React.Component {
 			vizGeo.lColAr.push("#"+((1<<24)*Math.random()|0).toString(16));
 		}
 		
-		//TODO DATABASE/////
+		/////DATABASE/////
+		GamesDB = Firebase.database().ref(this.props.location.state.gameName);
+		
 	
 		
 		//bind imported state dependent functions
@@ -158,7 +163,7 @@ export default class VsMobile extends React.Component {
 		teams = Object.keys(this.props.location.state.players).length;
 		bracketSpots = Math.pow(2,DetermineBracketPower(teams));
 		bracketPower = DetermineBracketPower(teams);
-		nGamesTotal = bracketSpots*2 * (mode == 'VS' ? 1 : 0.5)-2;
+		nGamesTotal = bracketSpots*2 * (mode == 'VS' ? 1 : 0.5)-1;
 
 		var toggle = 0;
 		
@@ -169,18 +174,20 @@ export default class VsMobile extends React.Component {
 		}
 		
 		//create winnerArr
-		var winRounds = bracketPower-(mode == 'VS' ? 0 : 1);
+		var winRounds = bracketPower+(mode == 'VS' ? 1 : 0);
 		for (k = 0; k <= winRounds; k++){
 			winnerArr.push(Math.ceil(NgmsInRnd.winnerBracket(bracketSpots,k,mode)));  //ceil feels like a hack
 			if( k == 0) {
 				winRoundsArr.push('Round of ' + Math.pow(2,bracketPower-k)); 
 			} else if (k == winRounds){
-				winRoundsArr.push('Championship');
+				winRoundsArr.push('Championship 2');
 			} else if (k ==winRounds-1){
-				winRoundsArr.push('Semi-Final');
+				winRoundsArr.push('Championship 1');
 			} else if (k == winRounds -2){
-				winRoundsArr.push('Conference Final');
+				winRoundsArr.push('Semi Final');
 			} else if (k == winRounds -3){
+				winRoundsArr.push('Conference Final');
+			} else if (k == winRounds -4){
 				winRoundsArr.push('Division Final');
 			} else {
 				winRoundsArr.push('Round of ' + Math.pow(2,bracketPower-k)); 
@@ -220,9 +227,6 @@ export default class VsMobile extends React.Component {
 			
 		//Add Props to Seeded Array
 		
-		console.log('mastArr',mastArr);
-		console.log('tempPlayerArr',tempPlayerArr);
-		console.log('divisions',divisions);
 		for (var item in mastArr) {
 			for (var y = 0; y < tempPlayerArr.length; y++){
 				if(mastArr[item] == tempPlayerArr[y].seed){
@@ -252,25 +256,14 @@ export default class VsMobile extends React.Component {
 			
 		}
 		
-		//try adding data to firebase
-		/*
-		const playersRef = Firebase.database().ref('players');
-		console.log('seededArray',seededArray);
-		for (var p = 0; p < seededArray.length; p++){
-			playersRef.push(seededArray[p]);
-		}
-		*/
 		
 		//Populate Start Round in Master Game Object
 		var sift = 1;
-		filledGmNum = 1;
 		for (var k = 0; k < seededArray.length; k++){
 			if (mode == 'VS'){
 				if (k % 2 == 0){
 					this.state.masterGameObject[k/2 + 1].playerA = seededArray[k];
 					this.state.masterGameObject[k/2 + 1].spotsFilled +=1;
-					this.state.masterGameObject[k/2 + 1].filledGmNum = filledGmNum;
-					filledGmNum += 1;
 				} else {
 					this.state.masterGameObject[(k+1)/2].playerB = seededArray[k];
 					this.state.masterGameObject[(k+1)/2].spotsFilled +=1;
@@ -295,7 +288,7 @@ export default class VsMobile extends React.Component {
 		
 		//Add titles to games for win rounds
 		var gmCounter = 1;
-		for (k = 0; k < winRoundsArr.length; k++){
+		for (k = 0; k < winRoundsArr.length - 1; k++){
 			for (y = 1; y <= winnerArr[k]; y++){
 				this.state.masterGameObject[gmCounter].gameTitle = winRoundsArr[k];
 				gmCounter += 1;
@@ -310,6 +303,23 @@ export default class VsMobile extends React.Component {
 			}
 		}
 		
+		//Add title to Championship 2 Round
+		this.state.masterGameObject[gmCounter].gameTitle = winRoundsArr[winRoundsArr.length -1];
+		
+		//combine array names into one array to pass to Bracket Receiver
+		elimRoundsArr.reverse();
+		tempRoundNamesArray = elimRoundsArr.concat(winRoundsArr);
+		
+		for (var i = 0; i < tempRoundNamesArray.length; i++){
+			roundNamesArray.push(
+				<h1 key={i} className="brHeading">
+					{tempRoundNamesArray[i]}
+				</h1>
+			);
+			cleanRoundNamesArray.push(tempRoundNamesArray[i]);
+		}
+		
+		
 		//Populate rest of games in Master Game Object
 		for (var k in this.state.masterGameObject){
 			this.StartOutcomes(
@@ -322,14 +332,14 @@ export default class VsMobile extends React.Component {
 			);
 		}
 		
+
 		//protect against window reload
 		window.onbeforeunload = function() {
 		    return "Data will be lost if you leave the page, are you sure?";
 		};
 		
 		beginConstruction = false;
-		
-		
+		GamesDB.set(this.state.masterGameObject);
 		
 	}
 	
@@ -360,6 +370,38 @@ export default class VsMobile extends React.Component {
 			});
 		}
 	}
+	
+	HandleRender(compName,e){
+		this.setState({render:compName});
+	}
+	
+	RenderSubComp(){
+        switch(this.state.render){
+            case 'GameList': 
+            	return (
+            		<GameListReceiver
+            			masterGameObject={this.state.masterGameObject}
+            			ShowMatchup={this.ShowMatchup.bind(this)}
+            		/>
+        		);
+    		case 'Stats': 
+            	return (
+            		<StatsMobileReceiver
+            			seededArray={seededArray}
+            		/>
+        		);
+    		case 'Bracket': 
+            	return (
+            		<BracketReceiver
+            			masterGameObject={this.state.masterGameObject}
+            			roundNamesArray = {roundNamesArray}
+            			cleanRoundNamesArray = {cleanRoundNamesArray}
+            			startValue = {loserArr.length}
+            			height = {bracketSpots/2*120}
+            		/>
+        		);
+        }
+    }
 	
 	
 	HandleSubmit(gameNumber,winner,loser,byeRound){
@@ -406,57 +448,14 @@ export default class VsMobile extends React.Component {
 		});
 		
 	}
+	
+	
 
 	render() {
 		
-		var gameListArray = [];
-		var filledGmListArray = [];
+		//sendMasterGameArray to Firebase
+		GamesDB.set(JSON.parse( JSON.stringify(this.state.masterGameObject) ) );
 		
-		//determine if game has been filled by at least one player
-		for (var k in this.state.masterGameObject){
-			if (this.state.masterGameObject[k].spotsFilled > 0 && this.state.masterGameObject[k].filledGmNum == 0){
-				this.state.masterGameObject[k].filledGmNum = filledGmNum;
-				filledGmNum += 1;
-			}
-		}
-		
-		// push filled games into temp array
-		for (var k in this.state.masterGameObject){
-			if(this.state.masterGameObject[k].spotsFilled > 0){
-				filledGmListArray.push(this.state.masterGameObject[k]);
-			}
-		}
-		
-		// sort temp array
-		filledGmListArray.sort(function(a, b) {
-			
-		    if (a.filledGmNum < b.filledGmNum) {
-		    	return -1;
-		    }
-		    else if (a.filledGmNum  > b.filledGmNum) {
-		        return 1;
-		    }
-		});
-		
-		
-		for (k = 0; k < filledGmListArray.length; k++){
-			gameListArray.push(
-				<GameList
-					gameNumber = {filledGmListArray[k].gameNumber}
-					gameTitle = {filledGmListArray[k].gameTitle}
-					playerA = {filledGmListArray[k].playerA}
-					playerB = {filledGmListArray[k].playerB}
-					gameStatus = {filledGmListArray[k].status}
-					winner = {filledGmListArray[k].winner}
-					loser = {filledGmListArray[k].loser}
-					spotsFilled = {filledGmListArray[k].spotsFilled}
-					showMatchup ={this.ShowMatchup.bind(this)}
-					
-				/>
-			);
-		}
-		
-		console.log(this.state.masterGameObject);
 		
 		return (
 			<div className="moblieMainContainer">
@@ -474,12 +473,31 @@ export default class VsMobile extends React.Component {
 		    			gameNumber={this.state.gameNumber}
 		    		/>
 			    </SkyLight>
-				<div className="mobileTopBand">
-				</div>
+				
 				<div className="mobileMid">
-					{gameListArray.map(element => element)}
+					{this.RenderSubComp()}
 				</div>
-				<div className="mobileBottom">
+				<div className="mobileBotBand">
+					<div className="mmButtonContainer">
+						<div 
+							className="mmButton" 
+							onClick={this.HandleRender.bind(this,'GameList')}
+						>
+							Game List
+						</div>
+						<div 
+							className="mmButton" 
+							onClick={this.HandleRender.bind(this,'Stats')}
+						>
+							Stats
+						</div>
+						<div 
+							className="mmButton" 
+							onClick={this.HandleRender.bind(this,'Bracket')}
+						>
+							Bracket
+						</div>
+					</div>
 				</div>
 			</div>
 		);

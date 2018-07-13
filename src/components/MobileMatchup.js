@@ -34,6 +34,11 @@ var submitFalseStyle = {
 	background : 'bottom'
 };
 
+var seedStyle = {
+	fontSize:'x-large',
+	fontWeight:'bold'
+};
+
 var playerAwinChance;
 var playerBwinChance;
 
@@ -83,6 +88,24 @@ export default class MobileMatchup extends React.Component {
 			loser: this.props.playerA,
 			submit:true
 		});
+	}
+	
+	DetermineSymbol(player){
+		if (player == null){
+			return null;
+		} else {
+			if(player.mascot =='Spades'){
+				return '/img/divisions/Spades.svg';
+			}else if(player.mascot =='Clubs'){
+				return '/img/divisions/Clubs.svg';
+			} else if(player.mascot =='Diamonds'){
+				return '/img/divisions/Diamonds.svg';
+			} else if(player.mascot =='Hearts'){
+				return '/img/divisions/Hearts.svg';
+			}else {
+				return null;
+			}
+		}
 	}
 
 	render(){
@@ -169,8 +192,11 @@ export default class MobileMatchup extends React.Component {
 				</div>
 				<div className="mmStatsContainer">
 					<div className="mmPlayerContainer" style={this.props.playerA==null?null:(this.state.loser==null?null:(this.props.playerA.name==this.state.winner.name?winnerTextStyle:(this.props.playerA.name==this.state.loser.name?loserTextStyle:null)))}>
-						<div className="mmTextStats" >
+						<div className="mmTextStats" style={seedStyle} >
 							{this.props.playerA==null?null:this.props.playerA.seed}
+						</div>
+						<div className="mmTextStats" >
+							<img src={this.DetermineSymbol(this.props.playerA)} style={{maxHeight:'100%'}}/>
 						</div>
 						<div className="mmTextStats">
 							{this.props.playerA==null?null:this.props.playerA.wins}
@@ -187,6 +213,9 @@ export default class MobileMatchup extends React.Component {
 							Seed
 						</div>
 						<div className="mmTextHeadlines">
+							Division
+						</div>
+						<div className="mmTextHeadlines">
 							Wins
 						</div>
 						<div className="mmTextHeadlines">
@@ -197,8 +226,11 @@ export default class MobileMatchup extends React.Component {
 						</div>
 					</div>
 					<div className="mmPlayerContainer" style={this.props.playerB==null?null:(this.state.loser==null?null:(this.props.playerB.name==this.state.winner.name?winnerTextStyle:(this.props.playerB.name==this.state.loser.name?loserTextStyle:null)))}>
-						<div className="mmTextStats">
+						<div className="mmTextStats" style={seedStyle}>
 							{this.props.playerB==null?null:this.props.playerB.seed}
+						</div>
+						<div className="mmTextStats" >
+							<img src={this.DetermineSymbol(this.props.playerB)} style={{maxHeight:'100%'}}/>
 						</div>
 						<div className="mmTextStats">
 							{this.props.playerB==null?null:this.props.playerB.wins}

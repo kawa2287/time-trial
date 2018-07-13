@@ -61,9 +61,11 @@ export default function WinnerLoserHandler (WLpkg,RTpkg){
 	    	
 	    	winPlayer.avgCupTime = Math.round(100*winPlayer.avgTime/Settings.cupsPerPerson)/100;
 	    	var loserEliminated = losePlayer.losses == 2 ? true : false;
-	    	
-	    	if(currentBracket == 'loserBracket'){
+
+	    }
+	    if(currentBracket == 'loserBracket'){
 	    		losePlayer.maxRound = roundNumber;
+	    		winPlayer.maxRound = roundNumber+1;
 	    	} else if (currentBracket == 'specialBracket'){
 	    		if(currentGameNum == bracketSpots*2-2){
 	    			losePlayer.maxRound = 2*(bracketPower-1);
@@ -72,12 +74,16 @@ export default function WinnerLoserHandler (WLpkg,RTpkg){
 	    		} else {
 	    			losePlayer.maxRound = 2*(bracketPower-1) +2;
 	    		}
-	    	}
-	    }
-	    
-	    console.log('currentGameNum',currentGameNum);
-	    console.log('winPlayer.name',winPlayer.name);
-	    console.log('losePlayer.name',losePlayer.name);
+	    	} 
+	    	
+	    if (currentBracket=='startBracket'){
+	    		winPlayer.maxRound = roundNumber+1;
+    	}
+    	
+    	if (currentBracket=='winnerBracket'){
+	    		winPlayer.maxRound = roundNumber+1;
+	    		losePlayer.maxRound = roundNumber*2;
+    	}
 	    
 	    // set game object with results
 	    this.state.masterGameObject = {

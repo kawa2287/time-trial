@@ -3,6 +3,25 @@
 export default function SendWinnerSpecialLoserBracket(currentGameNum, winPlayer,losePlayer, bracketSpots,beginConstruction){
 	var destGame = bracketSpots*2 - 1;
 	var loserEliminated = losePlayer.losses == 2 ? true : false;
+	
+
+	
+	if( beginConstruction == true){
+		this.state.masterGameObject = {
+    		...this.state.masterGameObject,
+    		[destGame] : {
+    			...this.state.masterGameObject[destGame],
+    			playerA : {
+    				...this.state.masterGameObject[destGame].playerA, 
+    				name : winPlayer
+    			},
+    			playerB : {
+    				...this.state.masterGameObject[destGame].playerB, 
+    				name : losePlayer
+    			}
+    		}
+	    };
+	}
 
 	if( loserEliminated == false){
 		this.setState({

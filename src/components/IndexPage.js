@@ -3,6 +3,7 @@
 import React from 'react';
 import Table from	'./FrontPageTable';
 import AddTeamPopUp from './AddTeamPopUp';
+import GameNamePopUp from './GameNamePopUp';
 import CountryKeyVal from './CountryKeyVal';
 import TimeTrialPopUp from './TimeTrialPopUp';
 import VsTournament from './VsTournament';
@@ -19,8 +20,10 @@ export default class IndexPage extends React.Component {
 		this.state = {
 			nRows : 0,
 			players : {},
-			bestTime : null
+			bestTime : null,
+			gameName : 'test'
 		};
+		
 	}
 	
 	randomIntFromInterval(min,max){
@@ -63,8 +66,13 @@ export default class IndexPage extends React.Component {
 		this.state.players[name].avgCupTime = Math.round(100*time/Settings.cupsPerPerson)/100;
 		this.setState({
 			players: this.state.players
-		}, function afterClick(){this.getBestTime(this.state.players)});
+		}, function afterClick(){
+			this.getBestTime(this.state.players);
+			
+		});
 	}
+	
+	
 	
 	getBestTime(playersObj){
 		for (var k in playersObj){
@@ -103,6 +111,13 @@ export default class IndexPage extends React.Component {
 		}
 		this.forceUpdate();
 	}
+	
+	SetGameName(gameName){
+		console.log('gameName',gameName);
+		this.setState({
+			gameName : gameName
+		});
+	}
   
     componentDidMount() {
     	
@@ -119,8 +134,8 @@ export default class IndexPage extends React.Component {
 	  	
 	  	
 	  	for (var i = 0 ; i <nTeams; i++){
-	  		var name = demoNames[this.randomIntFromInterval(0,demoNames.length)] + 
-	  			this.randomIntFromInterval(1,999);
+	  		var name = demoNames[this.randomIntFromInterval(0,demoNames.length)];
+	  		//	this.randomIntFromInterval(1,999);
 	  			
 	  		this.addTeam(name, countryArr[this.randomIntFromInterval(0,countryArr.length)], 0);
 	  		
@@ -177,7 +192,8 @@ export default class IndexPage extends React.Component {
     				players : this.state.players, 
     				mode : 'VS', 
     				seeding:'blind', 
-    				order:'random'
+    				order:'random',
+    				gameName:this.state.gameName
     			}
     		};
     	} else {
@@ -230,7 +246,8 @@ export default class IndexPage extends React.Component {
     				players : this.state.players, 
     				mode : 'VS', 
     				seeding:'blind', 
-    				order:'timeTrial'
+    				order:'timeTrial',
+    				gameName:this.state.gameName
     			}
     		};
     		
@@ -250,7 +267,8 @@ export default class IndexPage extends React.Component {
     				players : this.state.players, 
     				mode : 'VS', 
     				seeding:'seeded', 
-    				order:'timeTrial'
+    				order:'timeTrial',
+    				gameName:this.state.gameName
     			}
     		};
     		
@@ -299,6 +317,9 @@ export default class IndexPage extends React.Component {
 	    return (
 	    	<div className="main-page">
 	    		<div className = "menu">
+	    			<GameNamePopUp 
+	        			SetGameName={this.SetGameName.bind(this)}
+		            />
 	    			<AddTeamPopUp 
 	        			addTeamClick={this.addTeam.bind(this)}
 	        			editPlayer={this.editPlayer.bind(this)}

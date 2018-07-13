@@ -1,12 +1,6 @@
 /*! CSS reset from benfrain/app-reset */
 *,:after,:before{box-sizing:inherit}
 
-html{
-	box-sizing:border-box;
-	font-size: 2vw;
-	
-}
-
 *{
   user-select:none;
   -webkit-tap-highlight-color:rgba(255,255,255,0);
@@ -33,17 +27,15 @@ svg {
 
 img {
   max-width:100%;
+  max-height:100%;
   vertical-align:  middle; 
 }
 
 html {
-  color: #030303;
-  font: caption;
-  padding-bottom: 2em;
-}
-
-header {
-  padding: 2em;
+	font-size: 2vw;
+	height: 100%;
+    color: #030303;
+    font: caption;
 }
 
 header .logo {
@@ -56,12 +48,25 @@ header .logo {
 body {
 	font-family: 'Open Sans', sans-serif;
   	padding: 2em;
+  	height: 100%
 }
 
 .home {
 	flex: 4;
 	justify-content: center;
 	display: flex;
+}
+
+.app-content{
+	height: 100%;
+}
+
+.app-container{
+	height: 100%;
+}
+
+#main{
+	height: 100%;
 }
 
 .wrap {
@@ -866,6 +871,8 @@ hr.style14 {
 	flex-direction: column;
 	width: 100%;
 	height: 100%;
+    padding-top: 1em;
+    padding-bottom: 1em;
 }
 
 .mobileTopBand{
@@ -878,8 +885,10 @@ hr.style14 {
 .mobileMid{
 	display: flex;
 	flex-direction: column;
-	flex: 1;
 	width: 100%;
+	flex: 1 1 auto;
+    overflow-y: auto;
+    min-height: 0px;
 }
 
 .mobileBottom{
@@ -1003,6 +1012,8 @@ hr.style14 {
 	flex-direction: column;
 	width: 100%;
 	height: 100%;
+    padding-top: 1em;
+    padding-bottom: 1em;
 }
 
 .mmTitle{
@@ -1156,3 +1167,272 @@ hr.style14 {
    0% { width: 0; }
 }
 
+.smTile{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 30px;
+    border-collapse: collapse;
+    border-radius: 5px;
+    background: #786B9C;
+    margin-top: 1px;
+    margin-bottom: 1px;
+    color: white;
+}
+
+.smRank{
+	display: flex;
+	flex:1;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    font-size: small;
+    font-weight: bold;
+    color: gainsboro;
+}
+
+.smDivision{
+	display: flex;
+	flex:1;
+    justify-content: center;
+    align-items: center;
+}
+
+.smFlag{
+	display: flex;
+	flex:1;
+	justify-content: center;
+    align-items: center;
+	margin-left: 5px;
+    margin-right: 5px;
+}
+
+.smName{
+    display: flex;
+    flex: 4;
+    align-items: center;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: x-small;
+    text-align: left;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.smSeed{
+	display: flex;
+	flex:1;
+	justify-content: center;
+    align-items: center;
+    font-size: xx-small;
+    color: lightgrey;
+}
+
+.smStat{
+	display: flex;
+	flex:1;
+	justify-content: center;
+    align-items: center;
+    font-size: x-small;
+    color: #dddddd;
+}
+
+.brMain{
+    display: flex;
+    flex-direction: column;
+    flex:1;
+}
+
+.brTitles{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+}
+
+.brSlider{
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+}
+
+.brBracketArea{
+    display: flex;
+    flex: 100;
+    flex-direction: row;
+    overflow-y: auto;
+    background: darkturquoise;
+}
+
+.brRoundArea{
+    display: flex;
+    flex: 5;
+    flex-direction: column;
+    justify-content: space-around;
+}
+.brLineArea{
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.brValue{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 30px;
+    flex: 1;
+}
+
+.brValue > span{
+	display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.brHeading {
+	position: absolute;
+	display: flex;
+    text-align: -webkit-center;
+    text-shadow: 0.5px 0.5px 4px #909090;
+    flex: 1;
+    font-size: xx-small;
+}
+
+
+.moveBracketLeft-enter {
+  transform: translate(100%);
+  opacity: 0.01;
+}
+
+.moveBracketLeft-enter.moveBracketLeft-enter-active {
+  transform: translate(0%);
+  opacity: 1;
+  transition: all 500ms ease-in-out;
+}
+
+.moveBracketLeft-leave {
+  transform: translate(0%);
+  opacity: 1;
+}
+
+.moveBracketLeft-leave.moveBracketLeft-leave-active {
+  transform: translate(-100%);
+  opacity: 0.01;
+  transition: all 300ms ease-in-out;
+}
+
+.moveBracketRight-enter {
+  transform: translate(-100%);
+  opacity: 0.01;
+}
+
+.moveBracketRight-enter.moveBracketRight-enter-active {
+  transform: translate(0%);
+  opacity: 1;
+  transition: all 500ms ease-in-out;
+}
+
+.moveBracketRight-leave {
+  transform: translate(0%);
+  opacity: 1;
+}
+
+.moveBracketRight-leave.moveBracketRight-leave-active {
+  transform: translate(100%);
+  opacity: 0.01;
+  transition: all 300ms ease-in-out;
+}
+
+
+.btContainer{
+    display: flex;
+    flex-direction: column;
+    height: 100px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    border-collapse: collapse;
+    border-radius: 5px;
+    background: cornsilk;
+    margin-top: 1px;
+    margin-bottom: 1px;
+    color: black;
+}
+
+.btGameTitle{
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    font-size: x-small;
+    width: 100%;
+    background: black;
+    color: white;
+}
+
+.btTeamsMatchup{
+	display: flex;
+	flex:6;
+	flex-direction: column;
+}
+
+.btTeam{
+    display: flex;
+    flex: 3;
+    flex-direction: column;
+}
+
+.btSeed{
+    display: flex;
+    flex: 1;
+    font-size: small;
+    justify-content: center;
+    align-items: center;
+    min-width: 20px;
+}
+
+.btNameCountryCont{
+    display: flex;
+    flex: 3;
+    flex-direction: row;
+}
+
+.btFlag{
+    flex: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btName{
+    flex: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    align-items: center;
+    display: flex;
+    font-size: .4rem;
+    justify-content: center;
+}
+
+.btMiscContainer{
+    flex: 2;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    min-width: 20px;
+}
+
+.btVs{
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    font-size: xx-small;
+    background-color: black;
+    color: white;
+}
