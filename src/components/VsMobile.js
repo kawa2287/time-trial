@@ -339,7 +339,14 @@ export default class VsMobile extends React.Component {
 		};
 		
 		beginConstruction = false;
-		GamesDB.set(this.state.masterGameObject);
+		GamesDB.set({
+			masterGameObject: this.state.masterGameObject,
+			gameName: this.props.location.state.gameName,
+			mode: mode,
+			seeding: this.props.location.state.seeding,
+			order: this.props.location.state.order,
+			players: this.props.location.state.players,
+		});
 		
 	}
 	
@@ -454,7 +461,9 @@ export default class VsMobile extends React.Component {
 	render() {
 		
 		//sendMasterGameArray to Firebase
-		GamesDB.set(JSON.parse( JSON.stringify(this.state.masterGameObject) ) );
+		GamesDB.update({
+			masterGameObject: JSON.parse( JSON.stringify(this.state.masterGameObject)) 
+		});
 		
 		
 		return (
