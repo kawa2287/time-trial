@@ -346,6 +346,7 @@ export default class VsMobile extends React.Component {
 			seeding: this.props.location.state.seeding,
 			order: this.props.location.state.order,
 			players: this.props.location.state.players,
+			seededArray: seededArray
 		});
 		
 	}
@@ -462,7 +463,8 @@ export default class VsMobile extends React.Component {
 		
 		//sendMasterGameArray to Firebase
 		GamesDB.update({
-			masterGameObject: JSON.parse( JSON.stringify(this.state.masterGameObject)) 
+			masterGameObject: JSON.parse( JSON.stringify(this.state.masterGameObject)) ,
+			seededArray: JSON.parse( JSON.stringify(seededArray))
 		});
 		
 		
