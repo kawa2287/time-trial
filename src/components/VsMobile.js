@@ -126,7 +126,8 @@ export default class VsMobile extends React.Component {
 			playerB:null,
 			gameTitle:null,
 			gameNumber:null,
-			render:'Stats'
+			render:'Stats',
+			connection: 'Disconnected'
 		};
 		
 		// set settings
@@ -141,6 +142,14 @@ export default class VsMobile extends React.Component {
 		/////DATABASE/////
 		GamesDB = Firebase.database().ref(this.props.location.state.gameName);
 		
+		var connectedRef = Firebase.database().ref(".info/connected");
+		connectedRef.on('value', (connectedSnap) => {
+		    if (connectedSnap.val() === true) {
+		    	this.setState({connection : 'Connected!'});
+		    } else {
+				this.setState({connection : 'Disconnected'});
+		    }
+		});
 	
 		
 		//bind imported state dependent functions
@@ -484,6 +493,7 @@ export default class VsMobile extends React.Component {
 		    			gameNumber={this.state.gameNumber}
 		    		/>
 			    </SkyLight>
+			    <h2> {this.state.connection}</h2>
 				
 				<div className="mobileMid">
 					{this.RenderSubComp()}
