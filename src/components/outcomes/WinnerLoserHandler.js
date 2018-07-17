@@ -6,13 +6,6 @@ import DetermineBracket from '../vsBracketMethods/baseMethods/DetermineBracket';
 import DetermineBracketPower from '../vsBracketMethods/baseMethods/DetermineBracketPower';
 import Settings from '../../static/Settings';
 
-function sendTwo(f1,f2) {
-  setTimeout(function() {
-    f1;
-    f2;
-  }, 3000);
-}
-
 
 export default function WinnerLoserHandler (WLpkg,RTpkg){
 	

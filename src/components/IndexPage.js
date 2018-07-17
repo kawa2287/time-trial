@@ -4,6 +4,7 @@ import React from 'react';
 import Table from	'./FrontPageTable';
 import AddTeamPopUp from './AddTeamPopUp';
 import GameNamePopUp from './GameNamePopUp';
+import LoadGamePopUp from './LoadGamePopUp';
 import CountryKeyVal from './CountryKeyVal';
 import TimeTrialPopUp from './TimeTrialPopUp';
 import VsTournament from './VsTournament';
@@ -318,6 +319,9 @@ export default class IndexPage extends React.Component {
 	    	<div className="main-page">
 	    		<div className = "menu">
 	    			<GameNamePopUp 
+	        			SetGameName={this.SetGameName.bind(this)}
+		            />
+		            <LoadGamePopUp 
 	        			SetGameName={this.SetGameName.bind(this)}
 		            />
 	    			<AddTeamPopUp 

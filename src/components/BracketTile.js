@@ -59,7 +59,6 @@ export default class BracketTile extends React.Component {
 	}
 	
 	ByeFormat(player){
-		console.log(player);
 		if(player == 'BYE'){
 			return {
 			    flex: '0',

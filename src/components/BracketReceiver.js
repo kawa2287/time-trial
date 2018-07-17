@@ -16,36 +16,6 @@ export default class BracketReceiver extends React.Component {
 			value:this.props.startValue,
 			delta:0
 		};
-		
-		bracketArray = [];
-		var tempArray = [];
-		for (var k = 0; k < this.props.cleanRoundNamesArray.length; k++){
-			for (var i in this.props.masterGameObject){
-				if( this.props.masterGameObject[i].gameTitle == this.props.cleanRoundNamesArray[k]){
-					tempArray.push(this.props.masterGameObject[i]);
-				}
-			}
-			bracketArray.push(tempArray);
-			tempArray = [];
-		}
-		
-		renderArray = [];
-		for (k = 0; k < bracketArray.length; k++){
-			for (i = 0; i< bracketArray[k].length; i++){
-				tempArray.push(
-					<BracketTile
-						game = {bracketArray[k][i]}
-						
-					/>
-				);
-			}
-			renderArray.push(tempArray);
-			tempArray=[];
-		}
-		
-		height = {
-			height: this.props.height + 'px'
-		};
 	}
 	
 	AddBracketTile(){
@@ -74,7 +44,42 @@ export default class BracketReceiver extends React.Component {
 
 	render(){
 		
+		if(this.props.masterGameObject !== null && this.props.masterGameObject !== undefined){
+			
+			bracketArray = [];
+			var tempArray = [];
+			for (var k = 0; k < this.props.cleanRoundNamesArray.length; k++){
+				for (var i in this.props.masterGameObject){
+					if( this.props.masterGameObject[i].gameTitle == this.props.cleanRoundNamesArray[k]){
+						tempArray.push(this.props.masterGameObject[i]);
+					}
+				}
+				bracketArray.push(tempArray);
+				tempArray = [];
+			}
+			
+			renderArray = [];
+			for (k = 0; k < bracketArray.length; k++){
+				for (i = 0; i< bracketArray[k].length; i++){
+					tempArray.push(
+						<BracketTile
+							game = {bracketArray[k][i]}
+							
+						/>
+					);
+				}
+				renderArray.push(tempArray);
+				tempArray=[];
+			}
+			
+			height = {
+				height: this.props.height + 'px'
+			};
+			
+		}
+		
 		const { value } = this.state;
+		
 		
 		return(
 			<div className="brMain">

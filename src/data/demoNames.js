@@ -1,7 +1,7 @@
 "use strict";
 
 const demoNames = [
-  'Robert F. Kennedy, Jr.',
+  'Robert F Kennedy',
 
 'Bill Gates',
 
@@ -23,7 +23,7 @@ const demoNames = [
 
 'Liv Tyler',
 
-'Booker T. Washington',
+'Booker T Washington',
 
 'Arnold Schwarzenegger',
 
@@ -31,7 +31,7 @@ const demoNames = [
 
 'Sandra Bullock',
 
-'Beyoncé',
+'Beyonce',
 
 'Thomas Jefferson',
 
@@ -113,15 +113,15 @@ const demoNames = [
 
 'Ron Paul',
 
-'Martin Luther King, Jr.',
+'Martin Luther King Jr',
 
 'Stephenie Meyer',
 
 'Audrey Hepburn',
 
-'Hunter S. Thompson',
+'Hunter S Thompson',
 
-'Diana, Princess of Wales',
+'Diana Princess of Wales',
 
 'Ray Romano',
 
@@ -147,7 +147,7 @@ const demoNames = [
 
 'Katy Perry',
 
-'John F. Kennedy',
+'John F Kennedy',
 
 'Ryan Seacrest',
 
@@ -187,7 +187,7 @@ const demoNames = [
 
 'Tom Cruise',
 
-'George S. Patton',
+'George S Patton',
 
 'Colin Powell',
 
@@ -211,7 +211,7 @@ const demoNames = [
 
 'Jesus Christ',
 
-'Ulysses S. Grant',
+'Ulysses S Grant',
 
 'Billy Graham',
 
@@ -271,7 +271,7 @@ const demoNames = [
 
 'Ben Stiller',
 
-'Harry S. Truman',
+'Harry S Truman',
 
 'Bob Marley',
 
@@ -289,7 +289,7 @@ const demoNames = [
 
 'Anne Frank',
 
-'C. S. Lewis',
+'C S Lewis',
 
 'Daniel Boone',
 
@@ -305,7 +305,7 @@ const demoNames = [
 
 'Barack Obama',
 
-'Franklin D. Roosevelt',
+'Franklin D Roosevelt',
 
 'John Lennon',
 

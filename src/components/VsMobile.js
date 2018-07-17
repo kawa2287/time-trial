@@ -64,7 +64,6 @@ var GamesDB;
 var loserArr = [];
 var winnerArr = [];
 var mastArr = [];
-var seededArray = [];
 var elimRoundsArr = [];
 var winRoundsArr = [];
 var tempRoundNamesArray = [];
@@ -76,6 +75,7 @@ var teams;
 var bracketSpots;
 var bracketPower;
 var nGamesTotal;
+var loadGame;
 
 
 var mode;
@@ -127,12 +127,14 @@ export default class VsMobile extends React.Component {
 			gameTitle:null,
 			gameNumber:null,
 			render:'Stats',
-			connection: 'Disconnected'
+			connection: 'Disconnected',
+			seededArray: []
 		};
 		
 		// set settings
 		mode = this.props.location.state.mode;
 		Settings.seedMode = this.props.location.state.seeding; 
+		loadGame = this.props.location.state.load;
 		
 		// init colors
 		for (var c = 0; c <30; c++){
@@ -203,117 +205,171 @@ export default class VsMobile extends React.Component {
 			}
 		}
 		
-		//populate seeded array
-		PropogateSeedsArr(teams,mastArr, bracketPower);
-		
-		//Create Master Game Object
-		this.state.masterGameObject = CreateMasterGameObject(nGamesTotal, bracketSpots, mode);
-		
-		//place players into Temp array
-		var tempPlayerArr = [];
-		for (var p in this.props.location.state.players){
-			tempPlayerArr.push(this.props.location.state.players[p]);
-		}
-		if(this.props.location.state.order == 'random' ){
-			seededArray = shuffle(seededArray);
-			for (var q = 0; q < tempPlayerArr.length; q++){
-				tempPlayerArr[q].seed = q+1;
-			}
-		}
-		
-		//assign teams to divisions
-		var divisionTrigger = 0;
-		var divisionCounter = 1;
-		var conference1 = pickRandomProperty(divisionNames);
-		var conference2 = selectUnique(conference1,divisionNames);
-		var div1 = pickRandomProperty(conference1);
-		var div2 = selectUnique(div1,conference1);
-		var div3 = pickRandomProperty(conference2);
-		var div4 = selectUnique(div3,conference2);
-		divisions = [div1,div2,div3,div4];
-	
-	
-			
-		//Add Props to Seeded Array
-		
-		for (var item in mastArr) {
-			for (var y = 0; y < tempPlayerArr.length; y++){
-				if(mastArr[item] == tempPlayerArr[y].seed){
-					tempPlayerArr[y].mascot = divisions[divisionTrigger];
-					seededArray.push(tempPlayerArr[y]);
-					toggle = 1;
-				} 
-			}
-			if (toggle == 0){
-				seededArray.push({
-					name : 'BYE',
-				    country : '',
-				    seed : mastArr[item],
-				    timeTrial : '-',
-				    wins : null,
-				    losses : null,
-				    totalTime : 0,
-				    avgTime : 0,
-				    splitTime : 0
-					});
-			}
-			toggle = 0;
-			if (divisionCounter % (bracketSpots/4) == 0 && divisionCounter !==0){
-				divisionTrigger += 1;
-			}
-			divisionCounter +=1;
-			
-		}
 		
 		
-		//Populate Start Round in Master Game Object
-		var sift = 1;
-		for (var k = 0; k < seededArray.length; k++){
-			if (mode == 'VS'){
-				if (k % 2 == 0){
-					this.state.masterGameObject[k/2 + 1].playerA = seededArray[k];
-					this.state.masterGameObject[k/2 + 1].spotsFilled +=1;
-				} else {
-					this.state.masterGameObject[(k+1)/2].playerB = seededArray[k];
-					this.state.masterGameObject[(k+1)/2].spotsFilled +=1;
-				}
+
+		//protect against window reload
+		window.onbeforeunload = function() {
+		    return "Data will be lost if you leave the page, are you sure?";
+		};
+		
+		console.log('loadGame bool = ', loadGame);
+		
+		if(loadGame == true){
+			//setState with Firebase
+			var ref = Firebase.database().ref(this.props.location.state.gameName);
+			ref.on("value", (snapshot) => {
+				console.log('snapshot',snapshot.val());
+				this.setState ({
+					masterGameObject : snapshot.val().masterGameObject,
+					seededArray : snapshot.val().seededArray
+				}, print => {
+					console.log('seededArray construct',this.state.seededArray);
+					console.log('masterGameObject construct',this.state.masterGameObject);
+				});
 				
-			} else {
-				if(sift == 1){
-					this.state.masterGameObject[Math.ceil((k+1)/4)].playerA = seededArray[k];
-					sift = sift + 1;
-				} else if (sift == 2) {
-					this.state.masterGameObject[Math.ceil((k+1)/4)].playerB = seededArray[k];
-					sift = sift + 1;
-				} else if (sift == 3) {
-					this.state.masterGameObject[Math.ceil((k+1)/4)].playerC = seededArray[k];
-					sift = sift + 1;
-				} else {
-					this.state.masterGameObject[Math.ceil((k+1)/4)].playerD = seededArray[k];
-					sift = 1;
+			}, function (error) {
+			    console.log("Error: " + error.code);
+			});
+			this.forceUpdate();
+			loadGame = false;
+		} else {
+			//populate seeded array
+			PropogateSeedsArr(teams,mastArr, bracketPower);
+			
+			//Create Master Game Object
+			this.state.masterGameObject = CreateMasterGameObject(nGamesTotal, bracketSpots, mode);
+			
+			//place players into Temp array
+			var tempPlayerArr = [];
+			for (var p in this.props.location.state.players){
+				tempPlayerArr.push(this.props.location.state.players[p]);
+			}
+			if(this.props.location.state.order == 'random' ){
+				this.state.seededArray = shuffle(this.state.seededArray);
+				for (var q = 0; q < tempPlayerArr.length; q++){
+					tempPlayerArr[q].seed = q+1;
 				}
 			}
-		}
+			
+			//assign teams to divisions
+			var divisionTrigger = 0;
+			var divisionCounter = 1;
+			var conference1 = pickRandomProperty(divisionNames);
+			var conference2 = selectUnique(conference1,divisionNames);
+			var div1 = pickRandomProperty(conference1);
+			var div2 = selectUnique(div1,conference1);
+			var div3 = pickRandomProperty(conference2);
+			var div4 = selectUnique(div3,conference2);
+			divisions = [div1,div2,div3,div4];
 		
-		//Add titles to games for win rounds
-		var gmCounter = 1;
-		for (k = 0; k < winRoundsArr.length - 1; k++){
-			for (y = 1; y <= winnerArr[k]; y++){
-				this.state.masterGameObject[gmCounter].gameTitle = winRoundsArr[k];
-				gmCounter += 1;
+		
+				
+			//Add Props to Seeded Array
+			
+			for (var item in mastArr) {
+				for (var y = 0; y < tempPlayerArr.length; y++){
+					if(mastArr[item] == tempPlayerArr[y].seed){
+						tempPlayerArr[y].mascot = divisions[divisionTrigger];
+						this.state.seededArray.push(tempPlayerArr[y]);
+						toggle = 1;
+					} 
+				}
+				if (toggle == 0){
+					this.state.seededArray.push({
+						name : 'BYE',
+					    country : '',
+					    seed : mastArr[item],
+					    timeTrial : '-',
+					    wins : null,
+					    losses : null,
+					    totalTime : 0,
+					    avgTime : 0,
+					    splitTime : 0
+						});
+				}
+				toggle = 0;
+				if (divisionCounter % (bracketSpots/4) == 0 && divisionCounter !==0){
+					divisionTrigger += 1;
+				}
+				divisionCounter +=1;
+				
 			}
-		}
-		
-		//Add titles to games for elimination rounds
-		for (k = 0; k < elimRoundsArr.length; k++){
-			for (y = 1; y <= loserArr[k]; y++){
-				this.state.masterGameObject[gmCounter].gameTitle = elimRoundsArr[k];
-				gmCounter += 1;
+			
+			
+			//Populate Start Round in Master Game Object
+			var sift = 1;
+			for (var k = 0; k < this.state.seededArray.length; k++){
+				if (mode == 'VS'){
+					if (k % 2 == 0){
+						this.state.masterGameObject[k/2 + 1].playerA = this.state.seededArray[k];
+						this.state.masterGameObject[k/2 + 1].spotsFilled +=1;
+					} else {
+						this.state.masterGameObject[(k+1)/2].playerB = this.state.seededArray[k];
+						this.state.masterGameObject[(k+1)/2].spotsFilled +=1;
+					}
+					
+				} else {
+					if(sift == 1){
+						this.state.masterGameObject[Math.ceil((k+1)/4)].playerA = this.state.seededArray[k];
+						sift = sift + 1;
+					} else if (sift == 2) {
+						this.state.masterGameObject[Math.ceil((k+1)/4)].playerB = this.state.seededArray[k];
+						sift = sift + 1;
+					} else if (sift == 3) {
+						this.state.masterGameObject[Math.ceil((k+1)/4)].playerC = this.state.seededArray[k];
+						sift = sift + 1;
+					} else {
+						this.state.masterGameObject[Math.ceil((k+1)/4)].playerD = this.state.seededArray[k];
+						sift = 1;
+					}
+				}
 			}
+			
+			//Add titles to games for win rounds
+			var gmCounter = 1;
+			for (k = 0; k < winRoundsArr.length - 1; k++){
+				for (y = 1; y <= winnerArr[k]; y++){
+					this.state.masterGameObject[gmCounter].gameTitle = winRoundsArr[k];
+					gmCounter += 1;
+				}
+			}
+			
+			//Add titles to games for elimination rounds
+			for (k = 0; k < elimRoundsArr.length; k++){
+				for (y = 1; y <= loserArr[k]; y++){
+					this.state.masterGameObject[gmCounter].gameTitle = elimRoundsArr[k];
+					gmCounter += 1;
+				}
+			}
+			
+			//Add title to Championship 2 Round
+			this.state.masterGameObject[gmCounter].gameTitle = winRoundsArr[winRoundsArr.length -1];
+			
+			
+			//Populate rest of games in Master Game Object
+			for (var k in this.state.masterGameObject){
+				this.StartOutcomes(
+					this.state.masterGameObject[k].gameNumber,
+					bracketSpots,
+					this.state.masterGameObject[k].bracket,
+					bracketPower,
+					mode,
+					beginConstruction
+				);
+			}
+			GamesDB.set({
+				masterGameObject: this.state.masterGameObject,
+				gameName: this.props.location.state.gameName,
+				mode: mode,
+				seeding: this.props.location.state.seeding,
+				order: this.props.location.state.order,
+				players: this.props.location.state.players,
+				seededArray: this.state.seededArray
+			}, callBack => {
+				console.log('shouldnt see this');
+			});
 		}
-		
-		//Add title to Championship 2 Round
-		this.state.masterGameObject[gmCounter].gameTitle = winRoundsArr[winRoundsArr.length -1];
 		
 		//combine array names into one array to pass to Bracket Receiver
 		elimRoundsArr.reverse();
@@ -328,35 +384,7 @@ export default class VsMobile extends React.Component {
 			cleanRoundNamesArray.push(tempRoundNamesArray[i]);
 		}
 		
-		
-		//Populate rest of games in Master Game Object
-		for (var k in this.state.masterGameObject){
-			this.StartOutcomes(
-				this.state.masterGameObject[k].gameNumber,
-				bracketSpots,
-				this.state.masterGameObject[k].bracket,
-				bracketPower,
-				mode,
-				beginConstruction
-			);
-		}
-		
-
-		//protect against window reload
-		window.onbeforeunload = function() {
-		    return "Data will be lost if you leave the page, are you sure?";
-		};
-		
 		beginConstruction = false;
-		GamesDB.set({
-			masterGameObject: this.state.masterGameObject,
-			gameName: this.props.location.state.gameName,
-			mode: mode,
-			seeding: this.props.location.state.seeding,
-			order: this.props.location.state.order,
-			players: this.props.location.state.players,
-			seededArray: seededArray
-		});
 		
 	}
 	
@@ -404,7 +432,8 @@ export default class VsMobile extends React.Component {
     		case 'Stats': 
             	return (
             		<StatsMobileReceiver
-            			seededArray={seededArray}
+            			players={this.props.location.state.players}
+            			masterGameObject={this.state.masterGameObject}
             		/>
         		);
     		case 'Bracket': 
@@ -418,6 +447,14 @@ export default class VsMobile extends React.Component {
             		/>
         		);
         }
+    }
+    
+    UpdateFirebase(){
+    	//sendMasterGameArray to Firebase
+		GamesDB.update({
+			masterGameObject: JSON.parse( JSON.stringify(this.state.masterGameObject)) ,
+			seededArray: JSON.parse( JSON.stringify(this.state.seededArray))
+		});
     }
 	
 	
@@ -446,6 +483,7 @@ export default class VsMobile extends React.Component {
 		},function hide() {
 			this.customDialog.hide();
 			this.WinnerLoserHandler(WLpkg,RTpkg);
+			this.UpdateFirebase();
 			this.forceUpdate();
 		});
 		
@@ -470,11 +508,9 @@ export default class VsMobile extends React.Component {
 
 	render() {
 		
-		//sendMasterGameArray to Firebase
-		GamesDB.update({
-			masterGameObject: JSON.parse( JSON.stringify(this.state.masterGameObject)) ,
-			seededArray: JSON.parse( JSON.stringify(seededArray))
-		});
+		console.log('seededArray render',this.state.seededArray);
+		
+		
 		
 		
 		return (

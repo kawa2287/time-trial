@@ -1436,3 +1436,9 @@ hr.style14 {
     background-color: black;
     color: white;
 }
+
+.lgMain{
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+}
