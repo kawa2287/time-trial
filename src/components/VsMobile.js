@@ -508,11 +508,6 @@ export default class VsMobile extends React.Component {
 
 	render() {
 		
-		console.log('seededArray render',this.state.seededArray);
-		
-		
-		
-		
 		return (
 			<div className="moblieMainContainer">
 				<SkyLight 

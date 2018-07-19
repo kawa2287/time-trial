@@ -14,23 +14,30 @@ export default class StatsMobileReceiver extends React.Component {
 			var cloned = JSON.parse(JSON.stringify(this.props.players));
 			
 			for (var k in cloned){
+				cloned[k].wins=0;
+				cloned[k].losses=0;
 				playersArray.push(cloned[k]);
 			}
 			
+			console.log('playersArray before',JSON.parse(JSON.stringify(playersArray)));
 			
 			for(k = 0 ; k < playersArray.length; k++){
 				for (var x in this.props.masterGameObject){
 					
 					if(playersArray[k].name == this.props.masterGameObject[x].winner){
 	
-						playersArray[k].wins += 1;
+						playersArray[k].wins = playersArray[k].wins + 1;
+						console.log('adding a win for '+playersArray[k].name);
 					}
 					if(playersArray[k].name == this.props.masterGameObject[x].loser){
 				
 						playersArray[k].losses += 1;
+						console.log('adding a loss for '+playersArray[k].name);
 					}
 				}
 			}
+			
+			console.log('playersArray',JSON.parse(JSON.stringify(playersArray)));
 
 			
 			for(var i = 0; i < playersArray.length; i++){
