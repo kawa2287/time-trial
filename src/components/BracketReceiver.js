@@ -1,7 +1,11 @@
 import React from 'react';
 import BracketTile from './BracketTile';
+import BezierCurvesMobile from './BezierCurvesMobile';
 import Slider from 'react-rangeslider';
 import { CSSTransitionGroup } from 'react-transition-group';
+import Measure from 'react-measure';
+import { Stage, Group, Layer } from "react-konva";
+import Swipeable from 'react-swipeable';
 
 
 var bracketArray;
@@ -14,15 +18,64 @@ var padHeight;
 var secondaryPad;
 var moduleHeight;
 
-
 export default class BracketReceiver extends React.Component {
 	constructor(props){
 		super(props);
 		this.state={
 			render:[],
 			value:this.props.startValue,
-			delta:0
+			delta:0,
+			bracketLineWidth:0,
+			swipe:'swipe'
 		};
+		
+	}
+	
+	
+
+	AddBracketTile(){
+		this.state.render.push(<BracketTile count={this.state.count}/>);
+		this.setState({
+			count: this.state.count +1
+		});
+	}
+	
+	handleChangeStart () {
+    	console.log('Change event started');
+	}
+
+    handleChange (value){
+    	var delta = this.state.value- value;
+	    this.setState({
+	        value: value,
+	        delta: delta
+	    });
+	}
+
+    handleChangeComplete () {
+		console.log('Change event completed');
+	}
+	
+	swiped(e, deltaX, deltaY, isFlick, velocity) {
+		if(deltaX < 0){
+			if(Math.abs(deltaX)> 40){
+				this.setState({
+					value: this.state.value - 1
+				});
+			}
+		} else if (deltaX > 0){
+			if(Math.abs(deltaX)> 40){
+				this.setState({
+					value: this.state.value + 1
+				});
+			}
+		}
+	}
+
+
+	render(){
+		
+		const { value } = this.state;
 		
 		if(this.props.masterGameObject !== null && this.props.masterGameObject !== undefined){
 			
@@ -90,15 +143,23 @@ export default class BracketReceiver extends React.Component {
 					moduleHeight = 2*gameHeight + padHeight;
 					for (i = 1; i <= renderArray[k+(k==this.props.startValue?0:1)].length/2; i++){
 						tempArray.push(
-							<div 
-								className="btContainer"
-								style={{
-									height:moduleHeight,
-									width:'2px',
-									alignSelf:'center',
-									backgroundColor:'black'
-								}}
-							/>
+							<Stage
+								width={this.state.bracketLineWidth} 
+								height={moduleHeight}
+							>
+								<Layer>
+									<BezierCurvesMobile
+										xo = {this.state.bracketLineWidth}
+										xf = {0}
+										y1 = {gameHeight/2}
+										y2 = {moduleHeight/2}
+										y3 = {moduleHeight-gameHeight/2}
+										color = 'red'
+										stroke = {1}
+										dashEnabled = {true}
+									/>
+								</Layer>
+							</Stage>
 						);
 					}
 					bezArr.push(tempArray);
@@ -113,15 +174,23 @@ export default class BracketReceiver extends React.Component {
 				moduleHeight = 2*gameHeight + padHeight;
 				for (i = 1; i<=renderArray[k].length/2; i++){
 					tempArray.push(
-						<div 
-							className="btContainer"
-							style={{
-								height:moduleHeight,
-								width:'2px',
-								alignSelf:'center',
-								backgroundColor:'black'
-							}}
-						/>
+						<Stage
+							width={this.state.bracketLineWidth} 
+							height={moduleHeight}
+						>
+							<Layer>
+								<BezierCurvesMobile
+									xo = {0}
+									xf = {this.state.bracketLineWidth}
+									y1 = {gameHeight/2}
+									y2 = {moduleHeight/2}
+									y3 = {moduleHeight-gameHeight/2}
+									color = 'black'
+									stroke = {1}
+									dashEnabled = {false}
+								/>
+							</Layer>
+						</Stage>
 					);
 				}
 				bezArr.push(tempArray);
@@ -147,39 +216,7 @@ export default class BracketReceiver extends React.Component {
 				bezArr.push(tempArray);
 				tempArray=[];
 			}
-			
 		}
-	}
-	
-	AddBracketTile(){
-		this.state.render.push(<BracketTile count={this.state.count}/>);
-		this.setState({
-			count: this.state.count +1
-		});
-	}
-	
-	handleChangeStart () {
-    	console.log('Change event started');
-	}
-
-    handleChange (value){
-    	var delta = this.state.value- value;
-	    this.setState({
-	        value: value,
-	        delta: delta
-	    });
-	}
-
-    handleChangeComplete () {
-		console.log('Change event completed');
-	}
-
-
-	render(){
-		
-		
-		
-		const { value } = this.state;
 		
 		
 		return(
@@ -211,25 +248,45 @@ export default class BracketReceiver extends React.Component {
         			</div>
     			</div>
     			
-    			<div className="brBracketArea">
+    			<Swipeable 
+    				className="brBracketArea"
+    				onSwiped={this.swiped.bind(this)}
+				>
     				<div className="brLineArea" style={boardHeight}/>
 					<div className="brRoundArea" style={boardHeight}>
 		            	{renderArray[this.state.value-1].map(element => element)}
 			        </div>
-						<div className="brLineArea" style={boardHeight}>
-							{bezArr[this.state.value-1]}
-						</div>
+			        <Measure
+				        bounds
+				        onResize={(contentRect) => {
+				          this.setState({ bracketLineWidth: contentRect.bounds.width });
+				        }}
+			    	>
+			    		{({ measureRef }) =>
+					        <div 
+								className="brLineArea" 
+								style={boardHeight}
+								ref={measureRef}
+							>
+								{bezArr[this.state.value-1]}
+							</div>
+				        }
+					</Measure>
 					<div className="brRoundArea" style={boardHeight}>
 		            	{renderArray[this.state.value].map(element => element)}
 			        </div>
-    					<div className="brLineArea" style={boardHeight}>
+    					<div 
+							className="brLineArea" 
+							style={boardHeight}
+							ref={this.saveRef}
+						>
 							{bezArr[this.state.value]}
 						</div>
 					<div className="brRoundArea" style={boardHeight}>
 		            	{renderArray[this.state.value+1].map(element => element)}
 			        </div>
     				<div className="brLineArea" style={boardHeight}/>
-    			</div>
+    			</Swipeable>
     			
     			<div className="brSlider">
 	    			<Slider
