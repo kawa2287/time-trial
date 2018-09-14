@@ -128,7 +128,7 @@ export default class IndexPage extends React.Component {
 		
   		//this section is to populate random number of teams... delete for production use
 	  	//---------------------------------------------------------------------------------
-	  	var nTeams = 15;
+	  	var nTeams = 8;
 	  	
 	  	var countryArr = [];
 	  	for (var item in countries[0]){
