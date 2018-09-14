@@ -1,4 +1,6 @@
 import React from 'react';
+import Icons from './icons/Icons';
+
 
 export default class StatsMobile extends React.Component {
 	
@@ -33,7 +35,11 @@ export default class StatsMobile extends React.Component {
 					{this.props.rank}
 				</div>
 				<div className="smDivision">
-					<img src={this.DetermineSymbol(this.props.player.mascot)} />
+					<Icons
+						mascot = {this.props.player.mascot}
+						colorA = {this.props.player.primaryColor}
+						colorB = {this.props.player.secondaryColor}
+					/>
 				</div>
 				<div className="smSeed">
 					{this.props.player.seed}
@@ -45,7 +51,7 @@ export default class StatsMobile extends React.Component {
 					{this.props.player.name}
 				</div>
 				<div className="smStat">
-					{this.props.player.timeTrial.toFixed(2)}
+					{this.props.player.timeTrial==null || this.props.player.timeTrial=="-"?"-":this.props.player.timeTrial.toFixed(2)}
 				</div>
 				<div className="smStat">
 					{this.props.player.wins}

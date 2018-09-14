@@ -13,6 +13,7 @@ import MobileMatchup from './MobileMatchup';
 import Settings from '../static/Settings';
 import PropogateSeedsArr from './vsBracketMethods/higherOrderMethods/PropogateSeedsArr';
 import CreateMasterGameObject from './vsBracketMethods/higherOrderMethods/CreateMasterGameObject';
+import SimPath from './vsBracketMethods/higherOrderMethods/SimPath';
 
 import DetermineBracketPower from './vsBracketMethods/baseMethods/DetermineBracketPower';
 import * as NgmsInRnd from './vsBracketMethods/baseMethods/NgamesInRound';
@@ -83,40 +84,6 @@ var divisions=[];
 
 var beginConstruction = true;
 
-function shuffle(array) {
-  var currentIndex = array.length, temporaryValue, randomIndex;
-
-  // While there remain elements to shuffle...
-  while (0 !== currentIndex) {
-
-    // Pick a remaining element...
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex -= 1;
-
-    // And swap it with the current element.
-    temporaryValue = array[currentIndex];
-    array[currentIndex] = array[randomIndex];
-    array[randomIndex] = temporaryValue;
-  }
-
-  return array;
-}
-
-function pickRandomProperty(obj) {
-    var keys = Object.keys(obj);
-    return obj[keys[ keys.length * Math.random() << 0]];
-}
-
-function selectUnique(prop, obj){
-	var tempProp = pickRandomProperty(obj);
-	if (tempProp!== prop){
-		return tempProp;
-	} else {
-		return selectUnique(prop,obj);
-	}
-}
-
-
 export default class VsMobile extends React.Component {
 	constructor(props){
 		super(props);
@@ -175,6 +142,9 @@ export default class VsMobile extends React.Component {
 		bracketSpots = Math.pow(2,DetermineBracketPower(teams));
 		bracketPower = DetermineBracketPower(teams);
 		nGamesTotal = bracketSpots*2 * (mode == 'VS' ? 1 : 0.5)-1;
+		Settings.bracketSpots = bracketSpots;
+		Settings.bracketPower = bracketPower;
+		Settings.nPlayers = teams;
 
 		var toggle = 0;
 		
@@ -204,9 +174,6 @@ export default class VsMobile extends React.Component {
 				winRoundsArr.push('Round of ' + Math.pow(2,bracketPower-k)); 
 			}
 		}
-		
-		
-		
 
 		//protect against window reload
 		window.onbeforeunload = function() {
@@ -255,13 +222,53 @@ export default class VsMobile extends React.Component {
 			//assign teams to divisions
 			var divisionTrigger = 0;
 			var divisionCounter = 1;
+			var darkArray = [];
+			var lightArray = [];
+			for (var c = 0; c < 4; c++){
+				if (c === 0){
+					darkArray.push(pickRandomProperty(Colors.darkArray));
+					lightArray.push(pickRandomProperty(Colors.lightArray));
+				} else {
+					var tempDark = null;
+					var tempLight = null;
+					for (var x = 0; x < darkArray.length; x++){
+						tempDark = selectUnique(darkArray[x],Colors.darkArray);
+						tempLight = selectUnique(lightArray[x],Colors.lightArray);
+					}
+					darkArray.push(tempDark);
+					lightArray.push(tempLight);
+				}
+				
+			}
+			
 			var conference1 = pickRandomProperty(divisionNames);
 			var conference2 = selectUnique(conference1,divisionNames);
-			var div1 = pickRandomProperty(conference1);
-			var div2 = selectUnique(div1,conference1);
-			var div3 = pickRandomProperty(conference2);
-			var div4 = selectUnique(div3,conference2);
+			var conf1Mascot = pickRandomProperty(conference1);
+			var conf2Mascot = pickRandomProperty(conference2);
+			var div1 = {
+				mascot: conf1Mascot,
+				primaryColor: darkArray[0],
+				secondaryColor: lightArray[0]
+			};
+			var div2 = {
+				mascot: conf1Mascot,
+				primaryColor: darkArray[1],
+				secondaryColor: lightArray[1]
+			};
+			var div3 = {
+				mascot: conf2Mascot,
+				primaryColor: lightArray[2],
+				secondaryColor: darkArray[2]
+			};
+			var div4 = {
+				mascot: conf2Mascot,
+				primaryColor: lightArray[3],
+				secondaryColor: darkArray[3]
+			};
+	
 			divisions = [div1,div2,div3,div4];
+			
+			console.log('divisions',divisions);
 		
 		
 				
@@ -270,7 +277,9 @@ export default class VsMobile extends React.Component {
 			for (var item in mastArr) {
 				for (var y = 0; y < tempPlayerArr.length; y++){
 					if(mastArr[item] == tempPlayerArr[y].seed){
-						tempPlayerArr[y].mascot = divisions[divisionTrigger];
+						tempPlayerArr[y].mascot = divisions[divisionTrigger].mascot;
+						tempPlayerArr[y].primaryColor = divisions[divisionTrigger].primaryColor;
+						tempPlayerArr[y].secondaryColor = divisions[divisionTrigger].secondaryColor;
 						this.state.seededArray.push(tempPlayerArr[y]);
 						toggle = 1;
 					} 
@@ -366,8 +375,6 @@ export default class VsMobile extends React.Component {
 				order: this.props.location.state.order,
 				players: this.props.location.state.players,
 				seededArray: this.state.seededArray
-			}, callBack => {
-				console.log('shouldnt see this');
 			});
 		}
 		
@@ -385,6 +392,12 @@ export default class VsMobile extends React.Component {
 		}
 		
 		beginConstruction = false;
+		
+		// simulate each player
+		//for (var p in this.props.location.state.players){
+		//	SimPath(this.props.location.state.players[p],this.state.masterGameObject);
+		//}
+		
 		
 	}
 	
@@ -444,6 +457,7 @@ export default class VsMobile extends React.Component {
             			cleanRoundNamesArray = {cleanRoundNamesArray}
             			startValue = {loserArr.length}
             			height = {bracketSpots/2*120}
+            			showMatchup = {this.ShowMatchup.bind(this)}
             		/>
         		);
         }
@@ -553,5 +567,38 @@ export default class VsMobile extends React.Component {
 				</div>
 			</div>
 		);
+	}
+}
+
+function shuffle(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}
+
+function pickRandomProperty(obj) {
+    var keys = Object.keys(obj);
+    return obj[keys[ keys.length * Math.random() << 0]];
+}
+
+function selectUnique(prop, obj){
+	var tempProp = pickRandomProperty(obj);
+	if (tempProp!== prop){
+		return tempProp;
+	} else {
+		return selectUnique(prop,obj);
 	}
 }

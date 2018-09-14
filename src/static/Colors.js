@@ -18,7 +18,27 @@ const Colors = {
     bronze : '#cd7f32',
     pebbleGray : '#646D6A',
     deSatOrng : '#e8ba50',
-    paleAmber : '#F6E3B8'
+    paleAmber : '#F6E3B8',
+    darkArray : {
+        black : 'black',
+        brown : 'brown',
+        crimson : 'crimson',
+        darkblue : 'darkblue',
+        darkslategray : 'darkslategray',
+        orangered : 'orangered',
+        navy : 'navy'
+    },
+    lightArray : {
+        white : 'white',
+        yellow : 'yellow',
+        antiquewhite : 'antiquewhite',
+        khaki : 'khaki',
+        coral : 'coral',
+        lavender : 'lavender',
+        lightskyblue : 'lightskyblue',
+        lightpink : 'lightpink'
+        
+    }
 };
 
 export default Colors;

@@ -21,7 +21,7 @@ export default function SetPlayerInDestGame(currentGameNum, destGame, topGame, b
 				[destGame] : {
 					...this.state.masterGameObject[destGame],
 					playerB : {
-						...this.state.masterGameObject[destGame].playerA,
+						...this.state.masterGameObject[destGame].playerB,
 						name : player
 					}
 				}

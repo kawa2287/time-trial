@@ -26,7 +26,8 @@ export default class BracketReceiver extends React.Component {
 			value:this.props.startValue,
 			delta:0,
 			bracketLineWidth:0,
-			swipe:'swipe'
+			swipe:'swipe',
+			frameWidth:0
 		};
 		
 	}
@@ -60,13 +61,13 @@ export default class BracketReceiver extends React.Component {
 		if(deltaX < 0){
 			if(Math.abs(deltaX)> 40){
 				this.setState({
-					value: this.state.value - 1
+					value: this.state.value - (this.state.value==1?0:1)
 				});
 			}
 		} else if (deltaX > 0){
 			if(Math.abs(deltaX)> 40){
 				this.setState({
-					value: this.state.value + 1
+					value: this.state.value + (this.state.value==this.props.roundNamesArray.length-2?0:1)
 				});
 			}
 		}
@@ -76,6 +77,8 @@ export default class BracketReceiver extends React.Component {
 	render(){
 		
 		const { value } = this.state;
+		var gameWidth = this.state.frameWidth/3.8;
+		var lineWidth = gameWidth*0.2;
 		
 		if(this.props.masterGameObject !== null && this.props.masterGameObject !== undefined){
 			
@@ -99,11 +102,26 @@ export default class BracketReceiver extends React.Component {
 					tempArray.push(
 						<BracketTile
 							game = {bracketArray[k][i]}
+							showMatchup ={this.props.showMatchup}
 							
 						/>
 					);
 				}
-				renderArray.push(tempArray);
+				var deltaX = ((k+1)-this.state.value)*gameWidth+(((k+1)-this.state.value)+1)*lineWidth;
+				var tileStyle = {
+					height: this.props.height + 'px',
+					width: gameWidth + 'px',
+					transform: `translate(${deltaX}px)` 
+				};
+				
+				renderArray.push(
+					<div 
+						className="brRoundArea" 
+						style={tileStyle}
+					>
+		            	{tempArray.map(element => element)}
+			        </div>
+				);
 				tempArray=[];
 			}
 			
@@ -112,16 +130,38 @@ export default class BracketReceiver extends React.Component {
 			};
 			
 			bezArr = [];
+			var counter = 0;
+			var lineStyle = {
+				height: this.props.height + 'px',
+				width: lineWidth + 'px',
+				transform: `translate(${((counter+1)-this.state.value)*gameWidth+((counter+1)-this.state.value)*lineWidth}px)` 
+			};
+			//push first blank
+			bezArr.push(
+				<div 
+					className="brLineArea" 
+					style={lineStyle}
+				/>
+			);
+			counter += 1;
+			
 			// fill bezArr up to start value
 			for (k = 1; k <= this.props.startValue; k++){
+				
+				lineStyle = {
+					height: this.props.height + 'px',
+					width: lineWidth + 'px',
+					transform: `translate(${((counter+1)-this.state.value)*gameWidth+((counter+1)-this.state.value)*lineWidth}px)` 
+				};
+				
 				if (k%2 !== 0){
 					//one liner to left
-					for (i = 1; i<=renderArray[k+1].length/2; i++){
+					for (i = 1; i<=renderArray[k+1].props.children.length/2; i++){
 						tempArray.push(
 							<svg 
-								 x="0px" y="0px" 
-								 viewBox="0 0 100 125" 
-								 enable-background="new 0 0 100 100"
+								x="0px" y="0px" 
+								viewBox="0 0 100 125" 
+								enable-background="new 0 0 100 100"
 								style={{
 									height:moduleHeight,
 									width:'50%',
@@ -133,23 +173,30 @@ export default class BracketReceiver extends React.Component {
 							</svg>
 						);
 					}
-					bezArr.push(tempArray);
+					bezArr.push(
+						<div 
+							className="brLineArea" 
+							style={lineStyle}
+						>
+							{tempArray.map(element => element)}
+						</div>
+					);
 					tempArray = [];
 				} else {
 					//bezcurve
-					voidSpace = this.props.height - renderArray[k].length*gameHeight;
-					padHeight = voidSpace/renderArray[k].length;
+					voidSpace = this.props.height - renderArray[k].props.children.length*gameHeight;
+					padHeight = voidSpace/renderArray[k].props.children.length;
 					secondaryPad = padHeight/2;
 					moduleHeight = 2*gameHeight + padHeight;
-					for (i = 1; i <= renderArray[k+(k==this.props.startValue?0:1)].length/2; i++){
+					for (i = 1; i <= renderArray[k+(k==this.props.startValue?0:1)].props.children.length/2; i++){
 						tempArray.push(
 							<Stage
-								width={this.state.bracketLineWidth} 
+								width={lineWidth} 
 								height={moduleHeight}
 							>
 								<Layer>
 									<BezierCurvesMobile
-										xo = {this.state.bracketLineWidth}
+										xo = {lineWidth}
 										xf = {0}
 										y1 = {gameHeight/2}
 										y2 = {moduleHeight/2}
@@ -162,26 +209,39 @@ export default class BracketReceiver extends React.Component {
 							</Stage>
 						);
 					}
-					bezArr.push(tempArray);
+					bezArr.push(
+						<div 
+							className="brLineArea" 
+							style={lineStyle}
+						>
+							{tempArray.map(element => element)}
+						</div>
+					);
 					tempArray=[];
 				}
+				counter += 1;
 			}
 			// fill bezArr from start value
 			for(k=this.props.startValue; k<(renderArray.length-3);k++){
-				voidSpace = this.props.height - renderArray[k].length*gameHeight;
-				padHeight = voidSpace/renderArray[k].length;
+				lineStyle = {
+					height: this.props.height + 'px',
+					width: lineWidth + 'px',
+					transform: `translate(${((counter+1)-this.state.value)*gameWidth+((counter+1)-this.state.value)*lineWidth}px)` 
+				};
+				voidSpace = this.props.height - renderArray[k].props.children.length*gameHeight;
+				padHeight = voidSpace/renderArray[k].props.children.length;
 				secondaryPad = padHeight/2;
 				moduleHeight = 2*gameHeight + padHeight;
-				for (i = 1; i<=renderArray[k].length/2; i++){
+				for (i = 1; i<=renderArray[k].props.children.length/2; i++){
 					tempArray.push(
 						<Stage
-							width={this.state.bracketLineWidth} 
+							width={lineWidth} 
 							height={moduleHeight}
 						>
 							<Layer>
 								<BezierCurvesMobile
 									xo = {0}
-									xf = {this.state.bracketLineWidth}
+									xf = {lineWidth}
 									y1 = {gameHeight/2}
 									y2 = {moduleHeight/2}
 									y3 = {moduleHeight-gameHeight/2}
@@ -193,11 +253,24 @@ export default class BracketReceiver extends React.Component {
 						</Stage>
 					);
 				}
-				bezArr.push(tempArray);
+				bezArr.push(
+					<div 
+						className="brLineArea" 
+						style={lineStyle}
+					>
+						{tempArray.map(element => element)}
+					</div>
+				);
 				tempArray=[];
+				counter += 1;
 			}
 			// fill bezArr for last two
 			for(k=0;k<=1;k++){
+				lineStyle = {
+					height: this.props.height + 'px',
+					width: lineWidth + 'px',
+					transform: `translate(${((counter+1)-this.state.value)*gameWidth+((counter+1)-this.state.value)*lineWidth}px)` 
+				};
 				tempArray.push(
 					<svg 
 						x="0px" y="0px" 
@@ -213,92 +286,81 @@ export default class BracketReceiver extends React.Component {
 						<polygon transform="scale(-1, 1) translate(-100, 0)"  points="32.64,35.044 67.363,0.321 82.47,15.425 47.745,50.15 82.468,84.872 67.363,99.979 17.53,50.15 "/>
 					</svg>
 				);
-				bezArr.push(tempArray);
+				bezArr.push(
+					<div 
+						className="brLineArea" 
+						style={lineStyle}
+					>
+						{tempArray.map(element => element)}
+					</div>
+				);
 				tempArray=[];
+				counter += 1;
 			}
+			
+			//push last blank
+			lineStyle = {
+					height: this.props.height + 'px',
+					width: lineWidth + 'px',
+					transform: `translate(${((counter+1)-this.state.value)*gameWidth+((counter+1)-this.state.value)*lineWidth}px)` 
+				};
+			bezArr.push(
+				<div 
+					className="brLineArea" 
+					style={tileStyle}
+				/>
+			);
 		}
 		
 		
 		return(
-			<div className="brMain">
-	        	<div className="brTitles">
-		        	<div className='brValue'>
-		        		<CSSTransitionGroup
-				            transitionName={this.state.delta<=0?"moveBracketLeft":"moveBracketRight"}
-				            transitionEnterTimeout={500}
-				            transitionLeaveTimeout={300}>
-			            	{this.props.roundNamesArray[value-1]}
-				        </CSSTransitionGroup>
-	        		</div>
-		        	<div className='brValue'>
-		        		<CSSTransitionGroup
-				            transitionName={this.state.delta<=0?"moveBracketLeft":"moveBracketRight"}
-				            transitionEnterTimeout={500}
-				            transitionLeaveTimeout={300}>
-			            	{this.props.roundNamesArray[value]}
-				        </CSSTransitionGroup>
-	        		</div>
-	        		<div className='brValue'>
-		        		<CSSTransitionGroup
-				            transitionName={this.state.delta<=0?"moveBracketLeft":"moveBracketRight"}
-				            transitionEnterTimeout={500}
-				            transitionLeaveTimeout={300}>
-			            	{this.props.roundNamesArray[value+1]}
-				        </CSSTransitionGroup>
-        			</div>
-    			</div>
-    			
-    			<Swipeable 
-    				className="brBracketArea"
-    				onSwiped={this.swiped.bind(this)}
+			<Measure
+    				bounds
+    				onResize={(contentRect) => {
+    					this.setState({frameWidth: contentRect.bounds.width});
+    				}}
 				>
-    				<div className="brLineArea" style={boardHeight}/>
-					<div className="brRoundArea" style={boardHeight}>
-		            	{renderArray[this.state.value-1].map(element => element)}
-			        </div>
-			        <Measure
-				        bounds
-				        onResize={(contentRect) => {
-				          this.setState({ bracketLineWidth: contentRect.bounds.width });
-				        }}
-			    	>
-			    		{({ measureRef }) =>
-					        <div 
-								className="brLineArea" 
-								style={boardHeight}
-								ref={measureRef}
-							>
-								{bezArr[this.state.value-1]}
-							</div>
-				        }
-					</Measure>
-					<div className="brRoundArea" style={boardHeight}>
-		            	{renderArray[this.state.value].map(element => element)}
-			        </div>
-    					<div 
-							className="brLineArea" 
-							style={boardHeight}
-							ref={this.saveRef}
+					{({ measureRef }) =>
+					<div className="brMain" ref={measureRef}>
+			        	<div className="brTitles">
+				        	<div className='brValue'>
+				        		<CSSTransitionGroup
+						            transitionName={this.state.delta<=0?"moveBracketLeft":"moveBracketRight"}
+						            transitionEnterTimeout={500}
+						            transitionLeaveTimeout={300}>
+					            	{this.props.roundNamesArray[value-1]}
+						        </CSSTransitionGroup>
+			        		</div>
+				        	<div className='brValue'>
+				        		<CSSTransitionGroup
+						            transitionName={this.state.delta<=0?"moveBracketLeft":"moveBracketRight"}
+						            transitionEnterTimeout={500}
+						            transitionLeaveTimeout={300}>
+					            	{this.props.roundNamesArray[value]}
+						        </CSSTransitionGroup>
+			        		</div>
+			        		<div className='brValue'>
+				        		<CSSTransitionGroup
+						            transitionName={this.state.delta<=0?"moveBracketLeft":"moveBracketRight"}
+						            transitionEnterTimeout={500}
+						            transitionLeaveTimeout={300}>
+					            	{this.props.roundNamesArray[value+1]}
+						        </CSSTransitionGroup>
+		        			</div>
+		    			</div>
+		    			
+		    			<Swipeable 
+		    				className="brBracketFrame"
+		    				onSwiped={this.swiped.bind(this)}
 						>
-							{bezArr[this.state.value]}
-						</div>
-					<div className="brRoundArea" style={boardHeight}>
-		            	{renderArray[this.state.value+1].map(element => element)}
-			        </div>
-    				<div className="brLineArea" style={boardHeight}/>
-    			</Swipeable>
-    			
-    			<div className="brSlider">
-	    			<Slider
-		        		min={1}
-		        		max={this.props.roundNamesArray.length -2}
-		        		value={value}
-		        		onChangeStart={this.handleChangeStart}
-		        		onChange={this.handleChange.bind(this)}
-		        		onChangeComplete={this.handleChangeComplete}
-		        	/>
-	        	</div>
-			</div>
+							<div className="brBracketArea">
+			    				{renderArray.map(element => element)}
+			    				{bezArr.map(element => element)}
+		    				</div>
+		    			</Swipeable>
+					</div>
+				}
+			</Measure>
 		);
 	}
 }

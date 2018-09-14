@@ -22,7 +22,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 
 
 svg {
-  display:inline-flex
+  flex:1;
 }
 
 img {
@@ -715,7 +715,7 @@ footer p {
 	animation-duration: 1s;
 	display: flex;
 	flex-direction: row;
-	height: 80px;
+	height: 60px;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
@@ -1257,7 +1257,7 @@ hr.style14 {
     flex: 1;
 }
 
-.brBracketArea{
+.brBracketFrame{
     display: flex;
     flex: 100;
     flex-direction: row;
@@ -1265,17 +1265,33 @@ hr.style14 {
     background: darkturquoise;
 }
 
+.brBracketArea{
+    display: flex;
+    flex: 100;
+    flex-direction: row;
+    background: darkturquoise;
+    overflow-y:  scroll;
+    overflow-x: hidden;
+    position: relative;
+}
+
 .brRoundArea{
     display: flex;
+    overflow: hidden;
     flex: 5;
+    position: absolute;
     flex-direction: column;
     justify-content: space-around;
+    transition: all 0.5s;
 }
 .brLineArea{
     display: flex;
+    overflow: hidden;
     flex: 1;
+    position: absolute;
     flex-direction: column;
     justify-content: space-around;
+    transition: all 0.5s;
 }
 
 .brValue{
@@ -1284,6 +1300,7 @@ hr.style14 {
     align-items: center;
     height: 30px;
     flex: 1;
+    font-size: xx-small;
 }
 
 .brValue > span{
@@ -1435,10 +1452,4 @@ hr.style14 {
     font-size: xx-small;
     background-color: black;
     color: white;
-}
-
-.lgMain{
-    overflow-y: scroll;
-    display: flex;
-    flex-direction: column;
 }

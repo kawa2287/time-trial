@@ -1,4 +1,5 @@
 import React from 'react';
+import Icons from './icons/Icons';
 
 export default class BracketTile extends React.Component {
 	
@@ -25,7 +26,7 @@ export default class BracketTile extends React.Component {
 	
 	BackgroundColor(status,playerA,playerB){
 		if(status == 'COMPLETE'){
-			return {backgroundColor:'#303030'};
+			return {backgroundColor:'black'};
 		} else {
 			if (playerA == null || playerB==null){
 				return null;
@@ -44,26 +45,78 @@ export default class BracketTile extends React.Component {
 	TextStyle(status,player,winner,loser){
 
 		if(status == 'COMPLETE' && player == winner){
-			return {
-			    color: 'yellow',
-			    fontWeight: 'bold'	
-			};
+			if(player == 'BYE'  || player.slice(0,6)=='Winner' || player.slice(0,5)=='Loser'){
+				return {
+				    color: 'yellow',
+				    fontWeight: 'bold',
+				    fontSize:'smaller'
+				};
+			} else {
+				return {
+				    color: 'yellow',
+				    fontWeight: 'bold'	
+				};
+			}
+			
 		} else if ( status =='COMPLETE' && player == loser) {
-			return {    
-				color: 'palevioletred',
-			    textDecoration: 'line-through'
-			};
+			if(player == 'BYE'  || player.slice(0,6)=='Winner' || player.slice(0,5)=='Loser'){
+				return {
+				    color: 'palevioletred',
+				    textDecoration: 'line-through',
+				    fontSize:'smaller'
+				};
+			} else {
+				return {    
+					color: 'palevioletred',
+				    textDecoration: 'line-through'
+				};
+			}
+			
 		} else {
-			return null;
+			if(player == 'BYE'  || player.slice(0,6)=='Winner' || player.slice(0,5)=='Loser'){
+				return {
+				    fontSize:'x-small'
+				};
+			} else {
+				return null;			
+			}
 		}
 	}
 	
 	ByeFormat(player){
-		if(player == 'BYE'){
+		if(player == 'BYE'  || player.slice(0,6)=='Winner' || player.slice(0,5)=='Loser'){
 			return {
 			    flex: '0',
     			visibility: 'hidden'
 			};
+		}
+	}
+	
+	TextSize(player){
+		if(player == 'BYE'  || player.slice(0,6)=='Winner' || player.slice(0,5)=='Loser'){
+			return {
+			    fontSize: 'small'
+			};
+		}
+	}
+	
+	handleClick(){
+		if(this.props.game.playerA!==null && this.props.game.playerB!==null){
+			if(
+				this.props.game.playerA.name !== 'BYE' && 
+				this.props.game.playerB!=='BYE' && 
+				this.props.game.playerA.seed !== null && 
+				this.props.game.playerA.seed !== null &&
+				this.props.game.playerA.seed !== "" && 
+				this.props.game.playerA.seed !== ""
+			){
+				this.props.showMatchup(
+					this.props.game.playerA,
+					this.props.game.playerB,
+					this.props.game.gameTitle,
+					this.props.game.gameNumber
+				);
+			}
 		}
 	}
 
@@ -73,14 +126,19 @@ export default class BracketTile extends React.Component {
 		var playerA = {
 				name : this.props.game.playerA == null ? null : this.props.game.playerA.name,
 				seed : this.props.game.playerA == null ? '-' : this.props.game.playerA.seed,
-				mascot : this.props.game.playerA.mascot == null ? null : '/img/divisions/'+this.props.game.playerA.mascot+'.svg',
-				flag : this.props.game.playerA == null ? null : this.props.game.playerA.country.flagPathSVG
+				mascot : this.props.game.playerA.mascot == null ? null : this.props.game.playerA.mascot,
+				primaryColor : this.props.game.playerA.primaryColor == null ? null : this.props.game.playerA.primaryColor,
+				secondaryColor : this.props.game.playerA.secondaryColor == null ? null : this.props.game.playerA.secondaryColor,
+				flag : this.props.game.playerA == null ? null : this.props.game.playerA.country.flagPathSVG,
+				
 		};
 		
 		var playerB = {
 				name : this.props.game.playerB == null ? null : this.props.game.playerB.name,
 				seed : this.props.game.playerB == null ? '-' : this.props.game.playerB.seed,
-				mascot : this.props.game.playerB.mascot == null ? null : '/img/divisions/'+this.props.game.playerB.mascot+'.svg',
+				mascot : this.props.game.playerB.mascot == null ? null : this.props.game.playerB.mascot,
+				primaryColor : this.props.game.playerB.primaryColor == null ? null : this.props.game.playerB.primaryColor,
+				secondaryColor : this.props.game.playerB.secondaryColor == null ? null : this.props.game.playerB.secondaryColor,
 				flag : this.props.game.playerB == null ? null : this.props.game.playerB.country.flagPathSVG
 		};
 		
@@ -88,6 +146,7 @@ export default class BracketTile extends React.Component {
 			<div 
 				className="btContainer"
 				style={this.BackgroundColor(this.props.game.status,playerA,playerB)}
+				onClick={this.handleClick.bind(this)}
 			>
 				<h1 className="btGameTitle">
 					{'Game ' + this.props.game.gameNumber}
@@ -115,7 +174,11 @@ export default class BracketTile extends React.Component {
 								<img src={playerA.flag}/>
 							</div>
 							<div className="btMiscContainer">
-								<img src={playerA.mascot}/>
+								<Icons
+									mascot = {playerA.mascot}
+									colorA = {playerA.primaryColor}
+									colorB = {playerA.secondaryColor}
+								/>
 							</div>
 						</div>
 						<h1 
@@ -150,7 +213,11 @@ export default class BracketTile extends React.Component {
 								<img src={playerB.flag}/>
 							</div>
 							<div className="btMiscContainer">
-								<img src={playerB.mascot}/>
+								<Icons
+									mascot = {playerB.mascot}
+									colorA = {playerB.primaryColor}
+									colorB = {playerB.secondaryColor}
+								/>
 							</div>
 						</div>
 						<h1 
