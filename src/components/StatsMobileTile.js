@@ -51,7 +51,7 @@ export default class StatsMobile extends React.Component {
 					{this.props.player.name}
 				</div>
 				<div className="smStat">
-					{this.props.player.timeTrial==null || this.props.player.timeTrial=="-"?"-":this.props.player.timeTrial.toFixed(2)}
+					{this.props.player.timeTrial==null || this.props.player.timeTrial == "-"?"-":this.props.player.timeTrial.toFixed(2)}
 				</div>
 				<div className="smStat">
 					{this.props.player.wins}
