@@ -118,12 +118,22 @@ export default class MobileMatchup extends React.Component {
 				[this.props.playerA,this.props.playerB],
 				[this.props.playerA.timeTrial,this.props.playerB.timeTrial],
 				0,'VS'
-			)+'%';
+			);
+			if (isNaN(playerAwinChance)){
+				playerAwinChance = '50%';
+			} else {
+				playerAwinChance = playerAwinChance+'%';
+			}
 			playerBwinChance = DetermineWinChance(
 				[this.props.playerA,this.props.playerB],
 				[this.props.playerA.timeTrial,this.props.playerB.timeTrial],
 				1,'VS'
-			)+'%';
+			);
+			if (isNaN(playerBwinChance)){
+				playerBwinChance = '50%';
+			} else {
+				playerBwinChance = playerBwinChance+'%';
+			}
 			
 		}
 		
