@@ -94,7 +94,7 @@ export default class TimeTrialTemplate extends React.Component {
 				<div className="ttSector">
 					<div className="ttZone">
 						<div className="ttFlag">
-							<img width={'50%'} src={typeof(this.state.players[this.state.name]) != "undefined" ? this.state.players[this.state.name].country.flagPathXL :"/img/flagsXL/XX.png"} />
+							<img width={'50%'} src={typeof(this.state.players[this.state.name]) != "undefined" ? this.state.players[this.state.name].country.flagPathSVG :"/img/flagsSVG/XX.svg"} />
 						</div>
 						<div className="ttTime">
 							{this.state.stopSwitch == null ? formattedSeconds(this.props.timeElapsed) : formattedSeconds(this.state.stopTime)}
