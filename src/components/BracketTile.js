@@ -103,8 +103,7 @@ export default class BracketTile extends React.Component {
 	handleClick(){
 		if(this.props.game.playerA!==null && this.props.game.playerB!==null){
 			if(
-				this.props.game.playerA.name !== 'BYE' && 
-				this.props.game.playerB!=='BYE' && 
+				
 				this.props.game.playerA.seed !== null && 
 				this.props.game.playerA.seed !== null &&
 				this.props.game.playerA.seed !== "" && 
