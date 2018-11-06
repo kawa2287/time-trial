@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Trying to learn some ReactJS",
   "main": "index.js",
+  "engines": {
+    "node": "10.13.0"
+  }
   "scripts": {
     "start": "cross-env NODE_ENV=production node_modules/.bin/babel-node --presets react,es2015 src/server.js --history-api-fallback",
     "build": "cross-env NODE_ENV=production node_modules/.bin/webpack -d"
