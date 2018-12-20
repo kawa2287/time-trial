@@ -2,6 +2,9 @@
   "name": "workspace",
   "version": "1.0.0",
   "description": "Trying to learn some ReactJS",
+  "engines":{
+    "node": "6.11.2"
+  },
   "main": "index.js",
   "scripts": {
     "start": "cross-env NODE_ENV=production node_modules/.bin/babel-node --presets react,es2015 src/server.js --history-api-fallback",
