@@ -3,6 +3,7 @@
 
 import React from 'react';
 import DetermineWinChance from './vsBracketMethods/baseMethods/DetermineWinChance';
+import Icons from './icons/Icons';
 
 var loserStyle ={
 	width:'40%',
@@ -206,7 +207,11 @@ export default class MobileMatchup extends React.Component {
 							{this.props.playerA==null?null:this.props.playerA.seed}
 						</div>
 						<div className="mmTextStats" >
-							<img src={this.DetermineSymbol(this.props.playerA)} style={{maxHeight:'100%'}}/>
+							<Icons
+								mascot = {this.props.playerA==null?null:this.props.playerA.mascot}
+								colorA = {this.props.playerA==null?null:this.props.playerA.primaryColor}
+								colorB = {this.props.playerA==null?null:this.props.playerA.secondaryColor}
+							/>
 						</div>
 						<div className="mmTextStats">
 							{this.props.playerA==null?null:this.props.playerA.wins}
@@ -240,7 +245,11 @@ export default class MobileMatchup extends React.Component {
 							{this.props.playerB==null?null:this.props.playerB.seed}
 						</div>
 						<div className="mmTextStats" >
-							<img src={this.DetermineSymbol(this.props.playerB)} style={{maxHeight:'100%'}}/>
+							<Icons
+								mascot = {this.props.playerB==null?null:this.props.playerB.mascot}
+								colorA = {this.props.playerB==null?null:this.props.playerB.primaryColor}
+								colorB = {this.props.playerB==null?null:this.props.playerB.secondaryColor}
+							/>
 						</div>
 						<div className="mmTextStats">
 							{this.props.playerB==null?null:this.props.playerB.wins}
