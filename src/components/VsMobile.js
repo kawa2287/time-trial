@@ -243,40 +243,44 @@ export default class VsMobile extends React.Component {
 			
 			var conference1 = pickRandomProperty(divisionNames);
 			var conference2 = selectUnique(conference1,divisionNames);
-			var conf1Mascot = pickRandomProperty(conference1);
-			var conf2Mascot = pickRandomProperty(conference2);
+			var conf1MascotA = pickRandomProperty(conference1.divisions);
+			var conf2MascotA = pickRandomProperty(conference2.divisions);
+			var conf1MascotB = selectUnique(conf1MascotA, conference1.divisions);
+			var conf2MascotB = selectUnique(conf2MascotA,conference2.divisions);
 			var div1 = {
-				mascot: conf1Mascot,
+				conference: conference1.conference,
+				mascot: conf1MascotA,
 				primaryColor: darkArray[0],
 				secondaryColor: lightArray[0]
 			};
 			var div2 = {
-				mascot: conf1Mascot,
+				conference: conference1.conference,
+				mascot: conf1MascotB,
 				primaryColor: darkArray[1],
 				secondaryColor: lightArray[1]
 			};
 			var div3 = {
-				mascot: conf2Mascot,
+				conference: conference2.conference,
+				mascot: conf2MascotA,
 				primaryColor: lightArray[2],
 				secondaryColor: darkArray[2]
 			};
 			var div4 = {
-				mascot: conf2Mascot,
+				conference: conference2.conference,
+				mascot: conf2MascotB,
 				primaryColor: lightArray[3],
 				secondaryColor: darkArray[3]
 			};
 	
 			divisions = [div1,div2,div3,div4];
 			
-			console.log('divisions',divisions);
-		
-		
 				
 			//Add Props to Seeded Array
 			
 			for (var item in mastArr) {
 				for (var y = 0; y < tempPlayerArr.length; y++){
 					if(mastArr[item] == tempPlayerArr[y].seed){
+						tempPlayerArr[y].conference = divisions[divisionTrigger].conference;
 						tempPlayerArr[y].mascot = divisions[divisionTrigger].mascot;
 						tempPlayerArr[y].primaryColor = divisions[divisionTrigger].primaryColor;
 						tempPlayerArr[y].secondaryColor = divisions[divisionTrigger].secondaryColor;
@@ -591,7 +595,8 @@ function shuffle(array) {
 
 function pickRandomProperty(obj) {
     var keys = Object.keys(obj);
-    return obj[keys[ keys.length * Math.random() << 0]];
+    var randIndex = keys.length * Math.random() << 0;
+    return obj[keys[randIndex]];
 }
 
 function selectUnique(prop, obj){

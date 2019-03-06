@@ -90,24 +90,7 @@ export default class MobileMatchup extends React.Component {
 			submit:true
 		});
 	}
-	
-	DetermineSymbol(player){
-		if (player == null){
-			return null;
-		} else {
-			if(player.mascot =='Spades'){
-				return '/img/divisions/Spades.svg';
-			}else if(player.mascot =='Clubs'){
-				return '/img/divisions/Clubs.svg';
-			} else if(player.mascot =='Diamonds'){
-				return '/img/divisions/Diamonds.svg';
-			} else if(player.mascot =='Hearts'){
-				return '/img/divisions/Hearts.svg';
-			}else {
-				return null;
-			}
-		}
-	}
+
 
 	render(){
 		

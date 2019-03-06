@@ -408,6 +408,7 @@ class VsMatchup extends React.Component {
     			keyPress : null
 			},function afterClick(){
 				this.props.hideMatchup();
+				this.props.updateFirebase();
 			});
 		}
 	}

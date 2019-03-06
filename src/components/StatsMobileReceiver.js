@@ -38,10 +38,11 @@ export default class StatsMobileReceiver extends React.Component {
 		var tempPlayers = [];
 		var overallArray = [];
 		
+		
 		for (var n = 0; n < divArray.length; n++){
 			if ( n == 0){
 				conferences.push(divArray[n].conference);
-				divisions.push(divArray[n].primary);
+				divisions.push(divArray[n].division);
 			} else {
 				for (var p = 0; p < conferences.length; p++){
 					if (conferences[p] == divArray[n].conference){
@@ -52,9 +53,8 @@ export default class StatsMobileReceiver extends React.Component {
 				if (confToggle == 0 ){
 					conferences.push(divArray[n].conference);
 				}
-				divisions.push(divArray[n].primary);
+				divisions.push(divArray[n].division);
 				confToggle = 0;
-				
 			}
 			
 		}
@@ -84,7 +84,7 @@ export default class StatsMobileReceiver extends React.Component {
     				tempPlayers = [];
     				//sift through players in specified conference
     				for (var k =0; k < players.length; k++){
-    					if (conferences[i] == players[k].mascot) {
+    					if (conferences[i] == players[k].conference) {
     						tempPlayers.push(players[k]);
     					}
     				}
@@ -114,7 +114,7 @@ export default class StatsMobileReceiver extends React.Component {
     				tempPlayers = [];
     				//sift through players in specified conference
     				for (var k =0; k < players.length; k++){
-    					if (divisions[i] == players[k].primaryColor) {
+    					if (divisions[i] == players[k].mascot) {
     						tempPlayers.push(players[k]);
     					}
     				}
@@ -185,13 +185,15 @@ export default class StatsMobileReceiver extends React.Component {
     	for(var x = 0; x < players.length ; x++){
     		if (x == 0){
     			tempArray.push({
-    				conference : players[x].mascot,
+    				conference : players[x].conference,
+    				division : players[x].mascot,
     				primary: players[x].primaryColor,
     				secondary : players[x].secondaryColor
     			});
     		} else {
     			for (var y = 0; y < tempArray.length; y++){
-    				if ((tempArray[y].conference == players[x].mascot) && 
+    				if ((tempArray[y].conference == players[x].conference) && 
+    					(tempArray[y].division == players[x].mascot) && 
     					(tempArray[y].primary == players[x].primaryColor) && 
     					(tempArray[y].secondary == players[x].secondaryColor))
 					{
@@ -200,7 +202,8 @@ export default class StatsMobileReceiver extends React.Component {
     			}
     			if (toggle == 0){
     				tempArray.push({
-	    				conference : players[x].mascot,
+	    				conference : players[x].conference,
+    					division : players[x].mascot,
 	    				primary: players[x].primaryColor,
 	    				secondary : players[x].secondaryColor
 	    			});
@@ -236,6 +239,7 @@ export default class StatsMobileReceiver extends React.Component {
 			for (var k in cloned){
 				playersArray.push(cloned[k]);
 			}
+			
 			
 			
 			for(k = 0 ; k < playersArray.length; k++){

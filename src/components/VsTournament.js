@@ -6,7 +6,7 @@ import { Stage, Group, Layer, Rect, Text } from "react-konva";
 import Colors from '../static/Colors';
 import divisionNames from '../data/divisionNames';
 import DivisionImage from './matchup/DivisionImage';
-//import Firebase from '../firebase';
+import Firebase from '../firebase';
 
 import Button from './Button';
 import Settings from '../static/Settings';
@@ -53,6 +53,8 @@ var vizGeo = {
 //------------------------------------------------------------------
 //declare global variables here
 //------------------------------------------------------------------
+var GamesDB;
+
 var loserArr = [];
 var winnerArr = [];
 var mastArr = [];
@@ -62,6 +64,7 @@ var teams;
 var bracketSpots;
 var bracketPower;
 var nGamesTotal;
+var loadGame;
 
 var gameWidth;
 var gameHeight;
@@ -128,13 +131,15 @@ export default class VsTournament extends React.Component {
 		// set settings
 		mode = this.props.location.state.mode;
 		Settings.seedMode = this.props.location.state.seeding; 
+		loadGame = this.props.location.state.load;
 		
 		// init colors
 		for (var c = 0; c <30; c++){
 			vizGeo.lColAr.push("#"+((1<<24)*Math.random()|0).toString(16));
 		}
 		
-		//TODO DATABASE/////
+		///// DATABASE/////
+		GamesDB = Firebase.database().ref(this.props.location.state.gameName);
 	
 		
 		//bind imported state dependent functions
@@ -188,116 +193,194 @@ export default class VsTournament extends React.Component {
 			winnerArr.push(NgmsInRnd.winnerBracket(bracketSpots,k,mode));
 		}
 		
-		//populate seeded array
-		PropogateSeedsArr(teams,mastArr, bracketPower);
+		console.log('loadGame bool = ', loadGame);
 		
-		//Create Master Game Object
-		this.state.masterGameObject = CreateMasterGameObject(nGamesTotal, bracketSpots, mode);
-		console.log('masterGameObject',this.state.masterGameObject);
+		if(loadGame == true){
+			//setState with Firebase
+			var ref = Firebase.database().ref(this.props.location.state.gameName);
+			ref.on("value", (snapshot) => {
+				console.log('snapshot',snapshot.val());
+				this.setState ({
+					masterGameObject : snapshot.val().masterGameObject,
+					seededArray : snapshot.val().seededArray
+				}, print => {
+					console.log('seededArray construct',this.state.seededArray);
+					console.log('masterGameObject construct',this.state.masterGameObject);
+				});
+				
+			}, function (error) {
+			    console.log("Error: " + error.code);
+			});
+			this.forceUpdate();
+			loadGame = false;
+		} else {
 		
-		//place players into Temp array
-		var tempPlayerArr = [];
-		for (var p in this.props.location.state.players){
-			tempPlayerArr.push(this.props.location.state.players[p]);
-		}
-		if(this.props.location.state.order == 'random' ){
-			seededArray = shuffle(seededArray);
-			for (var q = 0; q < tempPlayerArr.length; q++){
-				tempPlayerArr[q].seed = q+1;
-			}
-		}
-		
-		//assign teams to divisions
-		var divisionTrigger = 0;
-		var divisionCounter = 1;
-		var conference1 = pickRandomProperty(divisionNames);
-		var conference2 = selectUnique(conference1,divisionNames);
-		var div1 = pickRandomProperty(conference1);
-		var div2 = selectUnique(div1,conference1);
-		var div3 = pickRandomProperty(conference2);
-		var div4 = selectUnique(div3,conference2);
-		divisions = [div1,div2,div3,div4];
-	
-	
+			//populate seeded array
+			PropogateSeedsArr(teams,mastArr, bracketPower);
 			
-		//Add Props to Seeded Array
-		for (var item in mastArr) {
-			for (var y = 0; y < tempPlayerArr.length; y++){
-				if(mastArr[item] == tempPlayerArr[y].seed){
-					tempPlayerArr[y].mascot = divisions[divisionTrigger];
-					seededArray.push(tempPlayerArr[y]);
-					toggle = 1;
-				} 
-			}
-			if (toggle == 0){
-				seededArray.push({
-					name : 'BYE',
-				    country : '',
-				    seed : mastArr[item],
-				    timeTrial : '-',
-				    wins : null,
-				    losses : null,
-				    totalTime : 0,
-				    avgTime : 0,
-				    splitTime : 0
-					});
-			}
-			toggle = 0;
-			if (divisionCounter % (bracketSpots/(mode=='VS'?2:4)) == 0 && divisionCounter !==0){
-				divisionTrigger += 1;
-				console.log('divisionTrigger',divisionTrigger);
-			}
-			divisionCounter +=1;
+			//Create Master Game Object
+			this.state.masterGameObject = CreateMasterGameObject(nGamesTotal, bracketSpots, mode);
+			console.log('masterGameObject',this.state.masterGameObject);
 			
-		}
-		
-		/*
-		//try adding data to firebase
-		const playersRef = Firebase.database().ref('players');
-		console.log('seededArray',seededArray);
-		for (var p = 0; p < seededArray.length; p++){
-			playersRef.push(seededArray[p]);
-		}
-		*/
-		
-		//Populate Start Round in Master Game Object
-		var sift = 1;
-		for (var k = 0; k < seededArray.length; k++){
-			if (mode == 'VS'){
-				if (k % 2 == 0){
-					this.state.masterGameObject[k/2 + 1].playerA = seededArray[k];
-				} else {
-					this.state.masterGameObject[(k+1)/2].playerB = seededArray[k];
-				}
-			} else {
-				if(sift == 1){
-					this.state.masterGameObject[Math.ceil((k+1)/4)].playerA = seededArray[k];
-					sift = sift + 1;
-				} else if (sift == 2) {
-					this.state.masterGameObject[Math.ceil((k+1)/4)].playerB = seededArray[k];
-					sift = sift + 1;
-				} else if (sift == 3) {
-					this.state.masterGameObject[Math.ceil((k+1)/4)].playerC = seededArray[k];
-					sift = sift + 1;
-				} else {
-					this.state.masterGameObject[Math.ceil((k+1)/4)].playerD = seededArray[k];
-					sift = 1;
+			//place players into Temp array
+			var tempPlayerArr = [];
+			for (var p in this.props.location.state.players){
+				tempPlayerArr.push(this.props.location.state.players[p]);
+			}
+			if(this.props.location.state.order == 'random' ){
+				seededArray = shuffle(seededArray);
+				for (var q = 0; q < tempPlayerArr.length; q++){
+					tempPlayerArr[q].seed = q+1;
 				}
 			}
-		}
-		
-		//Populate rest of games in Master Game Object
-		for (var k in this.state.masterGameObject){
-		
-			this.StartOutcomes(
-				this.state.masterGameObject[k].gameNumber,
-				bracketSpots,
-				this.state.masterGameObject[k].bracket,
-				bracketPower,
-				mode,
-				beginConstruction
-			);
 			
+			//assign teams to divisions
+			var divisionTrigger = 0;
+			var divisionCounter = 1;
+			var darkArray = [];
+			var lightArray = [];
+			for (var c = 0; c < 4; c++){
+				if (c === 0){
+					darkArray.push(pickRandomProperty(Colors.darkArray));
+					lightArray.push(pickRandomProperty(Colors.lightArray));
+				} else {
+					var tempDark = null;
+					var tempLight = null;
+					for (var x = 0; x < darkArray.length; x++){
+						tempDark = selectUnique(darkArray[x],Colors.darkArray);
+						tempLight = selectUnique(lightArray[x],Colors.lightArray);
+					}
+					darkArray.push(tempDark);
+					lightArray.push(tempLight);
+				}
+				
+			}
+			
+			var conference1 = pickRandomProperty(divisionNames);
+			var conference2 = selectUnique(conference1,divisionNames);
+			var conf1MascotA = pickRandomProperty(conference1.divisions);
+			var conf2MascotA = pickRandomProperty(conference2.divisions);
+			var conf1MascotB = selectUnique(conf1MascotA, conference1.divisions);
+			var conf2MascotB = selectUnique(conf2MascotA,conference2.divisions);
+			var div1 = {
+				conference: conference1.conference,
+				mascot: conf1MascotA,
+				primaryColor: darkArray[0],
+				secondaryColor: lightArray[0]
+			};
+			var div2 = {
+				conference: conference1.conference,
+				mascot: conf1MascotB,
+				primaryColor: darkArray[1],
+				secondaryColor: lightArray[1]
+			};
+			var div3 = {
+				conference: conference2.conference,
+				mascot: conf2MascotA,
+				primaryColor: lightArray[2],
+				secondaryColor: darkArray[2]
+			};
+			var div4 = {
+				conference: conference2.conference,
+				mascot: conf2MascotB,
+				primaryColor: lightArray[3],
+				secondaryColor: darkArray[3]
+			};
+	
+			divisions = [div1,div2,div3,div4];
+		
+		
+				
+			//Add Props to Seeded Array
+			for (var item in mastArr) {
+				for (var y = 0; y < tempPlayerArr.length; y++){
+					if(mastArr[item] == tempPlayerArr[y].seed){
+						tempPlayerArr[y].mascot = divisions[divisionTrigger];
+						seededArray.push(tempPlayerArr[y]);
+						toggle = 1;
+					} 
+				}
+				if (toggle == 0){
+					seededArray.push({
+						name : 'BYE',
+					    country : '',
+					    seed : mastArr[item],
+					    timeTrial : '-',
+					    wins : null,
+					    losses : null,
+					    totalTime : 0,
+					    avgTime : 0,
+					    splitTime : 0
+						});
+				}
+				toggle = 0;
+				if (divisionCounter % (bracketSpots/(mode=='VS'?2:4)) == 0 && divisionCounter !==0){
+					divisionTrigger += 1;
+					console.log('divisionTrigger',divisionTrigger);
+				}
+				divisionCounter +=1;
+				
+			}
+			
+			/*
+			//try adding data to firebase
+			const playersRef = Firebase.database().ref('players');
+			console.log('seededArray',seededArray);
+			for (var p = 0; p < seededArray.length; p++){
+				playersRef.push(seededArray[p]);
+			}
+			*/
+			
+			//Populate Start Round in Master Game Object
+			var sift = 1;
+			for (var k = 0; k < seededArray.length; k++){
+				if (mode == 'VS'){
+					if (k % 2 == 0){
+						this.state.masterGameObject[k/2 + 1].playerA = seededArray[k];
+					} else {
+						this.state.masterGameObject[(k+1)/2].playerB = seededArray[k];
+					}
+				} else {
+					if(sift == 1){
+						this.state.masterGameObject[Math.ceil((k+1)/4)].playerA = seededArray[k];
+						sift = sift + 1;
+					} else if (sift == 2) {
+						this.state.masterGameObject[Math.ceil((k+1)/4)].playerB = seededArray[k];
+						sift = sift + 1;
+					} else if (sift == 3) {
+						this.state.masterGameObject[Math.ceil((k+1)/4)].playerC = seededArray[k];
+						sift = sift + 1;
+					} else {
+						this.state.masterGameObject[Math.ceil((k+1)/4)].playerD = seededArray[k];
+						sift = 1;
+					}
+				}
+			}
+			
+			//Populate rest of games in Master Game Object
+			for (var k in this.state.masterGameObject){
+			
+				this.StartOutcomes(
+					this.state.masterGameObject[k].gameNumber,
+					bracketSpots,
+					this.state.masterGameObject[k].bracket,
+					bracketPower,
+					mode,
+					beginConstruction
+				);
+				
+			}
+			console.log('madeithere');
+			console.log('seededArray',this.state.seededArray);
+			GamesDB.set({
+				masterGameObject: this.state.masterGameObject,
+				gameName: this.props.location.state.gameName,
+				mode: mode,
+				seeding: this.props.location.state.seeding,
+				order: this.props.location.state.order,
+				players: this.props.location.state.players,
+				seededArray: seededArray
+			});
 		}
 		
 		
@@ -367,6 +450,7 @@ export default class VsTournament extends React.Component {
 				matchupGameNumber : winLosePackage.gameNumber
 			}, function afterClick(){
 				this.customDialog.show();
+				this.UpdateFirebase();
 			});
 		} else {
 			this.setState({
@@ -385,6 +469,7 @@ export default class VsTournament extends React.Component {
 			 winLosePackage['playerDtime'] = '-';
 			
 			this.WinnerLoserHandler(winLosePackage,resultTimePackage);
+			
 		}
 	}
 	
@@ -397,6 +482,15 @@ export default class VsTournament extends React.Component {
 			matchupPlayerD : {}
 		});
 	}
+	
+	UpdateFirebase(){
+    	//sendMasterGameArray to Firebase
+    	console.log('updateRequested');
+		GamesDB.update({
+			masterGameObject: JSON.parse( JSON.stringify(this.state.masterGameObject)) ,
+			seededArray: JSON.parse( JSON.stringify(seededArray))
+		});
+    }
 
 	
 	
@@ -635,6 +729,7 @@ export default class VsTournament extends React.Component {
 						hideMatchup = {this.hideMatchup.bind(this)}
 						mode = {mode}
 						allAvgTime = {allAvgTime}
+						updateFirebase = {this.UpdateFirebase.bind(this)}
 					/>
 				</SkyLight>
 				<Stage 

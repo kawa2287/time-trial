@@ -1,72 +1,92 @@
 "use strict";
 
 const conferences = 
-  {/*
+  {
     "Mythological": {
-      "name1": "Dragon",
-      "name2": "Gryphon",
-      "name3": "Unicorn",
-      "name4": "Jackalope",
-      "name5": "Kraken",
-      "name6": "Phoenix",
+      conference: "Mythological",
+      divisions: {
+        "name1": "Dragon",
+        "name2": "Unicorn",
+        "name3": "Jackalope",
+        "name4": "Phoenix",
+        "name5": "Griffin"
+      }
     },
     "Forest": {
-      "name1": "Moose",
-      "name2": "Bear",
-      "name3": "Deer",
-      "name4": "Eagle",
-      "name5": "Badger",
-      "name6": "Fox",
+      conference: "Forest",
+      divisions: {
+        "name1": "Bear",
+        "name2": "Deer",
+        "name3": "Squirrel",
+        "name4": "Fox"
+      }
     },
-    "Venom": {
-      "name1": "Snake",
-      "name2": "Spider",
-      "name3": "Scorpion",
-      "name4": "Wasp",
-      "name5": "Jellyfish",
-      "name6": "Dart Frog",
+    "Desert": {
+      conference: "Desert",
+      divisions: {
+        "name1": "Python",
+        "name2": "Lizard",
+        "name3": "Scorpion",
+        "name4": "Armadillo"
+      }
     },
-    "Ocean":{
-      "name1": "Starfish",
-      "name2": "Seahorse",
-      "name3": "Sting Ray",
-      "name4": "Squid",
-      "name5": "Shark",
-      "name6": "Dolphin",
+    "Ocean": {
+      conference: "Ocean",
+      divisions: {
+        "name1": "Starfish",
+        "name2": "Seahorse",
+        "name3": "Jellyfish",
+        "name4": "Crab"
+      }
     },
-    "Jungle":{
-      "name1": "Lion",
-      "name2": "Zebra",
-      "name3": "Girrafe",
-      "name4": "Gorilla",
-      "name5": "Leopard",
-      "name6": "Elephant",
+    "Jungle": {
+      conference: "Jungle",
+      divisions: {
+        "name1": "Lion",
+        "name2": "Zebra",
+        "name3": "Gorilla",
+        "name4": "Elephant"
+      }
     },
-    "Arctic":{
-      "name1": "Polar Bear",
-      "name2": "Penguin",
-      "name3": "Snow Owl",
-      "name4": "Wolf",
-      "name5": "Seal",
-      "name6": "Orca",
-    },
-    "Annoying Bug":{
-      "name1": "Mosquito",
-      "name2": "Fly",
-      "name3": "Ant",
-      "name4": "Cockroach",
-      "name5": "Moth",
-      "name6": "Tick",
-    },
-    "Feather":{
-      "name1": "Duck",
-      "name2": "Flamingo",
-      "name3": "Tucan",
-      "name4": "Parrot",
-      "name5": "Vulture",
-      "name6": "Woodpecker",
-    }*/
     
+    "Arctic": {
+      conference: "Arctic",
+      divisions: {
+        "name1": "Penguin",
+        "name2": "Wolf",
+        "name3": "Seal",
+        "name4": "Orca"
+      }
+    },
+    
+    "Horns": {
+      conference: "Horns",
+      divisions: {
+        "name1": "Bull",
+        "name2": "Elephant",
+        "name3": "Rhino",
+        "name4": "Moose"
+      }
+    },
+    "Reptile": {
+      conference: "Reptile",
+      divisions: {
+        "name1": "Frog",
+        "name2": "Turtle",
+        "name3": "Crocodile",
+        "name4": "Chameleon"
+      }
+    },
+    "Feather": {
+      conference: "Feather",
+      divisions: {
+        "name1": "Duck",
+        "name2": "Eagle",
+        "name3": "Parrot",
+        "name4": "SnowOwl"
+      }
+    }
+    /*
     "Gold":{
       "name1": "Spades",
       "name2": "Clubs"
@@ -74,7 +94,7 @@ const conferences =
     "Black":{
       "name1": "Hearts",
       "name2": "Diamonds"
-    },
+    }*/
   }
 ;
 

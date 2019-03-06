@@ -52,6 +52,7 @@ export default class IndexPage extends React.Component {
 		    avgPlacement:'-',
 		    final4Spot:999,
 		    mascot:null,
+		    conference:null,
 		    nLastPlace : 0,
 		    primaryColor:null,
 		    secondaryColor:null
@@ -128,7 +129,7 @@ export default class IndexPage extends React.Component {
 		
   		//this section is to populate random number of teams... delete for production use
 	  	//---------------------------------------------------------------------------------
-	  	var nTeams = 32;
+	  	var nTeams = 16;
 	  	
 	  	var countryArr = [];
 	  	for (var item in countries[0]){
@@ -186,7 +187,8 @@ export default class IndexPage extends React.Component {
     				players : this.state.players, 
     				mode : 'VS', 
     				seeding:'blind', 
-    				order:'random'
+    				order:'random',
+    				gameName:this.state.gameName
     			}
     		};
     		vsBlindMobilePath= {
@@ -240,7 +242,8 @@ export default class IndexPage extends React.Component {
     				players : this.state.players, 
     				mode : 'VS', 
     				seeding:'blind', 
-    				order:'timeTrial'
+    				order:'timeTrial',
+    				gameName:this.state.gameName
     			}
     		};
     		vsSeededJumbleMobilePath= {
@@ -261,7 +264,8 @@ export default class IndexPage extends React.Component {
     				players : this.state.players, 
     				mode : 'VS', 
     				seeding:'seeded', 
-    				order:'timeTrial'
+    				order:'timeTrial',
+    				gameName:this.state.gameName
     			}
     		};
     		vsSeededDivMobilePath= {
