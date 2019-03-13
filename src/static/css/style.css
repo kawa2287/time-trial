@@ -10,6 +10,7 @@
   box-sizing: border-box;
 }
 
+
 [contenteditable],input[type]{user-select:text}body,h1,h2,h3,h4,h5,h6,p{margin:0;font-size:1rem;font-weight:400}
 
 a{text-decoration:none;color:inherit}b{font-weight:400}em,i{font-style:normal}a:focus,input:focus{outline:0}
@@ -1017,7 +1018,7 @@ hr.style14 {
 }
 
 .mmTitle{
-	color: antiquewhite;
+    color: antiquewhite;
     display: flex;
     flex: 2;
     height: 20px;
@@ -1025,6 +1026,7 @@ hr.style14 {
     font-variant: small-caps;
     align-items: center;
     justify-content: center;
+    background: #1b1b1b;
 }
 
 .mmSubText{
@@ -1142,12 +1144,13 @@ hr.style14 {
     flex: 1;
     align-items: center;
     justify-content: center;
+    color: white;
 }
 
 .mmButtonContainer{
 	display: flex;
 	flex-direction: row;;
-	flex: 2;
+	flex: 1;
 }
 
 .mmButton{
@@ -1249,6 +1252,7 @@ hr.style14 {
     justify-content: center;
     align-items: center;
     flex: 1;
+    min-height: 30px;
 }
 
 .brSlider{
@@ -1314,11 +1318,10 @@ hr.style14 {
 	position: absolute;
 	display: flex;
     text-align: -webkit-center;
-    text-shadow: 0.5px 0.5px 4px #909090;
+    color:black;
     flex: 1;
     font-size: xx-small;
 }
-
 
 .moveBracketLeft-enter {
   transform: translate(100%);
@@ -1368,15 +1371,12 @@ hr.style14 {
 .btContainer{
     display: flex;
     flex-direction: column;
-    height: 100px;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
     border-collapse: collapse;
     border-radius: 5px;
-    background: cornsilk;
-    margin-top: 1px;
-    margin-bottom: 1px;
+    background: black;
     color: black;
 }
 
@@ -1387,8 +1387,9 @@ hr.style14 {
     justify-content: center;
     font-size: x-small;
     width: 100%;
-    background: black;
-    color: white;
+    background: #191919;
+    color: #828282;
+    min-height: 20px;
 }
 
 .btTeamsMatchup{
@@ -1406,23 +1407,31 @@ hr.style14 {
 .btSeed{
     display: flex;
     flex: 1;
-    font-size: small;
+    font-size: x-small;
     justify-content: center;
     align-items: center;
-    min-width: 20px;
+    max-width: 20px;
+    color: antiquewhite;
+    background: #032a4c;
+    border-right: solid #525252 1px;
 }
 
 .btNameCountryCont{
     display: flex;
-    flex: 3;
+    flex: 1;
     flex-direction: row;
+    min-height: 20px;
+    margin-top: 1px;
+    background: slategrey;
 }
 
 .btFlag{
-    flex: 3;
+    flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
+    max-width: 15px;
+    margin-left: 5px;
 }
 
 .btName{
@@ -1432,12 +1441,12 @@ hr.style14 {
     text-overflow: ellipsis;
     align-items: center;
     display: flex;
-    font-size: .4rem;
-    justify-content: center;
+    font-size: x-small;
+    padding-left: 5px;
 }
 
 .btMiscContainer{
-    flex: 2;
+    flex: 1;
     justify-content: center;
     align-items: center;
     display: flex;
@@ -1452,4 +1461,198 @@ hr.style14 {
     font-size: xx-small;
     background-color: black;
     color: white;
+}
+
+/* TOGGLE BUTTON STYLES */
+
+.react-toggle {
+  touch-action: pan-x;
+
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  background-color: transparent;
+  border: 0;
+  padding: 0;
+
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.react-toggle-screenreader-only {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
+
+.react-toggle--disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  -webkit-transition: opacity 0.25s;
+  transition: opacity 0.25s;
+}
+
+.react-toggle-track {
+  width: 50px;
+  height: 24px;
+  padding: 0;
+  border-radius: 30px;
+  background-color: #4D4D4D;
+  -webkit-transition: all 0.2s ease;
+  -moz-transition: all 0.2s ease;
+  transition: all 0.2s ease;
+}
+
+.react-toggle:hover:not(.react-toggle--disabled) .react-toggle-track {
+  background-color: #000000;
+}
+
+.react-toggle--checked .react-toggle-track {
+  background-color: #19AB27;
+}
+
+.react-toggle--checked:hover:not(.react-toggle--disabled) .react-toggle-track {
+  background-color: #128D15;
+}
+
+.react-toggle-track-check {
+  position: absolute;
+  width: 14px;
+  height: 10px;
+  top: 0px;
+  bottom: 0px;
+  margin-top: auto;
+  margin-bottom: auto;
+  line-height: 0;
+  left: 8px;
+  opacity: 0;
+  -webkit-transition: opacity 0.25s ease;
+  -moz-transition: opacity 0.25s ease;
+  transition: opacity 0.25s ease;
+}
+
+.react-toggle--checked .react-toggle-track-check {
+  opacity: 1;
+  -webkit-transition: opacity 0.25s ease;
+  -moz-transition: opacity 0.25s ease;
+  transition: opacity 0.25s ease;
+}
+
+.react-toggle-track-x {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  top: 0px;
+  bottom: 0px;
+  margin-top: auto;
+  margin-bottom: auto;
+  line-height: 0;
+  right: 10px;
+  opacity: 1;
+  -webkit-transition: opacity 0.25s ease;
+  -moz-transition: opacity 0.25s ease;
+  transition: opacity 0.25s ease;
+}
+
+.react-toggle--checked .react-toggle-track-x {
+  opacity: 0;
+}
+
+.react-toggle-thumb {
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1) 0ms;
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: 22px;
+  height: 22px;
+  border: 1px solid #4D4D4D;
+  border-radius: 50%;
+  background-color: #FAFAFA;
+
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+
+  -webkit-transition: all 0.25s ease;
+  -moz-transition: all 0.25s ease;
+  transition: all 0.25s ease;
+}
+
+.react-toggle--checked .react-toggle-thumb {
+  left: 27px;
+  border-color: #19AB27;
+}
+
+.react-toggle--focus .react-toggle-thumb {
+  -webkit-box-shadow: 0px 0px 3px 2px #0099E0;
+  -moz-box-shadow: 0px 0px 3px 2px #0099E0;
+  box-shadow: 0px 0px 2px 3px #0099E0;
+}
+
+.react-toggle:active:not(.react-toggle--disabled) .react-toggle-thumb {
+  -webkit-box-shadow: 0px 0px 5px 5px #0099E0;
+  -moz-box-shadow: 0px 0px 5px 5px #0099E0;
+  box-shadow: 0px 0px 5px 5px #0099E0;
+}
+
+.four-p-text-stat{
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    color: #cccccc;
+    text-align: center;
+    font-size: smaller;
+}
+
+.four-p-text-stat-b{
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    color: #cccccc;
+    text-align: center;
+    background: #424242;
+    font-size: smaller;
+}
+
+.four-p-text-stat-c{
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    color: gold;
+    text-align: center;
+    background: #424242;
+    font-size: medium;
+}
+
+.four-p-text-header{
+	display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    color: antiquewhite;
+    font-variant: small-caps;
+    text-align: center;
+    font-size: medium;
+}
+
+.four-p-player-container{
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    border-left: solid grey 1px;
 }

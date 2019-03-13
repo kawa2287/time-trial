@@ -88,7 +88,7 @@ export default class GameNamePopUp extends React.Component {
 			    	<img src="./img/buttons/game.png" ></img>
 		    	</div>
 		    	<div className = "desc">
-	    					Game Name
+	    					Create Game
     					</div>
 			    <SkyLight 
 			    	closeButtonStyle={closeButtonStyle}

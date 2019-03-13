@@ -3,21 +3,7 @@ import Icons from './icons/Icons';
 
 
 export default class StatsMobile extends React.Component {
-	
-	DetermineSymbol(mascot){
-		if(mascot=='Spades'){
-			return '/img/divisions/Spades.svg';
-		}else if(mascot =='Clubs'){
-			return '/img/divisions/Clubs.svg';
-		} else if(mascot =='Diamonds'){
-			return '/img/divisions/Diamonds.svg';
-		} else if(mascot =='Hearts'){
-			return '/img/divisions/Hearts.svg';
-		}else {
-			return null;
-		}
-	}
-	
+
 	BackgroundColor(losses){
 		if(losses>=2){
 			return{backgroundColor:'crimson'};

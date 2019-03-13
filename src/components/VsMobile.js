@@ -13,7 +13,6 @@ import MobileMatchup from './MobileMatchup';
 import Settings from '../static/Settings';
 import PropogateSeedsArr from './vsBracketMethods/higherOrderMethods/PropogateSeedsArr';
 import CreateMasterGameObject from './vsBracketMethods/higherOrderMethods/CreateMasterGameObject';
-import SimPath from './vsBracketMethods/higherOrderMethods/SimPath';
 
 import DetermineBracketPower from './vsBracketMethods/baseMethods/DetermineBracketPower';
 import * as NgmsInRnd from './vsBracketMethods/baseMethods/NgamesInRound';
@@ -71,7 +70,6 @@ var tempRoundNamesArray = [];
 var roundNamesArray = [];
 var cleanRoundNamesArray = [];
 
-
 var teams;
 var bracketSpots;
 var bracketPower;
@@ -91,11 +89,15 @@ export default class VsMobile extends React.Component {
 			masterGameObject:{},
 			playerA:null,
 			playerB:null,
+			playerC:null,
+			playerD:null,
 			gameTitle:null,
 			gameNumber:null,
 			render:'Stats',
 			connection: 'Disconnected',
-			seededArray: []
+			seededArray: [],
+			playersArray: []
+			
 		};
 		
 		// set settings
@@ -180,8 +182,6 @@ export default class VsMobile extends React.Component {
 		    return "Data will be lost if you leave the page, are you sure?";
 		};
 		
-		console.log('loadGame bool = ', loadGame);
-		
 		if(loadGame == true){
 			//setState with Firebase
 			var ref = Firebase.database().ref(this.props.location.state.gameName);
@@ -189,7 +189,8 @@ export default class VsMobile extends React.Component {
 				console.log('snapshot',snapshot.val());
 				this.setState ({
 					masterGameObject : snapshot.val().masterGameObject,
-					seededArray : snapshot.val().seededArray
+					seededArray : snapshot.val().seededArray,
+					playersArray : snapshot.val().players
 				}, print => {
 					console.log('seededArray construct',this.state.seededArray);
 					console.log('masterGameObject construct',this.state.masterGameObject);
@@ -201,6 +202,9 @@ export default class VsMobile extends React.Component {
 			this.forceUpdate();
 			loadGame = false;
 		} else {
+			//popluate players array
+			this.state.playersArray = this.props.location.state.players;
+			
 			//populate seeded array
 			PropogateSeedsArr(teams,mastArr, bracketPower);
 			
@@ -378,7 +382,8 @@ export default class VsMobile extends React.Component {
 				seeding: this.props.location.state.seeding,
 				order: this.props.location.state.order,
 				players: this.props.location.state.players,
-				seededArray: this.state.seededArray
+				seededArray: this.state.seededArray,
+				timeTrials: "closed"
 			});
 		}
 		
@@ -397,40 +402,57 @@ export default class VsMobile extends React.Component {
 		
 		beginConstruction = false;
 		
-		// simulate each player
-		//for (var p in this.props.location.state.players){
-		//	SimPath(this.props.location.state.players[p],this.state.masterGameObject);
-		//}
-		
-		
 	}
 	
-	ShowMatchup (playerA,playerB,gameTitle,gameNumber) {
+	
+	//  MATCHUP FOR VS  //
+	ShowMatchup (playerA,playerB,gameTitle,gameNumber,mode, playerC, playerD) {
 		
-		if (playerA.name=='BYE' && playerB.name == 'BYE'){
-			this.HandleSubmit(gameNumber,playerA,playerB,true);
-		} else if (playerA.name == 'BYE'){
-			this.HandleSubmit(gameNumber,playerB,playerA,true);
-		} else if (playerB.name == 'BYE'){
-			this.HandleSubmit(gameNumber,playerA,playerB,true);
-		}else{
-			this.setState({
-				playerA:playerA,
-				playerB:playerB,
-				gameTitle:gameTitle,
-				gameNumber:gameNumber
-			}, function callBack(){
-				this.customDialog.show();
-				var elementA = document.getElementById("pAspan");
-				var elementB = document.getElementById("pBspan");
-				elementA.style.animation= 'none';
-				elementB.style.animation= 'none';
-				elementA.offsetHeight;
-				elementB.offsetHeight;
-				elementA.style.animation= null;
-				elementB.style.animation= null;
-			});
+		if (mode == 'VS'){
+			if (playerA.name=='BYE' && playerB.name == 'BYE'){
+				this.HandleSubmit(gameNumber,playerA,playerB,true);
+			} else if (playerA.name == 'BYE'){
+				this.HandleSubmit(gameNumber,playerB,playerA,true);
+			} else if (playerB.name == 'BYE'){
+				this.HandleSubmit(gameNumber,playerA,playerB,true);
+			}else{
+				this.setState({
+					playerA:playerA,
+					playerB:playerB,
+					gameTitle:gameTitle,
+					gameNumber:gameNumber
+				}, function callBack(){
+					this.customDialog.show();
+					var elementA = document.getElementById("pAspan");
+					var elementB = document.getElementById("pBspan");
+					elementA.style.animation= 'none';
+					elementB.style.animation= 'none';
+					elementA.offsetHeight;
+					elementB.offsetHeight;
+					elementA.style.animation= null;
+					elementB.style.animation= null;
+				});
+			}
+		} else {
+			//Code for 4P
+			var WLtempPkg = CheckIfBye(playerA,playerB,playerC,playerD);
+			
+			if(WLtempPkg.byeRound == true){
+				this.HandleSubmit(gameNumber, WLtempPkg.winner1,WLtempPkg.loser1,true,WLtempPkg.winner2,WLtempPkg.loser2);
+			}else{
+				this.setState({
+					playerA:playerA,
+					playerB:playerB,
+					playerC:playerC,
+					playerD:playerD,
+					gameTitle:gameTitle,
+					gameNumber:gameNumber
+				}, function callBack(){
+					this.customDialog.show();
+				});
+			}
 		}
+		
 	}
 	
 	HandleRender(compName,e){
@@ -449,7 +471,7 @@ export default class VsMobile extends React.Component {
     		case 'Stats': 
             	return (
             		<StatsMobileReceiver
-            			players={this.props.location.state.players}
+            			players={this.state.playersArray}
             			masterGameObject={this.state.masterGameObject}
             		/>
         		);
@@ -460,8 +482,9 @@ export default class VsMobile extends React.Component {
             			roundNamesArray = {roundNamesArray}
             			cleanRoundNamesArray = {cleanRoundNamesArray}
             			startValue = {loserArr.length}
-            			height = {bracketSpots/2*120}
+            			bracketSpots = {bracketSpots}
             			showMatchup = {this.ShowMatchup.bind(this)}
+            			mode = {mode}
             		/>
         		);
         }
@@ -469,14 +492,20 @@ export default class VsMobile extends React.Component {
     
     UpdateFirebase(){
     	//sendMasterGameArray to Firebase
+    	console.log("seededArray before update",this.state.seededArray);
+    	console.log("playersArray before update",this.state.playersArray);
 		GamesDB.update({
 			masterGameObject: JSON.parse( JSON.stringify(this.state.masterGameObject)) ,
-			seededArray: JSON.parse( JSON.stringify(this.state.seededArray))
+			seededArray: JSON.parse( JSON.stringify(this.state.seededArray)) ,
+			players: JSON.parse( JSON.stringify(this.state.playersArray)) 
+			
 		});
     }
 	
 	
-	HandleSubmit(gameNumber,winner,loser,byeRound){
+	
+	//  UPDATE FOR 4P MODE //
+	HandleSubmit(gameNumber,winner,loser,byeRound, winner2, loser2){
 		var WLpkg = {
 			gameNumber : gameNumber,
 			bracketSpots : bracketSpots,
@@ -484,6 +513,8 @@ export default class VsMobile extends React.Component {
 			winner1 : winner,
 			loser1 : loser,
 			byeRound : byeRound,
+			winner2 : winner2,
+			loser2 : loser2
 		};
 		
 		var RTpkg = {
@@ -494,6 +525,8 @@ export default class VsMobile extends React.Component {
 		this.setState({
 			playerA:null,
 			playerB:null,
+			playerC:null,
+			playerD:null,
 			gameTitle:null,
 			winner:null,
 			loser:null,
@@ -507,11 +540,14 @@ export default class VsMobile extends React.Component {
 		
 	}
 	
+	// UPDATE FOR 4P MODE //
 	HandleCancel(){
 		
 		this.setState({
 			playerA:null,
 			playerB:null,
+			playerC:null,
+			playerD:null,
 			gameTitle:null,
 			winner:null,
 			loser:null,
@@ -519,11 +555,8 @@ export default class VsMobile extends React.Component {
 		},function hide() {
 			this.customDialog.hide();
 		});
-		
 	}
 	
-	
-
 	render() {
 		
 		return (
@@ -536,10 +569,13 @@ export default class VsMobile extends React.Component {
 		    		<MobileMatchup
 		    			playerA={this.state.playerA}
 		    			playerB={this.state.playerB}
+		    			playerC={this.state.playerC}
+		    			playerD={this.state.playerD}
 		    			gameTitle={this.state.gameTitle}
 		    			HandleSubmit={this.HandleSubmit.bind(this)}
 		    			HandleCancel={this.HandleCancel.bind(this)}
 		    			gameNumber={this.state.gameNumber}
+		    			mode = {mode}
 		    		/>
 			    </SkyLight>
 			    <h2> {this.state.connection}</h2>
@@ -606,4 +642,102 @@ function selectUnique(prop, obj){
 	} else {
 		return selectUnique(prop,obj);
 	}
+}
+
+function CheckIfBye(pA,pB,pC,pD){
+	
+	var pAcode = pA.name == 'BYE' ? 1 : 0;
+	var pBcode = pB.name == 'BYE' ? 1 : 0;
+	var pCcode = pC.name == 'BYE' ? 1 : 0;
+	var pDcode = pD.name == 'BYE' ? 1 : 0;
+	
+	var WLpkg ={
+		winner1:null,
+		winner2:null,
+		loser1:null,
+		loser2:null
+	};
+	
+	var WLcode = pAcode.toString()+pBcode.toString()+pCcode.toString()+pDcode.toString();
+	// decide winner or loser if (2) or more BYEs present
+	switch(WLcode){
+		case '1100' :
+			WLpkg.winner1 = pC;
+			WLpkg.winner2 = pD;
+			WLpkg.loser1 = pA;
+			WLpkg.loser2 = pB;
+			WLpkg.byeRound = true;
+			break;
+		case '1010' :
+			WLpkg.winner1 = pB;
+			WLpkg.winner2 = pD;
+			WLpkg.loser1 = pA;
+			WLpkg.loser2 = pC;
+			WLpkg.byeRound = true;
+			break;
+		case '1001' :
+			WLpkg.winner1 = pB;
+			WLpkg.winner2 = pC;
+			WLpkg.loser1 = pA;
+			WLpkg.loser2 = pD;
+			WLpkg.byeRound = true;
+			break;
+		case '0110' :
+			WLpkg.winner1 = pA;
+			WLpkg.winner2 = pD;
+			WLpkg.loser1 = pB;
+			WLpkg.loser2 = pC;
+			WLpkg.byeRound = true;
+			break;
+		case '0101' :
+			WLpkg.winner1 = pA;
+			WLpkg.winner2 = pC;
+			WLpkg.loser1 = pB;
+			WLpkg.loser2 = pD;
+			WLpkg.byeRound = true;
+			break;
+		case '0011' :
+			WLpkg.winner1 = pA;
+			WLpkg.winner2 = pB;
+			WLpkg.loser1 = pC;
+			WLpkg.loser2 = pD;
+			WLpkg.byeRound = true;
+			break;
+		case '0111' :
+			WLpkg.winner1 = pA;
+			WLpkg.winner2 = pB;
+			WLpkg.loser1 = pC;
+			WLpkg.loser2 = pD;
+			WLpkg.byeRound = true;
+			break;
+		case '1011' :
+			WLpkg.winner1 = pB;
+			WLpkg.winner2 = pA;
+			WLpkg.loser1 = pC;
+			WLpkg.loser2 = pD;
+			WLpkg.byeRound = true;
+			break;
+		case '1101' :
+			WLpkg.winner1 = pC;
+			WLpkg.winner2 = pB;
+			WLpkg.loser1 = pA;
+			WLpkg.loser2 = pD;
+			WLpkg.byeRound = true;
+			break;
+		case '1110' :
+			WLpkg.winner1 = pD;
+			WLpkg.winner2 = pB;
+			WLpkg.loser1 = pC;
+			WLpkg.loser2 = pA;
+			WLpkg.byeRound = true;
+			break;
+		case '1111' :
+			WLpkg.winner1 = pA;
+			WLpkg.winner2 = pB;
+			WLpkg.loser1 = pC;
+			WLpkg.loser2 = pD;
+			WLpkg.byeRound = true;
+			break;
+	}
+	return WLpkg;
 }

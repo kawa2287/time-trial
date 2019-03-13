@@ -152,18 +152,18 @@ export default class StatsMobileReceiver extends React.Component {
 		        return 1;
 		    }
 		    
-		    //sort by losses
-		    if (a.losses < b.losses) {
-		    	return -1;
-		    }else if (a.losses > b.losses) {
-		        return 1;
-		    }
-		    
 		    //sort by maxRound
 		    if (a.maxRound  < b.maxRound ) {
 		    	return 1;
 		    } else if (a.maxRound  > b.maxRound ) {
 		        return -1;
+		    }
+		    
+		    //sort by losses
+		    if (a.losses < b.losses) {
+		    	return -1;
+		    }else if (a.losses > b.losses) {
+		        return 1;
 		    }
 		    
 		    //sort by seed
@@ -229,7 +229,7 @@ export default class StatsMobileReceiver extends React.Component {
 
 	render(){
 		
-		if(this.props.masterGameObject !==null && this.props.masterGameObject !== undefined){
+		if(this.props.players !==null && this.props.players !== undefined){
 
 			var parsedArray = [];
 			var playersArray = [];
@@ -241,13 +241,14 @@ export default class StatsMobileReceiver extends React.Component {
 			}
 			
 			
-			
+			/*
 			for(k = 0 ; k < playersArray.length; k++){
 				for (var x in this.props.masterGameObject){
 					
 					if(playersArray[k].name == this.props.masterGameObject[x].winner){
 	
 						playersArray[k].wins += 1;
+						
 					}
 					if(playersArray[k].name == this.props.masterGameObject[x].loser){
 				
@@ -255,6 +256,7 @@ export default class StatsMobileReceiver extends React.Component {
 					}
 				}
 			}
+			*/
 
 			
 			for(var i = 0; i < playersArray.length; i++){
@@ -264,6 +266,7 @@ export default class StatsMobileReceiver extends React.Component {
 			}
 			
 			var displyCharts = [];
+			console.log('parsedArray',parsedArray);
 			displyCharts = this.RenderSubComp(parsedArray);
 			
 		}

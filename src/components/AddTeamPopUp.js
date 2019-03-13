@@ -32,7 +32,10 @@ class AddTeamPopUp extends React.Component {
 		};
 
 		return (
-		    <div className="row"  onClick={() => this.customDialog.show()}>
+		    <div className="row"  
+		    	onClick={this.props.trigger != null? () => this.customDialog.show() : null}
+				style={this.props.style}
+		    >
 		    	<div className = "picture">
 			    	<img src="./img/buttons/addUser.png" ></img>
 		    	</div>

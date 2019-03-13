@@ -12,7 +12,13 @@ import {BrowserRouter as Router, Route, Link} from 'react-router';
 import demoNames from '../data/demoNames';
 import countries from '../data/countries';
 import Settings from '../static/Settings';
+import Firebase from '../firebase';
+import Toggle from 'react-toggle';
 
+var GamesDB;
+var spanStyle = {
+	flex : 1
+};
 
 export default class IndexPage extends React.Component {
 	constructor(){
@@ -22,18 +28,96 @@ export default class IndexPage extends React.Component {
 			nRows : 0,
 			players : {},
 			bestTime : null,
-			gameName : 'test'
+			gameName : null,
+			FourPmode: false,
+			DblElim: true,
+			RandSeed: false,
+			CompDisplay: false
 		};
-		
 	}
 	
+	// TOGGLE SWITCH HANDLERS //
+	handleModeChange(e){
+		if (e.target.checked ==  true){
+			this.setState({FourPmode : true});
+		} else {
+			this.setState({FourPmode : false});
+		}
+	}
+	handleElimChange(e){
+		if (e.target.checked ==  true){
+			this.setState({DblElim : true});
+		} else {
+			this.setState({DblElim : false});
+		}
+	}
+	handleSeedChange(e){
+		if (e.target.checked ==  true){
+			this.setState({RandSeed : true});
+		} else {
+			this.setState({RandSeed : false});
+		}
+	}
+	handleDisplayChange(e){
+		if (e.target.checked ==  true){
+			this.setState({CompDisplay : true});
+		} else {
+			this.setState({CompDisplay : false});
+		}
+	}
+	
+	//  METHODS // 
 	randomIntFromInterval(min,max){
 	    return Math.floor(Math.random()*(max-min+1)+min);
 	}
 	
+	getBestTime(playersObj){
+		for (var k in playersObj){
+			if(playersObj[k].timeTrial != '-'){
+			    if (this.state.bestTime == null){
+			        this.setState({bestTime:playersObj[k].timeTrial});
+			    } else if (Number(playersObj[k].timeTrial) < Number(this.state.bestTime)) { 
+			        this.setState({bestTime:playersObj[k].timeTrial});
+			    }
+		    }
+		}
+	}
+	
+	removePlayer(player){
+		for (var k in this.state.players){
+			if (this.state.players[k].name == player){
+				delete this.state.players[k];
+			}
+		}
+		this.forceUpdate();
+		GamesDB.update({
+			players: this.state.players
+		});
+	}
+	
+	editPlayer(oldName,newName,oldCountry,newCountry){
+		
+		if(oldName !== newName || oldCountry !== newCountry){
+			for (var k in this.state.players){
+				if(this.state.players[k].name == oldName){
+					if(oldName!== newName){
+						this.state.players[k].name = newName;
+					}
+					if(oldCountry !==newCountry){
+						this.state.players[k].country = CountryKeyVal[newCountry];
+					}
+				}
+			}
+		}
+		this.forceUpdate();
+		GamesDB.update({
+			players: this.state.players
+		});
+	}
+	
 	addTeam(name, country, timeTrial){
-	    timeTrial = timeTrial || '-';
-	  
+		timeTrial = timeTrial || '-';
+  
     	this.state.players[name] = {
 			name : name,
 		    country : CountryKeyVal[country],
@@ -58,9 +142,8 @@ export default class IndexPage extends React.Component {
 		    secondaryColor:null
 		};
 		
-		this.setState({
-	  		nRows : this.state.nRows + 1
-	  	});
+		GamesDB.update({players: this.state.players});
+		this.setState({nRows : this.state.nRows + 1});
 	}
 	
 	addTimeTrial(name,time){
@@ -74,98 +157,52 @@ export default class IndexPage extends React.Component {
 			this.getBestTime(this.state.players);
 			
 		});
-	}
-	
-	
-	
-	getBestTime(playersObj){
-		for (var k in playersObj){
-			if(playersObj[k].timeTrial != '-'){
-			    if (this.state.bestTime == null){
-			        this.setState({bestTime:playersObj[k].timeTrial});
-			    } else if (Number(playersObj[k].timeTrial) < Number(this.state.bestTime)) { 
-			        this.setState({bestTime:playersObj[k].timeTrial});
-			    }
-		    }
-		}
-	}
-	
-	removePlayer(player){
-		for (var k in this.state.players){
-			if (this.state.players[k].name == player){
-				delete this.state.players[k];
-			}
-		}
-		this.forceUpdate();
-	}
-	
-	editPlayer(oldName,newName,oldCountry,newCountry){
-		
-		if(oldName !== newName || oldCountry !== newCountry){
-			for (var k in this.state.players){
-				if(this.state.players[k].name == oldName){
-					if(oldName!== newName){
-						this.state.players[k].name = newName;
-					}
-					if(oldCountry !==newCountry){
-						this.state.players[k].country = CountryKeyVal[newCountry];
-					}
-				}
-			}
-		}
-		this.forceUpdate();
+		GamesDB.update({
+			players: this.state.players
+		});
 	}
 	
 	SetGameName(gameName){
-		console.log('gameName',gameName);
+		///// SET DATABASE/////
+		GamesDB = Firebase.database().ref(gameName);
+		this.PopulateTestTeams(true,32);
+		GamesDB.set({
+				gameName:gameName,
+				players: this.state.players,
+				timeTrials: "open"
+			});
 		this.setState({
 			gameName : gameName
 		});
 	}
-  
-    componentDidMount() {
-    	
-  	
-		
-  		//this section is to populate random number of teams... delete for production use
+	
+	PopulateTestTeams(bool, nTeams){
+		//this section is to populate random number of teams
 	  	//---------------------------------------------------------------------------------
-	  	var nTeams = 16;
-	  	
-	  	var countryArr = [];
-	  	for (var item in countries[0]){
-	  		countryArr.push(countries[0][item].name);
+	  	if (bool == true){
+	  		var countryArr = [];
+		  	for (var item in countries[0]){
+		  		countryArr.push(countries[0][item].name);
+		  	}
+		  	
+		  	for (var i = 0 ; i <nTeams; i++){
+		  		var name = demoNames[this.randomIntFromInterval(0,demoNames.length)];
+		  		//	this.randomIntFromInterval(1,999);
+		  			
+		  		this.addTeam(name, countryArr[this.randomIntFromInterval(0,countryArr.length)], 0);
+		  		
+		  		//this.addTimeTrial(name, Math.round(this.randomIntFromInterval(1500,4500))/100);
+		  	}
+		  	this.getBestTime(this.state.players);
 	  	}
 	  	
-	  	
-	  	for (var i = 0 ; i <nTeams; i++){
-	  		var name = demoNames[this.randomIntFromInterval(0,demoNames.length)];
-	  		//	this.randomIntFromInterval(1,999);
-	  			
-	  		this.addTeam(name, countryArr[this.randomIntFromInterval(0,countryArr.length)], 0);
-	  		
-	  		this.addTimeTrial(name, Math.round(this.randomIntFromInterval(1500,4500))/100);
-	  	}
-	  	this.getBestTime(this.state.players);
 	  	// --------------------------------------------------------------------------------
-		
-
-    }
-  
+	}
+	
     render() {
     	
-    	var blindButtonColorsVS;
-    	var seededButtonColorsVS;
-    	var blindButtonColors4P;
-    	var seededButtonColors4P;
-    	var vsBlindMobilePath;
-    	var vsBlindJumblePath;
-    	var vsSeededJumblePath;
-    	var vsSeededJumbleMobilePath;
-    	var vsSeededDivPath;
-    	var vsSeededDivMobilePath;
-    	var Blind4PJumblePath;
-    	var Seeded4PJumblePath;
-    	var Seeded4PDivPath;
+    	var mainOptionButtons;
+    	var gamePath;
     	var nTimeTrials = 0;
     	var secBkrdClrNA = '#D3D3D3';
     	var secBkrdClrAvail = '#9489b0';
@@ -176,150 +213,30 @@ export default class IndexPage extends React.Component {
     		}
     	}
     	
-    	if(Object.keys(this.state.players).length > 3 ){
-    		blindButtonColorsVS = {
+    	//Grey out options until name is applied
+    	if(this.state.gameName == null){
+    		mainOptionButtons = {
+    			background: secBkrdClrNA,
+    			color: '#888888'
+    		};
+    	} else {
+    		mainOptionButtons = {
     			background: secBkrdClrAvail,
     			color: 'white'
     		};
-    		vsBlindJumblePath= {
-    			pathname:"/VsTournament", 
-    			state:{
-    				players : this.state.players, 
-    				mode : 'VS', 
-    				seeding:'blind', 
-    				order:'random',
-    				gameName:this.state.gameName
-    			}
-    		};
-    		vsBlindMobilePath= {
-    			pathname:"/VsMobile", 
-    			state:{
-    				players : this.state.players, 
-    				mode : 'VS', 
-    				seeding:'blind', 
-    				order:'random',
-    				gameName:this.state.gameName
-    			}
-    		};
-    	} else {
-    		blindButtonColorsVS = {
-    			background : secBkrdClrNA,
-    			color: '#888888'
-    		};
-    		vsBlindJumblePath= null;
     	}
     	
-    	if (Object.keys(this.state.players).length > 7 ){
-    		blindButtonColors4P = {
-    			background : secBkrdClrAvail,
-    			color: 'white'
-    		};
-    		Blind4PJumblePath= {
-    			pathname:"/VsTournament", 
-    			state:{
-    				players : this.state.players, 
-    				mode : '4P', 
-    				seeding:'blind', 
-    				order:'random'
-    			}
-    		};
-    	} else {
-    		blindButtonColors4P = {
-    			background : secBkrdClrNA,
-    			color: '#888888'
-    		};
-    		Blind4PJumblePath= null;
-    	}
-    	
-    	if(Object.keys(this.state.players).length == nTimeTrials && Object.keys(this.state.players).length>3){
-    		seededButtonColorsVS = {
-    			background : secBkrdClrAvail,
-    			color: 'white'
-    		};
-    		vsSeededJumblePath= {
-    			pathname:"/VsTournament", 
-    			state:{
-    				players : this.state.players, 
-    				mode : 'VS', 
-    				seeding:'blind', 
-    				order:'timeTrial',
-    				gameName:this.state.gameName
-    			}
-    		};
-    		vsSeededJumbleMobilePath= {
-    			pathname:"/VsMobile", 
-    			state:{
-    				players : this.state.players, 
-    				mode : 'VS', 
-    				seeding:'blind', 
-    				order:'timeTrial',
-    				gameName:this.state.gameName
-    			}
-    		};
-    		
-    		
-    		vsSeededDivPath= {
-    			pathname:"/VsTournament", 
-    			state:{
-    				players : this.state.players, 
-    				mode : 'VS', 
-    				seeding:'seeded', 
-    				order:'timeTrial',
-    				gameName:this.state.gameName
-    			}
-    		};
-    		vsSeededDivMobilePath= {
-    			pathname:"/VsMobile", 
-    			state:{
-    				players : this.state.players, 
-    				mode : 'VS', 
-    				seeding:'seeded', 
-    				order:'timeTrial',
-    				gameName:this.state.gameName
-    			}
-    		};
-    		
-    	} else {
-    		seededButtonColorsVS = {
-    			background : secBkrdClrNA,
-    			color: '#888888'
-    		};
-    		vsSeededJumblePath = null;
-    		vsSeededDivPath = null;
-    	}
-    	
-    	if(Object.keys(this.state.players).length == nTimeTrials && Object.keys(this.state.players).length>7) {
-    		seededButtonColors4P = {
-    			background : secBkrdClrAvail,
-    			color: 'white'
-    		};
-    		
-    		Seeded4PJumblePath= {
-    			pathname:"/VsTournament", 
-    			state:{
-    				players : this.state.players, 
-    				mode : '4P', 
-    				seeding:'blind', 
-    				order:'timeTrial'
-    			}
-    		};
-    		Seeded4PDivPath= {
-    			pathname:"/VsTournament", 
-    			state:{
-    				players : this.state.players, 
-    				mode : '4P', 
-    				seeding:'seeded', 
-    				order:'timeTrial'
-    			}
-    		};
-		} else {
-    		seededButtonColors4P = {
-    			background : secBkrdClrNA,
-    			color: '#888888'
-    		};
-    		Seeded4PJumblePath = null;
-    		Seeded4PDivPath = null;
-    	}
+    	// SET GAME PATH BASED ON TOGGLE SETTINGS //
+    	gamePath = {
+    		pathname: this.state.CompDisplay == true ? "/VsTournament" : "/VsMobile",
+    		state:{
+				players : this.state.players, 
+				mode : this.state.FourPmode == true ? "4P" : "VS", 
+				seeding: "blind",
+				order: this.state.RandSeed == true ? "random" : "timeTrial",
+				gameName:this.state.gameName
+			}
+    	};
 
 	    return (
 	    	<div className="main-page">
@@ -333,38 +250,60 @@ export default class IndexPage extends React.Component {
 	    			<AddTeamPopUp 
 	        			addTeamClick={this.addTeam.bind(this)}
 	        			editPlayer={this.editPlayer.bind(this)}
+	        			style={mainOptionButtons}
+	        			trigger={this.state.gameName}
 		            />
 	    			<TimeTrialPopUp
 		        		players={this.state.players}
 		        		addTimeTrial={this.addTimeTrial.bind(this)}
+		        		style={mainOptionButtons}
+		        		trigger={this.state.gameName}
 	        		/>
-	    			<div className = "row" >
-	    				<div className = "picture">
-	    					<img src="./img/buttons/tournament.png"></img>
-	    				</div>
-	    				<div className = "desc">
-	    					VS Tournament
-    					</div>
+					<div className = "row" style={mainOptionButtons}>
+						<span style={spanStyle}>VS</span>
+						<Toggle
+							id='modeStatus'
+							icons={false}
+							disabled={this.state.gameName == null ? true : false}
+						    defaultChecked={this.state.FourPmode}
+						    onChange={this.handleModeChange.bind(this)} 
+					    />
+					    <span style={spanStyle}>4P</span>
 					</div>
-					<Link className="secondary-row" style={blindButtonColorsVS} to={vsBlindMobilePath}>Blind Draw - For Mobile</Link>
-					<Link className="secondary-row" style={seededButtonColorsVS} to={vsSeededJumbleMobilePath}>Seeded Jumble - For Mobile</Link>
-					<Link className="secondary-row" style={seededButtonColorsVS} to={vsSeededDivMobilePath}>Seeded Division - For Mobile</Link>
-					<Link className="secondary-row" style={blindButtonColorsVS} to={vsBlindJumblePath}>Blind Draw - Loser Jumble</Link>
-					<Link className="secondary-row" style={seededButtonColorsVS} to={vsSeededJumblePath}>Seeded Draw - Loser Jumble</Link>
-					<Link className="secondary-row" style={seededButtonColorsVS} to={vsSeededDivPath}>Seeded Draw - Division Structured</Link>
-					
-	    			<div className = "row" >
-	    				<div className = "picture">
-	    					<img src="./img/buttons/4P.png"></img>
-	    				</div>
-	    				<div className = "desc">
-	    					4P Tournament
-    					</div>
+					<div className = "row" style={mainOptionButtons}>
+						<span style={spanStyle}>SGL</span>
+						<Toggle
+							id='elimStatus'
+							icons={false}
+							disabled={this.state.gameName == null ? true : false}
+						    defaultChecked={this.state.DblElim}
+						    onChange={null} 
+					    />
+					    <span style={spanStyle}>DBL</span>
 					</div>
-					<Link className="secondary-row" style={blindButtonColors4P} to={Blind4PJumblePath}>Blind Draw - Loser Jumble</Link>
-					<Link className="secondary-row" style={seededButtonColors4P} to={Seeded4PJumblePath}>Seeded Draw - Loser Jumble</Link>
-					<Link className="secondary-row" style={seededButtonColors4P} to={Seeded4PDivPath}>Seeded Draw - Division Structured</Link>
-
+					<div className = "row" style={mainOptionButtons}>
+						<span style={spanStyle}>Seeded</span>
+						<Toggle
+							id='seedStatus'
+							icons={false}
+							disabled={this.state.gameName == null ? true : false}
+						    defaultChecked={this.state.RandSeed}
+						    onChange={this.handleSeedChange.bind(this)} 
+					    />
+					    <span style={spanStyle}>Random</span>
+					</div>
+					<div className = "row" style={mainOptionButtons}>
+						<span style={spanStyle}>Phone</span>
+						<Toggle
+							id='displayStatus'
+							icons={false}
+							disabled={this.state.gameName == null ? true : false}
+						    defaultChecked={this.state.CompDisplay}
+						    onChange={this.handleDisplayChange.bind(this)} 
+					    />
+					    <span style={spanStyle}>Comp</span>
+					</div>
+					<Link disabled={nTimeTrials == Object.keys(this.state.players).length ? false : true} className="row" style={mainOptionButtons} to={gamePath}>Start Game</Link>
 	    		</div>
 		        <div className="home">
 				      <Table 

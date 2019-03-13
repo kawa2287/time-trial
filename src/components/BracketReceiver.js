@@ -12,33 +12,30 @@ var bracketArray;
 var renderArray;
 var bezArr;
 var boardHeight;
-var gameHeight = 100;
+
+var minTileHeight = 20;
+var spaceBetweenGamesFirstRound = 20;
 var voidSpace;
 var padHeight;
 var secondaryPad;
 var moduleHeight;
+
+var gameHeight;
+var height;
 
 export default class BracketReceiver extends React.Component {
 	constructor(props){
 		super(props);
 		this.state={
 			render:[],
-			value:this.props.startValue,
+			value:this.props.startValue+1,
 			delta:0,
 			bracketLineWidth:0,
 			swipe:'swipe',
 			frameWidth:0
 		};
-		
-	}
-	
-	
-
-	AddBracketTile(){
-		this.state.render.push(<BracketTile count={this.state.count}/>);
-		this.setState({
-			count: this.state.count +1
-		});
+		gameHeight = (this.props.mode =='VS'?3:5)*minTileHeight;
+		height = gameHeight*this.props.bracketSpots/(this.props.mode == 'VS' ? 2 :4)+(this.props.bracketSpots/(this.props.mode == 'VS' ? 2 :4)+1)*spaceBetweenGamesFirstRound;
 	}
 	
 	handleChangeStart () {
@@ -67,7 +64,7 @@ export default class BracketReceiver extends React.Component {
 		} else if (deltaX > 0){
 			if(Math.abs(deltaX)> 40){
 				this.setState({
-					value: this.state.value + (this.state.value==this.props.roundNamesArray.length-2?0:1)
+					value: this.state.value + (this.state.value==this.props.roundNamesArray.length-1?0:1)
 				});
 			}
 		}
@@ -76,16 +73,20 @@ export default class BracketReceiver extends React.Component {
 
 	render(){
 		
+		// SET # OF ROUNDS TO SEE ON SCREEN AT ONCE //
+		var gamesViewPerFrame = 2;
+		var gameViewPercentage = 0.9;
+		
 		const { value } = this.state;
-		var gameWidth = this.state.frameWidth/3.8;
-		var lineWidth = gameWidth*0.2;
+		var gameWidth = this.state.frameWidth*gameViewPercentage/gamesViewPerFrame;
+		var lineWidth = this.state.frameWidth*(1-gameViewPercentage)/(gamesViewPerFrame+1);
+		
 		
 		if(this.props.masterGameObject !== null && this.props.masterGameObject !== undefined){
 			
-			
-			
 			bracketArray = [];
 			var tempArray = [];
+			console.log('this.props.cleanRoundNamesArray',this.props.cleanRoundNamesArray);
 			for (var k = 0; k < this.props.cleanRoundNamesArray.length; k++){
 				for (var i in this.props.masterGameObject){
 					if( this.props.masterGameObject[i].gameTitle == this.props.cleanRoundNamesArray[k]){
@@ -103,13 +104,14 @@ export default class BracketReceiver extends React.Component {
 						<BracketTile
 							game = {bracketArray[k][i]}
 							showMatchup ={this.props.showMatchup}
-							
+							mode = {this.props.mode}
 						/>
 					);
 				}
+				
 				var deltaX = ((k+1)-this.state.value)*gameWidth+(((k+1)-this.state.value)+1)*lineWidth;
 				var tileStyle = {
-					height: this.props.height + 'px',
+					height: height + 'px',
 					width: gameWidth + 'px',
 					transform: `translate(${deltaX}px)` 
 				};
@@ -126,13 +128,13 @@ export default class BracketReceiver extends React.Component {
 			}
 			
 			boardHeight = {
-				height: this.props.height + 'px'
+				height: height + 'px',
 			};
 			
 			bezArr = [];
 			var counter = 0;
 			var lineStyle = {
-				height: this.props.height + 'px',
+				height: height + 'px',
 				width: lineWidth + 'px',
 				transform: `translate(${((counter+1)-this.state.value)*gameWidth+((counter+1)-this.state.value)*lineWidth}px)` 
 			};
@@ -149,7 +151,7 @@ export default class BracketReceiver extends React.Component {
 			for (k = 1; k <= this.props.startValue; k++){
 				
 				lineStyle = {
-					height: this.props.height + 'px',
+					height: height + 'px',
 					width: lineWidth + 'px',
 					transform: `translate(${((counter+1)-this.state.value)*gameWidth+((counter+1)-this.state.value)*lineWidth}px)` 
 				};
@@ -160,6 +162,7 @@ export default class BracketReceiver extends React.Component {
 						tempArray.push(
 							<svg 
 								x="0px" y="0px" 
+								fill="white"
 								viewBox="0 0 100 125" 
 								enable-background="new 0 0 100 100"
 								style={{
@@ -184,7 +187,7 @@ export default class BracketReceiver extends React.Component {
 					tempArray = [];
 				} else {
 					//bezcurve
-					voidSpace = this.props.height - renderArray[k].props.children.length*gameHeight;
+					voidSpace = height - renderArray[k].props.children.length*gameHeight;
 					padHeight = voidSpace/renderArray[k].props.children.length;
 					secondaryPad = padHeight/2;
 					moduleHeight = 2*gameHeight + padHeight;
@@ -224,11 +227,11 @@ export default class BracketReceiver extends React.Component {
 			// fill bezArr from start value
 			for(k=this.props.startValue; k<(renderArray.length-3);k++){
 				lineStyle = {
-					height: this.props.height + 'px',
+					height: height + 'px',
 					width: lineWidth + 'px',
 					transform: `translate(${((counter+1)-this.state.value)*gameWidth+((counter+1)-this.state.value)*lineWidth}px)` 
 				};
-				voidSpace = this.props.height - renderArray[k].props.children.length*gameHeight;
+				voidSpace = height - renderArray[k].props.children.length*gameHeight;
 				padHeight = voidSpace/renderArray[k].props.children.length;
 				secondaryPad = padHeight/2;
 				moduleHeight = 2*gameHeight + padHeight;
@@ -245,7 +248,7 @@ export default class BracketReceiver extends React.Component {
 									y1 = {gameHeight/2}
 									y2 = {moduleHeight/2}
 									y3 = {moduleHeight-gameHeight/2}
-									color = 'black'
+									color = '#828282'
 									stroke = {1}
 									dashEnabled = {false}
 								/>
@@ -267,13 +270,14 @@ export default class BracketReceiver extends React.Component {
 			// fill bezArr for last two
 			for(k=0;k<=1;k++){
 				lineStyle = {
-					height: this.props.height + 'px',
+					height: height + 'px',
 					width: lineWidth + 'px',
 					transform: `translate(${((counter+1)-this.state.value)*gameWidth+((counter+1)-this.state.value)*lineWidth}px)` 
 				};
 				tempArray.push(
 					<svg 
 						x="0px" y="0px" 
+						fill="white"
 						viewBox="0 0 100 125" 
 						enable-background="new 0 0 100 100"
 						style={{
@@ -300,7 +304,7 @@ export default class BracketReceiver extends React.Component {
 			
 			//push last blank
 			lineStyle = {
-					height: this.props.height + 'px',
+					height: height + 'px',
 					width: lineWidth + 'px',
 					transform: `translate(${((counter+1)-this.state.value)*gameWidth+((counter+1)-this.state.value)*lineWidth}px)` 
 				};
@@ -311,6 +315,7 @@ export default class BracketReceiver extends React.Component {
 				/>
 			);
 		}
+		
 		
 		
 		return(
@@ -325,32 +330,25 @@ export default class BracketReceiver extends React.Component {
 			        	<div className="brTitles">
 				        	<div className='brValue'>
 				        		<CSSTransitionGroup
-						            transitionName={this.state.delta<=0?"moveBracketLeft":"moveBracketRight"}
-						            transitionEnterTimeout={500}
-						            transitionLeaveTimeout={300}>
+						            transitionName="navbar"
+				        			transitionEnterTimeout={1000}
+				        			transitionLeaveTimeout={1}>
 					            	{this.props.roundNamesArray[value-1]}
 						        </CSSTransitionGroup>
 			        		</div>
 				        	<div className='brValue'>
 				        		<CSSTransitionGroup
-						            transitionName={this.state.delta<=0?"moveBracketLeft":"moveBracketRight"}
-						            transitionEnterTimeout={500}
-						            transitionLeaveTimeout={300}>
+						            transitionName="navbar"
+					    			transitionEnterTimeout={1000}
+					    			transitionLeaveTimeout={1}>
 					            	{this.props.roundNamesArray[value]}
 						        </CSSTransitionGroup>
 			        		</div>
-			        		<div className='brValue'>
-				        		<CSSTransitionGroup
-						            transitionName={this.state.delta<=0?"moveBracketLeft":"moveBracketRight"}
-						            transitionEnterTimeout={500}
-						            transitionLeaveTimeout={300}>
-					            	{this.props.roundNamesArray[value+1]}
-						        </CSSTransitionGroup>
-		        			</div>
 		    			</div>
 		    			
 		    			<Swipeable 
 		    				className="brBracketFrame"
+		    				style={boardHeight}
 		    				onSwiped={this.swiped.bind(this)}
 						>
 							<div className="brBracketArea">
@@ -364,4 +362,3 @@ export default class BracketReceiver extends React.Component {
 		);
 	}
 }
-  
