@@ -165,7 +165,7 @@ export default class IndexPage extends React.Component {
 	SetGameName(gameName){
 		///// SET DATABASE/////
 		GamesDB = Firebase.database().ref(gameName);
-		this.PopulateTestTeams(true,32);
+		//this.PopulateTestTeams(true,64);
 		GamesDB.set({
 				gameName:gameName,
 				players: this.state.players,
@@ -174,6 +174,14 @@ export default class IndexPage extends React.Component {
 		this.setState({
 			gameName : gameName
 		});
+	}
+	
+	LoadGameProps(gameName, players){
+		this.setState({
+			players : players,
+			gameName : gameName
+		});
+		GamesDB = Firebase.database().ref(gameName);
 	}
 	
 	PopulateTestTeams(bool, nTeams){
@@ -191,7 +199,7 @@ export default class IndexPage extends React.Component {
 		  			
 		  		this.addTeam(name, countryArr[this.randomIntFromInterval(0,countryArr.length)], 0);
 		  		
-		  		//this.addTimeTrial(name, Math.round(this.randomIntFromInterval(1500,4500))/100);
+		  		this.addTimeTrial(name, Math.round(this.randomIntFromInterval(1500,6000))/100);
 		  	}
 		  	this.getBestTime(this.state.players);
 	  	}
@@ -199,9 +207,29 @@ export default class IndexPage extends React.Component {
 	  	// --------------------------------------------------------------------------------
 	}
 	
+	TestIfGameCanProceed(event, nTimeTrials, nPlayers, mode, gameName){
+		if (gameName == null){
+			return event.preventDefault();
+		} else if (nPlayers >= (mode == true ? 8 : 4)){
+			if (this.state.RandSeed == false){
+				if (nTimeTrials == nPlayers){
+					return ;
+				} else {
+					return event.preventDefault();
+				}
+			} else {
+				return;
+			}
+		} else {
+			return event.preventDefault();
+		}
+		
+	}
+	
     render() {
     	
     	var mainOptionButtons;
+    	var startCreationButtons;
     	var gamePath;
     	var nTimeTrials = 0;
     	var secBkrdClrNA = '#D3D3D3';
@@ -215,11 +243,19 @@ export default class IndexPage extends React.Component {
     	
     	//Grey out options until name is applied
     	if(this.state.gameName == null){
+    		startCreationButtons = {
+    			background: secBkrdClrAvail,
+    			color: 'white'
+    		};
     		mainOptionButtons = {
     			background: secBkrdClrNA,
     			color: '#888888'
     		};
     	} else {
+    		startCreationButtons = {
+    			background: secBkrdClrNA,
+    			color: '#888888'
+    		};
     		mainOptionButtons = {
     			background: secBkrdClrAvail,
     			color: 'white'
@@ -237,15 +273,24 @@ export default class IndexPage extends React.Component {
 				gameName:this.state.gameName
 			}
     	};
+    	
+    	console.log('nTimeTrials',nTimeTrials);
+    	console.log('FourPmode',this.state.FourPmode);
+    	console.log('Object.keys(this.state.players).length',Object.keys(this.state.players).length);
 
 	    return (
 	    	<div className="main-page">
 	    		<div className = "menu">
 	    			<GameNamePopUp 
 	        			SetGameName={this.SetGameName.bind(this)}
+	        			style={startCreationButtons}
+	        			trigger={this.state.gameName}
 		            />
 		            <LoadGamePopUp 
 	        			SetGameName={this.SetGameName.bind(this)}
+	        			style={startCreationButtons}
+	        			trigger={this.state.gameName}
+	        			LoadGameProps={this.LoadGameProps.bind(this)}
 		            />
 	    			<AddTeamPopUp 
 	        			addTeamClick={this.addTeam.bind(this)}
@@ -275,7 +320,7 @@ export default class IndexPage extends React.Component {
 						<Toggle
 							id='elimStatus'
 							icons={false}
-							disabled={this.state.gameName == null ? true : false}
+							disabled={true}
 						    defaultChecked={this.state.DblElim}
 						    onChange={null} 
 					    />
@@ -303,7 +348,14 @@ export default class IndexPage extends React.Component {
 					    />
 					    <span style={spanStyle}>Comp</span>
 					</div>
-					<Link disabled={nTimeTrials == Object.keys(this.state.players).length ? false : true} className="row" style={mainOptionButtons} to={gamePath}>Start Game</Link>
+					<Link 
+						onClick={(e) => { this.TestIfGameCanProceed(e, nTimeTrials, Object.keys(this.state.players).length, this.state.FourPmode, this.state.gameName)}}
+						className="row" 
+						style={mainOptionButtons} 
+						to={gamePath}
+					>
+						Start Game
+					</Link>
 	    		</div>
 		        <div className="home">
 				      <Table 

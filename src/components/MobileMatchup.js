@@ -542,6 +542,22 @@ class PlayerLayout extends React.Component {
 		}
 	}
 	
+	CheckByeRender(){
+		if(this.props.player!=null){
+			if(this.props.player.name == 'BYE'){
+				return null;
+			} else {
+				return (
+					<Icons
+						mascot = {this.props.player==null?null:this.props.player.mascot}
+						colorA = {this.props.player==null?null:this.props.player.primaryColor}
+						colorB = {this.props.player==null?null:this.props.player.secondaryColor}
+					/>
+				);
+			}
+		}
+	}
+	
 	render(){
 		
 		var selectionStyle;
@@ -579,35 +595,31 @@ class PlayerLayout extends React.Component {
 				</div>
 				<div className="four-p-text-stat">
 					{/*SEED*/}
-					{this.props.player==null?null:this.props.player.seed}
+					{this.props.player==null?null:(this.props.player.name == 'BYE' ? '-' :this.props.player.seed)}
 				</div>
 				<div className="four-p-text-stat-b" style = {selectionStyle2}>
 					{/*DIV*/}
-					<Icons
-						mascot = {this.props.player==null?null:this.props.player.mascot}
-						colorA = {this.props.player==null?null:this.props.player.primaryColor}
-						colorB = {this.props.player==null?null:this.props.player.secondaryColor}
-					/>
+					{this.CheckByeRender()}
 				</div>
 				<div className="four-p-text-stat">
 					{/*WINS*/}
-					{this.props.player==null?null:this.props.player.wins + " W"}
+					{this.props.player==null?null:(this.props.player.name == 'BYE' ? '-' :this.props.player.wins + " W")}
 				</div>
 				<div className="four-p-text-stat-b" style = {selectionStyle2}>
 					{/*LOSSES*/}
-					{this.props.player==null?null:this.props.player.losses + " L"}
+					{this.props.player==null?null:(this.props.player.name == 'BYE' ? '-' :this.props.player.losses + " L")}
 				</div>
 				<div className="four-p-text-stat">
 					{/*TT*/}
-					{this.props.player==null?null:this.props.player.timeTrial + "s"}
+					{this.props.player==null?null:(this.props.player.name == 'BYE' ? '-' :this.props.player.timeTrial + "s")}
 				</div>
 				<div className="four-p-text-stat-c" style={selectionStyle2}>
 					{/*W%*/}
-					{this.props.winChance + "%"}
+					{this.props.player.name == 'BYE' ? '-' : this.props.winChance + "%"}
 				</div>
 				<div className="four-p-text-stat">
 					{/*POSITION%*/}
-					{this.props.player==null?null:this.props.position}
+					{this.props.player==null?null :this.props.position}
 				</div>
 			</div>
 		);

@@ -28,7 +28,7 @@ export default class BracketTile extends React.Component {
 			player.seed !== null &&
 			player.seed !== "" &&
 			player.name.slice(0,6) !== 'Winner' &&
-			player.name.slice(0,5) !== 'Loser'
+			player.name.slice(0,5) !== 'Loser' 
 		){
 			return true;
 		} else {
@@ -64,7 +64,7 @@ export default class BracketTile extends React.Component {
 					this.testPLayerProps(this.props.game.playerC) == true ? fillCount += 1 : null;
 					this.testPLayerProps(this.props.game.playerD) == true ? fillCount += 1 : null;
 					
-					if(fillCount > 0)
+					if(fillCount == 4)
 					{
 						this.props.showMatchup(
 							this.props.game.playerA,

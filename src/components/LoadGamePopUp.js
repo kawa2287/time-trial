@@ -38,6 +38,9 @@ export default class LoadGamePopUp extends React.Component {
 						order = {snapshot.val()[i].order}
 						mode = {snapshot.val()[i].mode}
 						players = {snapshot.val()[i].players}
+						timeTrialOpen = {snapshot.val()[i].timeTrials}
+						LoadGameProps = {this.props.LoadGameProps}
+						hideInput = {this.hideInput.bind(this)}
 					/>
 				);
 			}
@@ -50,6 +53,7 @@ export default class LoadGamePopUp extends React.Component {
 	}
 	
 	hideInput(){
+		console.log('made it here');
 		this.customDialog.hide();
 	}
 
@@ -66,7 +70,11 @@ export default class LoadGamePopUp extends React.Component {
     render() {
 
 		return (
-		    <div className="row"  onClick={() => this.customDialog.show()}>
+		    <div 
+		    	className="row"  
+	    		onClick={this.props.trigger == null? () => this.customDialog.show() : null}
+	    		style={this.props.style}
+    		>
 		    	<div className = "picture">
 			    	<img src="./img/buttons/upload.svg" ></img>
 		    	</div>

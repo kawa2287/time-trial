@@ -8,7 +8,7 @@ export default class FirebaseGameTile extends React.Component {
 		super(props);
 		
 		linkPath= {
-			pathname:"/VsMobile", 
+			pathname: (this.props.timeTrialOpen == 'open' ? "/" : "/VsMobile"), 
 			state:{
 				mode : this.props.mode, 
 				seeding:this.props.seeding, 
@@ -19,18 +19,36 @@ export default class FirebaseGameTile extends React.Component {
 			}
 		};
 	}
+	
+	HandleClick(){
+		this.props.LoadGameProps(this.props.gameName, this.props.players);
+		this.props.hideInput();
+	}
+	
+	LinkOrDiv(){
+		if(this.props.timeTrialOpen == 'open'){
+			return(
+				<div
+					onClick={this.HandleClick.bind(this)}
+					className="row"
+				>
+					{this.props.gameName}
+				</div>
+			);
+		} else {
+			return(
+				<Link 
+			    	className="row"
+			    	to={linkPath}
+		    	>
+			    	{this.props.gameName}
+			    </Link>
+			);
+		}
+	}
 
     render() {
     	
-    	console.log('linkPath',linkPath);
-
-		return (
-		    <Link 
-		    	className="row"
-		    	to={linkPath}
-	    	>
-		    	{this.props.gameName}
-		    </Link>
-		);
+		return this.LinkOrDiv();
     }
 }

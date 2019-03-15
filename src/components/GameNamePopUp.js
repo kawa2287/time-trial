@@ -81,9 +81,14 @@ export default class GameNamePopUp extends React.Component {
 		var closeButtonStyle ={
 			fontSize: '0em'
 		};
+		
+		console.log('gameName', this.props.trigger);
 
 		return (
-		    <div className="row"  onClick={() => this.customDialog.show()}>
+		    <div className="row"  
+		    	onClick={this.props.trigger == null? () => this.customDialog.show() : null}
+		    	style={this.props.style}
+	    	>
 		    	<div className = "picture">
 			    	<img src="./img/buttons/game.png" ></img>
 		    	</div>
