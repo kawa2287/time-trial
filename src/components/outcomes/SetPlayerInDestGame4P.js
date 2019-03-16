@@ -1,6 +1,6 @@
 'use strict';
 
-export default function SetPlayerInDestGame4P(currentGameNum, destGame, topGame, botGame, p1,p2,beginConstruction){
+export default function SetPlayerInDestGame4P(currentGameNum, destGame, topGame, botGame, p1,p2,beginConstruction, decision){
 	
 	console.log("currentGameNum",currentGameNum);
 	console.log("destGame",destGame);
@@ -9,6 +9,7 @@ export default function SetPlayerInDestGame4P(currentGameNum, destGame, topGame,
 	console.log("p1",p1);
 	console.log("p2",p2);
 	console.log("beginConstruction",beginConstruction);
+	console.log("decision",decision);
 	
 	if(beginConstruction==true){
 		if (currentGameNum == topGame){
@@ -42,6 +43,29 @@ export default function SetPlayerInDestGame4P(currentGameNum, destGame, topGame,
 					}
 				}
 			};
+		}
+		
+		//set property of loser destination in MasterGameObject
+		if(decision == 'loss'){
+			console.log("here is a loss");
+			this.state.masterGameObject = {
+				...this.state.masterGameObject,
+				[currentGameNum] : {
+					...this.state.masterGameObject[currentGameNum],
+					loserDestionationGame : destGame
+				}
+			};
+		} 
+			
+		if(decision == 'win'){
+			console.log("here is a win");
+			this.state.masterGameObject = {
+				...this.state.masterGameObject,
+				[currentGameNum] : {
+					...this.state.masterGameObject[currentGameNum],
+					winnerDestinationGame : destGame
+				}
+			};	
 		}
 	} else{
 		

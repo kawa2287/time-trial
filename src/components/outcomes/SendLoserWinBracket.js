@@ -26,6 +26,6 @@ export default function SendLoserWinBracket(currentGameNum, roundNumber,losePlay
 		botGame = 2 * (destGame - bracketSpots + NgmsInRnd.loserBracket(bracketSpots,destGameRnd, mode));
 	}
 
-	this.SetPlayerInDestGame(currentGameNum, destGame, topGame, botGame, losePlayer,beginConstruction);
+	this.SetPlayerInDestGame(currentGameNum, destGame, topGame, botGame, losePlayer,beginConstruction, 'loss');
 
 }

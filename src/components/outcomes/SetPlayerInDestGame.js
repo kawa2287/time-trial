@@ -1,6 +1,6 @@
 'use strict';
 
-export default function SetPlayerInDestGame(currentGameNum, destGame, topGame, botGame, player,beginConstruction){
+export default function SetPlayerInDestGame(currentGameNum, destGame, topGame, botGame, player,beginConstruction, decision){
 	
 	if(beginConstruction==true){
 		if (currentGameNum == topGame){
@@ -27,7 +27,31 @@ export default function SetPlayerInDestGame(currentGameNum, destGame, topGame, b
 				}
 			};
 		}
-	} else {
+		
+		//set property of loser destination in MasterGameObject
+		if(decision == 'loss'){
+			this.state.masterGameObject = {
+				...this.state.masterGameObject,
+				[currentGameNum] : {
+					...this.state.masterGameObject[currentGameNum],
+					loserDestionationGame : destGame
+				}
+			};
+			
+		} 
+			
+		if(decision == 'win'){
+			this.state.masterGameObject = {
+				...this.state.masterGameObject,
+				[currentGameNum] : {
+					...this.state.masterGameObject[currentGameNum],
+					winnerDestinationGame : destGame
+				}
+			};	
+		}
+	}
+		
+		else {
 		
 		if (currentGameNum == topGame){
 			this.state.masterGameObject = {

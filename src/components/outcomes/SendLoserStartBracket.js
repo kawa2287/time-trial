@@ -6,6 +6,6 @@ export default function SendLoserStartBracket(currentGameNum, losePlayer, bracke
 	var topGame = 2 * (destGame - bracketSpots) - 1;
 	var botGame = 2 * (destGame - bracketSpots);
 
-	this.SetPlayerInDestGame(currentGameNum, destGame, topGame, botGame, losePlayer,beginConstruction);
+	this.SetPlayerInDestGame(currentGameNum, destGame, topGame, botGame, losePlayer,beginConstruction, 'loss');
 
 }
