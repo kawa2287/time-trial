@@ -572,7 +572,6 @@ export default class VsTournament extends React.Component {
 
 		// Create Games
 		var gameCounter = 1;
-		console.log(gVars);
 		// create Games in Winner Bracket (includes start round)
 		var createdWinGames = CreateGmsWinBracket(gVars,gameCounter,this.state.masterGameObject,mode);
 		winnerBracket.push(createdWinGames.winnerBracket);
