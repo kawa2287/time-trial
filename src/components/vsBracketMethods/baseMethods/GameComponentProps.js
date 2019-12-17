@@ -21,7 +21,7 @@ export default function GameComponentProps (gVars,gameCounter,masterGameObject,b
 			gVars,
 			mode,
 			playerAtime : masterGameObject[gameCounter].playerAtime,
-			playerBtime : masterGameObject[gameCounter].playerBtime
+			playerBtime : masterGameObject[gameCounter].playerBtime 
 			
 		};
 	} else {

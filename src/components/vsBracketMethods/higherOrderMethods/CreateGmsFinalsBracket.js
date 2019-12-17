@@ -26,7 +26,7 @@ export default function CreateGmsFinalsBracket(gVars,gameCounter,masterGameObjec
     
     for (k = 0; k < 1; k++){
     	
-		xLoc = (winnerArr.length + loserArr.length + 1)*(gameWidth+vizGeo.horizSpace) + vizGeo.horizSpace + (gameWidth+vizGeo.horizSpace)*k;
+		xLoc = (winnerArr.length - 2 + loserArr.length + 1)*(gameWidth+vizGeo.horizSpace) + vizGeo.horizSpace + (gameWidth+vizGeo.horizSpace)*k;
 		yLoc = boardHeight/2 - gameHeight/2;
 		
 				

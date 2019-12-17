@@ -165,7 +165,7 @@ export default class IndexPage extends React.Component {
 	SetGameName(gameName){
 		///// SET DATABASE/////
 		GamesDB = Firebase.database().ref(gameName);
-		//this.PopulateTestTeams(true,16);
+		this.PopulateTestTeams(true,12);
 		GamesDB.set({
 				gameName:gameName,
 				players: this.state.players,

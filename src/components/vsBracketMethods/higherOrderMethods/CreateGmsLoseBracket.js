@@ -63,7 +63,7 @@ export default function CreateGmsLoseBracket(gVars,gameCounter,masterGameObject,
 			}
 			
 			if (k==loserArr.length -1){
-				var xEnd = xLoc + (loserArr.length + winnerArr.length + 1)*(gameWidth + vizGeo.horizSpace) - vizGeo.horizSpace - gameWidth/2;
+				var xEnd = xLoc + (loserArr.length + winnerArr.length-2 + 1)*(gameWidth + vizGeo.horizSpace) - vizGeo.horizSpace - gameWidth/2;
 				
 				bezArr.push(
 					<BracketLine

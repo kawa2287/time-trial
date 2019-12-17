@@ -96,7 +96,9 @@ export default function WinnerLoserHandler (WLpkg,RTpkg){
     			playerBtime : WLpkg.playerBtime
     		}
     	};
-    	
+		
+		console.log(this.state.playersArray);
+		
     	//UPDATE WIN PLAYER STATE
     	if(winPlayer.name != 'BYE'){
     		this.state.playersArray = {

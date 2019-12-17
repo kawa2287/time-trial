@@ -30,14 +30,10 @@ export default function CreateGmsWinBracket(gVars,gameCounter,masterGameObject,m
 	var bracketSpots = gVars.bracketSpots;
 	
 	var winnerBracket = [];
-	var bezArr = [];
-	
+	var bezArr = [];	
 
-    for (k = 0; k < winnerArr.length; k++){
-		for(i = 0; i < winnerArr[k]; i++){
-		    
-		    
-			
+    for (k = 0; k < winnerArr.length-2; k++){
+		for(i = 0; i < winnerArr[k]; i++){			
 			moduleCCht = (gameHeight+vizGeo.vertSpace)*Math.pow(2,k);		
 			halfModuleHeight = ((gameHeight+vizGeo.vertSpace)*(Math.pow(2,k))-vizGeo.vertSpace)/2;
 			xLoc = (k+(bracketPower-(mode == 'VS' ? 0 : 1)-1)*2)*(gameWidth+vizGeo.horizSpace) + vizGeo.horizSpace;
@@ -62,7 +58,7 @@ export default function CreateGmsWinBracket(gVars,gameCounter,masterGameObject,m
 			
 			var ye = i % 2 == 0 ? yLoc + (gameHeight + moduleCCht)/2 : yLoc + (gameHeight - moduleCCht)/2;
 			
-			if(k == winnerArr.length -1 && i == winnerArr[k]-1){
+			if(k == winnerArr.length -3 && i == winnerArr[k]-1){
 				ye = yLoc + gameHeight/2;
 			}
 			

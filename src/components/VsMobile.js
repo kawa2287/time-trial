@@ -492,8 +492,6 @@ export default class VsMobile extends React.Component {
     
     UpdateFirebase(){
     	//sendMasterGameArray to Firebase
-    	console.log("seededArray before update",this.state.seededArray);
-    	console.log("playersArray before update",this.state.playersArray);
 		GamesDB.update({
 			masterGameObject: JSON.parse( JSON.stringify(this.state.masterGameObject)) ,
 			seededArray: JSON.parse( JSON.stringify(this.state.seededArray)) ,
