@@ -122,12 +122,12 @@ export default class TeamInputForm extends React.Component {
 		}
 		
 		var bgStyle = {
-			height : this.props.geo.height,
-			width : this.props.geo.width
+			height : '50%',
+			width : '100%'
 		};
 		
 		return (
-			<div className='input-wrapper' style = {bgStyle}>
+			<div className='input-wrapper' >
 				<div className='input-inner-wrapper' style={bgStyle}>
 					<div className='halfportion'>
 					

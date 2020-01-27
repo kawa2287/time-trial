@@ -3,20 +3,24 @@
 import React, { Component } from 'react';
 
 var divStyle = {
-  color: 'black',
+  color: 'gray',
   fontStyle: 'normal',
-  fontFamily: 'sans-serif',
-  fontWeight: 'bolder'
+  fontFamily: 'Bebas Neue',
+  fontWeight: 'bolder',
+  fontSize: 'large',
+  backgroundColor: 'black'
 };
+
+
 
 export default class TimeTrialHeaderLine extends Component{
 	
 	render(){
 	
 		return(
-		    <div className="cTile">
+		    <div className="cTileHeader">
 		    	<div className="cSeed" style={divStyle}>
-		    		{'Seed'}
+		    		{'Rank'}
 		    	</div>
 		    	<div className="cFlag"/>
 		    	<div className="cInfo">
@@ -25,7 +29,13 @@ export default class TimeTrialHeaderLine extends Component{
 		    		</div>
 		    		<div className="cTimes">
 		    			<div className="cTimeTrial" style={divStyle}>
-		    				{'Time'}
+		    				{'TT1'}
+		    			</div>
+						<div className="cTimeTrial" style={divStyle}>
+		    				{'TT2'}
+		    			</div>
+						<div className="cTimeTrial" style={divStyle}>
+		    				{'Best'}
 		    			</div>
 		    			<div className="cSplit" style={divStyle}>
 		    				{'Split'}
@@ -33,6 +43,8 @@ export default class TimeTrialHeaderLine extends Component{
 		    		</div>
 		    	</div>
 		    	<div className="cDelete">
+	    		</div>
+				<div className="cDelete">
 	    		</div>
 		    </div>
 		);

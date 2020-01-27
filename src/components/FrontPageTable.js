@@ -6,6 +6,7 @@ import TimeTrialLine from './TimeTrialLine';
 import TimeTrialHeaderLine from './TimeTrialHeaderLine';
 import TeamInputForm from './TeamInputForm';
 import SkyLight from 'react-skylight';
+import TimeTrialPopUp from './TimeTrialPopUp';
 
 
 export default class Table extends Component {
@@ -15,26 +16,28 @@ export default class Table extends Component {
 		this.state={
 			name : "",
 			country : null,
-			time : ""
+			time : "",
+			toggle : ""
 		};
 	}
 	
 	setSplitTimes(playersArray){
 		for (var n in playersArray){
 		    playersArray[n].seed = Number(n) + 1;
-		    if (playersArray[n].timeTrial == '-'){
+		    if (playersArray[n].bestTime == '-'){
 				playersArray[n].splitTime = '';
 		    } else {
-				playersArray[n].splitTime = Math.round((playersArray[n].timeTrial - this.props.bestTime)*100)/100;
+				playersArray[n].splitTime = Math.round((playersArray[n].bestTime - this.props.bestTime)*100)/100;
 		    }
 		}
 	}
 	
-	clickHandle(name,country,time){
+	clickHandle(name,country,time, toggle){
 		this.setState({
 			name : name,
 			country : country,
-			time : time
+			time : time,
+			toggle : toggle
 		});
 		this.customDialog.show();
 	}
@@ -52,13 +55,13 @@ export default class Table extends Component {
 		var dialogStyles = {
 		    backgroundColor: '#303030',
 		    color: '#494949',
-		    width: '100%',
-		    height: '100%',
+		    width: '50%',
+		    height: '50%',
 		    position: 'fixed',
-		    top: '0%',
-		    left: '50%',
+		    top: '25%',
+		    left: '25%',
 		    marginTop: '0px',
-		    marginLeft: '-50%',
+		    marginLeft: '0px',
 		    padding: '0px'
 		};
 		
@@ -67,13 +70,15 @@ export default class Table extends Component {
 		};
 
 		function compare(a, b){
-		    if(a.timeTrial == '-'){
+		    if(a.bestTime == '-'){
 				return 1;
-		    } else if (b.timeTrial =='-'){
+		    } else if (b.bestTime =='-'){
 				return -1;
-		    } else {
-				return a.timeTrial - b.timeTrial;
-		    }
+		    } else if( a.bestTime == b.bestTime){
+				return Math.max(a.timeTrial,a.timeTrial2) - Math.max(b.timeTrial,b.timeTrial2);
+		    }else{
+				return a.bestTime - b.bestTime;
+			}
 		}
 
 		var playersArray = [];
@@ -88,11 +93,11 @@ export default class Table extends Component {
 		this.setSplitTimes(playersArray);
 		
 		var chartLines = [];
+
 		
 		chartLines.push(<TimeTrialHeaderLine/>);
 		
 		for (var i in playersArray){
-			chartLines.push(<hr className="style14" width={'100%'}/>);
 			chartLines.push(
 				<TimeTrialLine
 					seed={playersArray[i].seed}
@@ -100,6 +105,8 @@ export default class Table extends Component {
 					flagPath={playersArray[i].country.flagPathSVG}
 					name={playersArray[i].name}
 					timeTrial={playersArray[i].timeTrial}
+					timeTrial2={playersArray[i].timeTrial2}
+					bestTime={playersArray[i].bestTime}
 					splitTime={playersArray[i].splitTime}
 					clickHandle={this.clickHandle.bind(this)}
 					handleRemovePlayer={this.handleRemovePlayer.bind(this)}
@@ -116,7 +123,7 @@ export default class Table extends Component {
 			    	dialogStyles={dialogStyles} hideOnOverlayClicked 
 			    	ref={ref => this.customDialog = ref} 
 		    	>
-		    		<TeamInputForm 
+		    		<PopUpDecider 
 				    	addTeamClick={this.props.addTeamClick}
 				    	geo={dialogStyles}
 				    	hideInput={this.hideInput.bind(this)}
@@ -124,7 +131,12 @@ export default class Table extends Component {
 				    	country={this.state.country}
 				    	time={this.state.time}
 				    	editPlayer={this.props.editPlayer}
-				    	mode='edit'
+						mode='edit'
+						players={this.props.players}
+						addTimeTrial={this.props.addTimeTrial}
+						style={this.props.mainOptionButtons}
+						toggle={this.state.toggle}
+						hideInput={this.hideInput.bind(this)}
 			    	/>
 				    
 			    </SkyLight>
@@ -133,3 +145,41 @@ export default class Table extends Component {
     }
 }
 
+
+class PopUpDecider extends Component
+{
+	render()
+	{
+		console.log(this.props.players);
+		var thing = [];
+		if(this.props.toggle == "edit")
+		{
+			thing.push(<TeamInputForm 
+				addTeamClick={this.props.addTeamClick}
+				geo={this.props.geo}
+				hideInput={this.props.hideInput}
+				name={this.props.name}
+				country={this.props.country}
+				time={this.props.time}
+				editPlayer={this.props.editPlayer}
+				mode='edit'
+			/>);
+		}
+		else if (this.props.toggle == "timeTrial")
+		{
+			thing.push(<TimeTrialPopUp
+				players={this.props.players}
+				addTimeTrial={this.props.addTimeTrial}
+				name={this.props.name}
+				country={this.props.country}
+				style={this.props.mainOptionButtons}
+				hideInput={this.props.hideInput}
+			/>);
+		}
+		return (
+			<div className = "ttWrap">
+				{thing.map(display => display)}
+			</div>
+		)
+	}
+}

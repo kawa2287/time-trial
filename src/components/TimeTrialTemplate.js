@@ -16,46 +16,58 @@ export default class TimeTrialTemplate extends React.Component {
 			name: '',
 		    country:'Select Country',
 		    players: this.props.players,
-		    timeElapsed: this.props.timeElapsed,
+		    timeElapsed: 0,
 		    stopSwitch: null,
-		    stopTime: null,
-		    finish: 0
+		    stopTime: 0,
+			finish: 0,
+			timerToggle: 0
 		};
+		this.incrementer = null;
     }
 
 	// handle controller support
     handleStopClick() {
-		if(this.state.finish != 1 && this.props.position == this.props.stopTime) {
+		if(this.state.timerToggle == 1 ) {
 	    	this.setState({ 
-	    		stopSwitch : 1, 
-	    		stopTime : this.props.timeElapsed, 
-	    		finish:1 }, 
+	    		stopTime : this.state.timeElapsed, 
+	    		 }, 
 	    		function afterClick () {
-					this.props.addTimeTrial(this.state.name, formattedSeconds(this.state.stopTime));
-					this.props.finishHandle();
+					this.props.handleSubmit(this.props.name, formattedSeconds(this.state.stopTime));
 				}
 			);
 		} else {
 			console.log("ALREADY INPUT");
 		}
+	}
+
+	//TimerButton Controller
+	TimerButton()
+	{
+		if(this.state.timerToggle == 0)
+		{
+			//start time
+			this.handleStartButton();
+			this.setState({timerToggle : 1});
+		}
+		else if(this.state.timerToggle == 1)
+		{
+			//Stop Time
+			this.handleStopClick();
+			this.setState({timerToggle : 0});
+		}
+	}
+	
+	
+	// handle button start time
+	handleStartButton() 
+	{
+		this.incrementer = setInterval( () =>
+			this.setState({
+				timeElapsed: this.state.timeElapsed + .01
+			}),10
+		);
     }
     
-    // handle tap support
-    handleStopTap() {
-		if(this.state.finish != 1 ) {
-	    	this.setState({ 
-	    		stopSwitch : 1, 
-	    		stopTime : this.props.timeElapsed, 
-	    		finish:1 }, 
-	    		function afterClick () {
-					this.props.addTimeTrial(this.state.name, formattedSeconds(this.state.stopTime));
-					this.props.finishHandle();
-				}
-			);
-		} else {
-			console.log("ALREADY INPUT");
-		}
-    }
     
     componentWillReceiveProps(nextProps){
     	if(nextProps.stopTime !== this.props.stopTime){
@@ -66,14 +78,19 @@ export default class TimeTrialTemplate extends React.Component {
     render() {
 	
 		var playerNames = [];
+		var flagLoc = "";
 
 		for (var x in this.state.players){
 		    playerNames.push({
 				name : this.state.players[x].name,
 				timeTrial : this.state.players[x].timeTrial
 			});
+			if(this.props.players[x].name == this.props.name)
+			{
+				flagLoc = this.props.players[x].country.flagPathSVG;
+			}
 		}
-		
+
 	
 		return (
 		    <div className ="ttQuad" background-color={this.state.finish == 0 ? '#584E72' : '#FFD700'}>
@@ -94,17 +111,17 @@ export default class TimeTrialTemplate extends React.Component {
 				<div className="ttSector">
 					<div className="ttZone">
 						<div className="ttFlag">
-							<img width={'50%'} src={typeof(this.state.players[this.state.name]) != "undefined" ? this.state.players[this.state.name].country.flagPathSVG :"/img/flagsSVG/XX.svg"} />
+							<img width={'50%'} src={flagLoc} />
 						</div>
 						<div className="ttTime">
-							{this.state.stopSwitch == null ? formattedSeconds(this.props.timeElapsed) : formattedSeconds(this.state.stopTime)}
+							{this.state.timerToggle == 1 ? formattedSeconds(this.state.timeElapsed) : formattedSeconds(this.state.stopTime)}
 						</div>
 					</div>
 			
 			
 					<div className="ttControlButton">
-						<button className="ttFinishButton" onClick={this.handleStopTap.bind(this)}>
-							Finish
+						<button className="ttFinishButton" onClick={this.TimerButton.bind(this)}>
+							{this.state.timerToggle == 0 ? 'Start' : 'Stop'}
 						</button>
 					</div>
 				</div>

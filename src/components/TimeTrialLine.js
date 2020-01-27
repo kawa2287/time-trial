@@ -4,8 +4,14 @@ import React, { Component } from 'react';
 
 export default class TimeTrialLine extends Component{
 	
-	clickHandle(){
-		this.props.clickHandle(this.props.name,this.props.country,this.props.timeTrial);
+	clickHandle()
+	{
+		this.props.clickHandle(this.props.name,this.props.country,this.props.timeTrial,"edit");
+	}
+
+	clickHandleTimeTrial()
+	{
+		this.props.clickHandle(this.props.name,this.props.country,this.props.timeTrial,"timeTrial");
 	}
 	
 	removePlayerHandle(){
@@ -23,22 +29,27 @@ export default class TimeTrialLine extends Component{
 		    <div className="cTile" >
     			<div 
     				className="cMain"
-	    			onClick={this.clickHandle.bind(this)}
-		    		onTap={this.clickHandle.bind(this)}
+	    			onClick={this.clickHandleTimeTrial.bind(this)}
 	    		>
 			    	<div className="cSeed">
 			    		{this.props.seed}
 			    	</div>
 			    	<div className="cFlag">
-			    		<img src={this.props.flagPath} />
+			    		<img className = "flagShadow" src={this.props.flagPath} />
 			    	</div>
 			    	<div className="cInfo">
 			    		<div className="cName">
 			    			{this.props.name}
 			    		</div>
 			    		<div className="cTimes">
-			    			<div className="cTimeTrial">
+							<div className="cTimeTrial">
 			    				{this.props.timeTrial=='-'?'-':this.props.timeTrial.toFixed(2)}
+			    			</div>
+							<div className="cTimeTrial">
+			    				{this.props.timeTrial2=='-'?'-':this.props.timeTrial2.toFixed(2)}
+			    			</div>
+			    			<div className="cBestTime">
+			    				{this.props.bestTime=='-'?'-':this.props.bestTime.toFixed(2)}
 			    			</div>
 			    			<div className="cSplit">
 			    				{this.props.splitTime==''?'':("+" + String(this.props.splitTime.toFixed(2)))}
@@ -51,6 +62,12 @@ export default class TimeTrialLine extends Component{
 		    		onClick={this.removePlayerHandle.bind(this)}
 	    		>
 		    		<img src={"/img/buttons/trash.svg"} />
+		    	</div>
+				<div 
+		    		className="cDelete"
+		    		onClick={this.clickHandle.bind(this)}
+	    		>
+		    		<img src={"/img/buttons/gear.svg"} />
 		    	</div>
 		    </div>
 		);

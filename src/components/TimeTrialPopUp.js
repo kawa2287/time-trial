@@ -1,6 +1,12 @@
 import React from 'react';
 import SkyLight from 'react-skylight';
 import TimeTrialTemplate from './TimeTrialTemplate';
+import Flag from './Flag';
+
+const formattedSeconds = (sec) =>
+	Math.floor(sec) + '.' + 
+	(sec < 1 ? Math.round(Math.floor(sec*10)) : Math.round(10*( (Math.floor(sec*10)/10) % (Math.floor(sec)))) ) +
+	Math.floor((sec % 0.1)*100);
 
 class TimeTrialPopUp extends React.Component {
 	constructor(props){
@@ -13,52 +19,69 @@ class TimeTrialPopUp extends React.Component {
 		    nTeams:0,
 		    timeSwitch:0,
 		    timerOn : false,
-		    keyPress : null
+			keyPress : null,
+			name: '',
+			timerToggle: 0,
+			stopTime: 0
 		};
 		this.incrementer = null;
-    }
-
-	// handle controls start time
-    handleStartClick(event) {
-    	this.setState({
-    		keyPress : event.key
-    	});
-    		
-		if(event.key == ' ' && this.state.timerOn == false){
-    		this.incrementer = setInterval( () =>
-		    	this.setState({
-					timeElapsed: this.state.timeElapsed + .01,
-					timerOn : true
-		    	}, function afterClick() {
-		    		this.setState({
-		    			keyPress : null
-		    		});
-		    	}),10
-	    	);
-    	}
-    }
-    
-    // handle button start time
-    handleStartButton() {
-
-		if(this.state.timerOn == false){
-    		this.incrementer = setInterval( () =>
-		    	this.setState({
-					timeElapsed: this.state.timeElapsed + .01,
-					timerOn : true
-		    	}),10
-	    	);
-    	}
-    }
-  
-    handleStopMainTimer(){
-		if (this.state.completions >= Number(this.state.nTeams) - 1){
-	    	clearInterval(this.incrementer);
-	    	this.setState({timeSwitch:1});
-		} else {
-	    	this.setState({completions: this.state.completions + 1});
+	}
+	
+	//TimerButton Controller
+	TimerButton()
+	{
+		if(this.state.timerToggle == 0)
+		{
+			//start time
+			this.handleStartButton();
+			this.setState({timerToggle : 1});
 		}
-    }
+		else if(this.state.timerToggle == 1)
+		{
+			//Stop Time
+			this.handleStopClick();
+			this.setState({timerToggle : 2});
+		}
+	}
+
+	// handle button start time
+	handleStartButton() 
+	{
+		this.incrementer = setInterval( () =>
+			this.setState({
+				timeElapsed: this.state.timeElapsed + .01
+			}),10
+		);
+	}
+	
+	// handle stop time
+    handleStopClick() {
+		if(this.state.timerToggle == 1 ) {
+	    	this.setState({ 
+	    		stopTime : this.state.timeElapsed, 
+	    		 }, 
+	    		function afterClick () {
+					this.handleSubmit(this.props.name, formattedSeconds(this.state.stopTime));
+				}
+			);
+		} 
+	}
+
+	handleSubmit(name, time)
+	{
+		clearInterval(this.incrementer);
+		this.setState({
+			name : name,
+			timeElapsed : time,
+			timeSwitch : 1
+		});
+	}
+
+	handleSubmitClick()
+	{
+		this.props.addTimeTrial(this.state.name,this.state.timeElapsed);
+		this.cancelGroup();
+	}
   
     handleReset(){
     	clearInterval(this.incrementer);
@@ -68,9 +91,9 @@ class TimeTrialPopUp extends React.Component {
 	    	timeSwitch:0,
 	    	completions:0,
 	    	keyPress : null,
-	    	timerOn : false
-		}, function afterClick(){
-			this.customDialog.hide();
+			timerOn : false,
+			stopTime:0,
+			timerToggle:0
 		});
     }
     
@@ -82,7 +105,7 @@ class TimeTrialPopUp extends React.Component {
 	
 	cancelGroup(){
 		this.handleReset();
-		this.hideInput();
+		this.props.hideInput();
 	}
 
 
@@ -92,13 +115,13 @@ class TimeTrialPopUp extends React.Component {
 	var timeTrialDialog = {
 		    backgroundColor: '#303030',
 		    color: 'white',
-		    width: '100%',
-		    height: '100%',
+		    width: '50%',
+		    height: '50%',
 		    position: 'fixed',
-		    top: '0%',
-		    left: '50%',
+		    top: '25%',
+		    left: '25%',
 		    marginTop: '0px',
-		    marginLeft: '-50%',
+		    marginLeft: '0px%',
 		    padding: '0px'
 		};
 	
@@ -107,122 +130,81 @@ class TimeTrialPopUp extends React.Component {
 	};
 	
 	var buttonText = {
-		color : this.state.timeSwitch == 0 ? 'grey' : 'black'
+		color : this.state.timeSwitch == 0 ? 'grey' : 'white'
 	};
-	
-	var templates = [];
-	
-	for (var i = 0; i < this.state.nTeams; i++){
-		templates.push(
-			<TimeTrialTemplate 
-				players={this.props.players} 
-				timeElapsed={this.state.timeElapsed}
-				finishHandle={this.handleStopMainTimer.bind(this)}
-				addTimeTrial={this.props.addTimeTrial}
-				position={Number(i) + 1}
-				key={i}
-				stopTime = {this.state.keyPress}
-			/> 
-		);
+
+	var buttonColor = {
+		backgroundColor : this.state.timerToggle == 1 ? 'red' : null
 	}
 
-	return (
-		<div className="row" 
-			onClick={this.props.trigger != null? () => this.customDialog.show() : null}
-			style={this.props.style}
-		>
-			<div className = "picture">
-				<img src="./img/buttons/timeTrials.png" ></img>
-			</div>
-			<div className = "desc">
-				Timetrial
-			</div>
+	var playerNames = [];
+	var flagLoc = "";
+
+	for (var x in this.props.players){
+		if(this.props.players[x].name == this.props.name)
+		{
+			flagLoc = this.props.players[x].country.flagPathSVG;
+		}
+	}
+
+
 	
-			<SkyLight 
-				closeButtonStyle={closeButtonStyle}
-				dialogStyles={timeTrialDialog} 
-				hideOnOverlayClicked ref={ref => this.customDialog = ref} 
-			>
-				<div className ="ttWrap">
-					<div className ="timeTrialTop">
-						
-						<p className="switch-title">Select Number of Time Trials</p>
-		  
-						<label for="switch_1">
-							<input 
-								type="radio" 
-								id="switch_1" 
-								name="nPlayerSelection"
-								onChange={(e)=>{this.setState({nTeams:1})}} 
-							/>
-							<span>1</span>
-						</label>
-						
-						<label for="switch_1">
-							<input 
-								type="radio"
-								id="switch_2" 
-								name="nPlayerSelection"
-								onChange={(e)=>{this.setState({nTeams:2})}} 
-							/>
-							<span>2</span>
-						</label>
-							
-						<label for="switch_3">
-							<input 
-								type="radio" 
-								id="switch_3" 
-								name="nPlayerSelection" 
-								onChange={(e)=>{this.setState({nTeams:3})}} 
-							/>
-							<span>3</span>
-						</label>
-							
-						<label for="switch_4">
-							<input 
-								type="radio" 
-								id="switch_4" 
-								name="nPlayerSelection" 
-								onChange={(e)=>{this.setState({nTeams:4})}} 
-							/>
-							<span>4</span>
-						</label>
+	
+
+	return (
+		<div className ="ttWrap">
+			
+			<div className ="tt-top">
+
+				<div className = "tt-tl-quad">
+						<img className = "flagShadow" width={'75%'} src={flagLoc} />
+				</div>
+
+				<div className = "tt-tr-quad">
+					<div className = "tt-pname">
+						<p className = "ttText">{this.props.name}</p>
 						
 					</div>
-					<div className ="timeTrialMid">{templates}</div>
-					<div className="timeTrialBot">
-						<input
-							className="ttControls"
-							type="text"
-							id="one" 
-							placeholder="Controls Area"
-							onKeyPress={this.handleStartClick.bind(this)}
-							fontSize={'8px'}
-							value = {this.state.keyPress}
-						/>
+					<div className = "tt-pctry">
+						<p className = "ttText">{this.props.country}</p>
+					</div>
+				</div>
+			</div>
+
+			<div className = "tt-bottom">
+
+				<div className = "tt-bl-quad">
+					{this.state.timerToggle == 1 ? formattedSeconds(this.state.timeElapsed) : formattedSeconds(this.state.stopTime)}
+				</div>
+
+				<div className = "tt-br-quad">
+
+					<div className = "tt-Timer-Button">
 						<button 
-							className='ttButton' 
-						    onClick={this.handleStartButton.bind(this)}
-						>
-						  Start Time
+						className="ttFinishButton" 
+						style = {buttonColor}
+						onClick={this.TimerButton.bind(this)}>
+							{this.state.timerToggle == 0 ? 'Start' : 'Stop'}
 						</button>
+					</div>
+
+					<div className="tt-BR-Buttons">
 						<button 
 							className='ttButton' 
 							style = {buttonText}
-						    onClick={this.state.timeSwitch !== 0 ?  this.handleReset.bind(this) : null}
+							onClick={this.state.timerToggle == 2 ?  this.handleSubmitClick.bind(this) : null}
 						>
-						  Submit Times
+							Submit Times
 						</button>
 						<button 
 							className='ttButton' 
 							onClick={this.cancelGroup.bind(this)}
 						>
-						  Cancel
+							Cancel
 						</button>
-						
 					</div>
-				</div>
-			</SkyLight>
+				</div>``
+			</div>
 		</div>
 	);
   }

@@ -17,14 +17,15 @@ class AddTeamPopUp extends React.Component {
 		var addTeamDialog = {
 		    backgroundColor: '#303030',
 		    color: '#494949',
-		    width: '100%',
-		    height: '100%',
+		    width: '50%',
+		    height: '50%',
 		    position: 'fixed',
-		    top: '0%',
-		    left: '50%',
+		    top: '25%',
+		    left: '25%',
 		    marginTop: '0px',
-		    marginLeft: '-50%',
-		    padding: '0px'
+		    marginLeft: '0px',
+			padding: '0px',
+			display: 'flex'
 		};
 		
 		var closeButtonStyle ={
@@ -33,7 +34,7 @@ class AddTeamPopUp extends React.Component {
 
 		return (
 		    <div className="row"  
-		    	onClick={this.props.trigger != null? () => this.customDialog.show() : null}
+		    	onClick={ () => this.customDialog.show() }
 				style={this.props.style}
 		    >
 		    	<div className = "picture">
